@@ -30,8 +30,8 @@ function HomePageHeader() {
                     </Typography>
                     <Box sx={{ display: { xs: 'none', sm: 'block' }, ml:-30}} style={{}}>
                         {navItems.map((item) => (
-                        <Button onClick={() => {setPage(item)}} key={item} sx={{ color: '000' }}>
-                            {item}
+                        <Button onClick={() => {setPage(item)}} key={item} sx={{ color: '000' }} variant="text">
+                            <h1>{item}</h1>
                         </Button>
                         ))}
                         <IconButton>

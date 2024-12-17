@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import MainRenderer from './Components/MainRenderer'
+import Home from './Pages/Home'
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <MainRenderer />
+    <Home />
   </React.StrictMode>
 );
 

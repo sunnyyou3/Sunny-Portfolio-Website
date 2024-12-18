@@ -1,7 +1,7 @@
 import React from "react";
 import Box from '@mui/material/Box';
 
-function HomePageContact() {
+function AboutContact() {
     return(
         <Box sx={{ display: { xs: 'none', sm: 'block' }, mt:-3 }}>
             <div style={{height:'1000px', backgroundColor:'white'}}> 
@@ -12,4 +12,4 @@ function HomePageContact() {
     )
 }
 
-export default HomePageContact;
+export default AboutContact;

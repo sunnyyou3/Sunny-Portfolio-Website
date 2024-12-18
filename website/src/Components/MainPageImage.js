@@ -1,7 +1,7 @@
 import React from "react";
 import { Box } from "@mui/material";
 
-function HomePageImage() {
+function MainPageImage() {
     return(
         <Box
             elevation={0}
@@ -17,4 +17,4 @@ function HomePageImage() {
     )
 }
 
-export default HomePageImage;
+export default MainPageImage;

@@ -6,15 +6,16 @@ import Button from '@mui/material/Button';
 import { Typography } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
-import HomePageSub from "./HomePageSub";
-import HomePageAbout from "./HomePageAbout";
-import HomePageContact from "./HomePageContact";
+import Home from "../Pages/Home";
+import About from "../Pages/About";
+import AboutContact from "../Pages/Contact";
+import Story from "../Pages/Story";
 import { useState } from "react";
 
-const navItems = ['Home', 'About', 'Contact'];
+const navItems = ['Home', 'Story' ,'About', 'Contact'];
 
 
-function HomePageHeader() {
+function Header() {
     const [page, setPage] = useState('Home');
 
     return(
@@ -41,13 +42,14 @@ function HomePageHeader() {
                 </Toolbar>
             </AppBar>
             {(()　=> {
-                if(page === 'Home') return <HomePageSub/>
-                else if(page === 'About') return <HomePageAbout/>
-                else if(page === 'Contact') return <HomePageContact/>
-                else return <HomePageSub/>
+                if(page === 'Home') return <Home/>
+                else if(page === 'About') return <About/>
+                else if(page === 'Contact') return <AboutContact/>
+                else if(page === 'Story') return <Story/>
+                else return <Home/>
             })()}
         </Box>
     )
 }
 
-export default HomePageHeader;
+export default Header;

@@ -16,11 +16,11 @@ const navItems = ['Home', 'Story' ,'About', 'Contact'];
 
 
 function Header() {
-    const [page, setPage] = useState('Home');
+    const [page, setPage] = useState('');
 
     return(
-        <Box style={{position:"relative", top:'-600px', width:'auto'}} elevation={1}>
-            <AppBar position='sticky' color="default" sx={{ top: '0'}} component="nav" >
+        <Box id="header" style={{position:"relative", width:'auto'}} elevation={1}>
+            <AppBar position='sticky' color="default" sx={{ top: '0'}}>
                 <Toolbar>
                     <Typography
                         variant="h6"
@@ -41,13 +41,15 @@ function Header() {
                     </Box>
                 </Toolbar>
             </AppBar>
-            {(()　=> {
-                if(page === 'Home') return <Home/>
-                else if(page === 'About') return <About/>
-                else if(page === 'Contact') return <AboutContact/>
-                else if(page === 'Story') return <Story/>
-                else return <Home/>
-            })()}
+            <div style={{height:'1000px', backgroundColor:'white'}}> 
+                {(()　=> {
+                    if(page === 'Home') return <Home/>
+                    else if(page === 'About') return <About/>
+                    else if(page === 'Contact') return <AboutContact/>
+                    else if(page === 'Story') return <Story/>
+                    else return <Home/>
+                })()}
+            </div>
         </Box>
     )
 }

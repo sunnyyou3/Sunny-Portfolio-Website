@@ -5,25 +5,25 @@ import MainPageImage from '../Components/MainPageImage';
 
 function Main() {
     useEffect(() => {
-        var threshold = 150;
+        var threshold = 0;
+        const scrollPosition = window.scrollY;
         const handleScroll = () => {
             // Get the current scroll position
             // Define the threshold at which you want to jump to the section                
             // // Find the target section by ID
             const targetSection = document.getElementById("header");
-            if (targetSection) {
+            if (scrollPosition > threshold && targetSection) {
                 // Use scrollIntoView for smooth scrolling
                 targetSection.scrollIntoView({ behavior: "smooth" });
+                window.removeEventListener("scroll", handleScroll);
                 threshold = 0;
             }
         };
 
         const handleScrollDef = () => {
             const scrollPosition = window.scrollY;
-            console.log(scrollPosition);
-            if(scrollPosition < threshold) window.addEventListener("scroll", handleScroll);
-            else {
-                window.removeEventListener("scroll", handleScroll);
+            if(scrollPosition === threshold) {
+                window.addEventListener("scroll", handleScroll);
                 threshold = 150;
             }
         } 

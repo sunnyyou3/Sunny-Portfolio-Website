@@ -10,6 +10,7 @@ import Home from "../Pages/Home";
 import About from "../Pages/About";
 import AboutContact from "../Pages/Contact";
 import Story from "../Pages/Story";
+import Story from "../Pages/Projects";
 import { useState } from "react";
 
 const navItems = ['Home', 'Story' ,'About', 'Contact'];
@@ -47,6 +48,7 @@ function Header() {
                     else if(page === 'About') return <About/>
                     else if(page === 'Contact') return <AboutContact/>
                     else if(page === 'Story') return <Story/>
+                    else if(page === 'Projects') return <Projects/>
                     else return <Home/>
                 })()}
             </div>

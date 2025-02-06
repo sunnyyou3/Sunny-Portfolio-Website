@@ -10,10 +10,10 @@ import Home from "../Pages/Home";
 import About from "../Pages/About";
 import AboutContact from "../Pages/Contact";
 import Story from "../Pages/Story";
-import Story from "../Pages/Projects";
+import Projects from "../Pages/Projects";
 import { useState } from "react";
 
-const navItems = ['Home', 'Story' ,'About', 'Contact'];
+const navItems = ['Home', 'Story' ,'About', 'Contact', 'Projects'];
 
 
 function Header() {

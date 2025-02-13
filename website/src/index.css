@@ -14,8 +14,20 @@ code {
     monospace;
 }
 
-html {
+#test {
   scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  height: 100vh;
+}
+
+/* #home {
+  scroll-snap-type: y proximity;
+  overflow-y: scroll;
+  height: 100vh;
+} */
+
+#header{
+  scroll-snap-align: start;
 }
 
 section {

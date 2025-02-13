@@ -40,7 +40,7 @@ function Projects() {
     });
 
     return (
-        <Box id="test" style={{backgroundColor:'red'}}>
+        <Box id="test" style={{backgroundColor:'red', position: 'relative'}}>
           {[1, 2, 3, 4, 5].map((image) => (
               <Image id={image} key={image} />
           ))}

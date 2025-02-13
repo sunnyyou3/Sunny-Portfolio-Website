@@ -28,7 +28,6 @@ function Header() {
                         component="div"
                         sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' }, textAlign: "center" }}
                     >
-                        アンニョハセヨ<br/> メッセージを送ってくれないლ(╹◡╹ლ)
                     </Typography>
                     <Box sx={{ display: { xs: 'none', sm: 'block' }, ml:-30}} style={{}}>
                         {navItems.map((item) => (
@@ -42,16 +41,14 @@ function Header() {
                     </Box>
                 </Toolbar>
             </AppBar>
-            <div style={{height:'1000px', backgroundColor:'white'}}> 
-                {(()　=> {
-                    if(page === 'Home') return <Home/>
-                    else if(page === 'About') return <About/>
-                    else if(page === 'Contact') return <AboutContact/>
-                    else if(page === 'Story') return <Story/>
-                    else if(page === 'Projects') return <Projects/>
-                    else return <Home/>
-                })()}
-            </div>
+            {(()　=> {
+                if(page === 'Home') return <Home/>
+                else if(page === 'About') return <About/>
+                else if(page === 'Contact') return <AboutContact/>
+                else if(page === 'Story') return <Story/>
+                else if(page === 'Projects') return <Projects/>
+                else return <Home/>
+            })()}
         </Box>
     )
 }

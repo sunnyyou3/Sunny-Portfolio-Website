@@ -1,52 +1,71 @@
 import React, { useRef } from "react";
 import {
-    motion,
-    useScroll,
-    useSpring,
-    useTransform,
-    useMotionValue
-  } from "framer-motion";
+  motion,
+  useScroll,
+  useSpring,
+  useTransform
+} from "framer-motion";
 import Box from '@mui/material/Box';
 
+const projectTitle = [
+  "",
+  "Project Title1",
+  "Project Title2",
+  "Project Title3",
+  "Project Title4",
+  "Project Title5"
+];
 
-// Code from https://codesandbox.io/p/sandbox/framer-motion-parallax-i9gwuc?file=%2Fsrc%2FApp.tsx%3A3%2C1-48%2C1&from-embed
+const projectText = [
+  "",
+  "hello from the other side hello from the other side hello from the other side hello from the other side hello from the other side", 
+  "hello from the other side hello from the other side hello from the other side hello from the other side hello from the other side", 
+  "hello from the other side hello from the other side hello from the other side hello from the other side hello from the other side from the other side hello from the other side hello from the other side hello from the other side hello from the other side", 
+  "hello from the other side hello from the other side hello from the other side hello from the other side hello from the other side", 
+  "hello from the other side hello from the other side hello from the other side hello from the other side hello from the other side"
+];
 
 
 function useParallax(value, distance) {
-    return useTransform(value, [0, 1], [-distance, distance]);
+  return useTransform(value, [0, 1], [-distance, distance]);
 }
 
-function Image( image ) {
-    const ref = useRef(null);
-    const { scrollYProgress } = useScroll({ target: ref });
-    //const distance = useMotionValue(800);
-    const y = useParallax(scrollYProgress, 300);
-    return (
-      <section style={{position:'relative'}}>
-        <div ref={ref} >
-          <img className='projectIMG' src={require(`./../Images/${image.id}.jpg`)} alt="A London skyscraper"/>
-        </div>
-        <motion.h2 style={{ y }}>{`#00${image.id}`}</motion.h2>
-      </section>
-    );
-  }
+function Image({ id, containerRef }) {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, container: containerRef });
+  const y = useParallax(scrollYProgress, 500);
+
+
+  return (
+    <section style={{ position: 'relative' }}>
+      <div ref={ref}>
+        <img className='projectIMG' src={require(`./../Images/${id}.jpg`)} alt="A London skyscraper" />
+      </div>
+      <div style={{ backgroundColor: 'red'}} >
+        <motion.h2 style={{ y}}>{`#00${id}  ${projectTitle[id]}  `}</motion.h2>
+        <motion.h3 style={{ y, maxWidth:"200px"}}>{`${projectText[id]}`}</motion.h3>
+      </div>
+    </section>
+  );
+}
 
 function Projects() {
-    const { scrollYProgress } = useScroll();
-    const scaleX = useSpring(scrollYProgress, {
-        stiffness: 100,
-        damping: 30,
-        restDelta: 0.001,
-    });
+  const testRef = useRef(null);
+  const { scrollYProgress } = useScroll({ container: testRef });
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
 
-    return (
-        <Box id="test" style={{backgroundColor:'red', position: 'relative'}}>
-          {[1, 2, 3, 4, 5].map((image) => (
-              <Image id={image} key={image} />
-          ))}
-          <motion.div className="progress" style={{ scaleX }} />
-        </Box>
-    );
+  return (
+    <Box id="test" ref={testRef} style={{ backgroundColor: 'red', position: 'relative'}} sx={{'&::-webkit-scrollbar': { display: 'none' }}}>
+      {[1, 2, 3, 4, 5].map((image) => (
+        <Image id={image} key={image} containerRef={testRef} />
+      ))}
+      <motion.div className="progress" style={{ scaleX }} />
+    </Box>
+  );
 }
 
 export default Projects;

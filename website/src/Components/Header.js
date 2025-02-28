@@ -21,7 +21,7 @@ function Header() {
 
     return(
         <Box id="header" style={{position:"relative", width:'auto'}} elevation={1}>
-            <AppBar position='sticky' color="default" sx={{ top: '0'}}>
+            <AppBar id="AppBar" position='sticky' color="default" sx={{ top: '0'}}>
                 <Toolbar>
                     <Typography
                         variant="h6"

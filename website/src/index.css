@@ -18,16 +18,14 @@ code {
   scroll-snap-type: y mandatory;
   overflow-y: scroll;
   height: 100vh;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-/* #home {
-  scroll-snap-type: y proximity;
-  overflow-y: scroll;
-  height: 100vh;
-} */
 
-#header{
+#AppBar{
   scroll-snap-align: start;
+  padding-top: -500px;
 }
 
 section {

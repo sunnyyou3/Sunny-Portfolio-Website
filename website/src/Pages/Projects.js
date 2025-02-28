@@ -20,7 +20,7 @@ const projectText = [
   "",
   "hello from the other side hello from the other side hello from the other side hello from the other side hello from the other side", 
   "hello from the other side hello from the other side hello from the other side hello from the other side hello from the other side", 
-  "hello from the other side hello from the other side hello from the other side hello from the other side hello from the other side from the other side hello from the other side hello from the other side hello from the other side hello from the other side", 
+  "hello from the other side hello from the other side hello from the other side hello from the other side hello from the other side", 
   "hello from the other side hello from the other side hello from the other side hello from the other side hello from the other side", 
   "hello from the other side hello from the other side hello from the other side hello from the other side hello from the other side"
 ];
@@ -33,7 +33,7 @@ function useParallax(value, distance) {
 function Image({ id, containerRef }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, container: containerRef });
-  const y = useParallax(scrollYProgress, 500);
+  const y = useParallax(scrollYProgress, 300);
 
 
   return (

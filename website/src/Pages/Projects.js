@@ -33,15 +33,15 @@ function useParallax(value, distance) {
 function Image({ id, containerRef }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, container: containerRef });
-  const y = useParallax(scrollYProgress, 100);
+  const y = useParallax(scrollYProgress, 300);
 
 
   return (
     <section style={{ position: 'relative' }}>
-      <div ref={ref}>
+      <div>
         <img className='projectIMG' src={require(`./../Images/${id}.jpg`)} alt="A London skyscraper" />
       </div>
-      <div style={{ backgroundColor: 'red'}} >
+      <div  ref={ref} style={{ backgroundColor: 'red'}} >
         <motion.h2 style={{ y}}>{`#00${id}  ${projectTitle[id]}  `}</motion.h2>
         <motion.h3 style={{ y, maxWidth:"200px"}}>{`${projectText[id]}`}</motion.h3>
       </div>

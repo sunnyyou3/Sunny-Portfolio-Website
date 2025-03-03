@@ -41,7 +41,7 @@ function Image({ id, containerRef }) {
       <div>
         <img className='projectIMG' src={require(`./../Images/${id}.jpg`)} alt="A London skyscraper" />
       </div>
-      <div  ref={ref} style={{ backgroundColor: 'red'}} >
+      <div ref={ref} style={{ backgroundColor: 'red'}} >
         <motion.h2 style={{ y}}>{`#00${id}  ${projectTitle[id]}  `}</motion.h2>
         <motion.h3 style={{ y, maxWidth:"200px"}}>{`${projectText[id]}`}</motion.h3>
       </div>
@@ -59,7 +59,8 @@ function Projects() {
   });
 
   return (
-    <Box id="test" ref={testRef} style={{ backgroundColor: 'red', position: 'relative'}} sx={{'&::-webkit-scrollbar': { display: 'none' }}}>
+    // sx={{'&::-webkit-scrollbar': { display: 'none' }}}
+    <Box id="test" ref={testRef} style={{ backgroundColor: 'red', position: 'relative'}}>
       {[1, 2, 3, 4, 5].map((image) => (
         <Image id={image} key={image} containerRef={testRef} />
       ))}

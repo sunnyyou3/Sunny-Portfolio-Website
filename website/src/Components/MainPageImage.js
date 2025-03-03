@@ -5,11 +5,12 @@ function MainPageImage() {
     return(
         <Box
         id="startImage"
+        style={{height: '90%'}}
         elevation={0}
         component="img"
         sx={{
             maxWidth: '100%',
-            width: 'auto',
+            width: '100%',
             height: 'auto'
         }}
         alt="Kyoto"

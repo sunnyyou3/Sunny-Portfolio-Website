@@ -31,7 +31,6 @@ function useParallax(value, distance) {
 }
 
 function Image({ id, containerRef }) {
-  console.log(containerRef);
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, container: containerRef, layoutEffect: false });
   const y = useParallax(scrollYProgress, 300);
@@ -43,7 +42,7 @@ function Image({ id, containerRef }) {
         <img className='projectIMG' src={require(`./../Images/${id}.jpg`)} alt="A London skyscraper" />
       </div>
       <div style={{ backgroundColor: 'red'}} >
-        <motion.h2 style={{ y}}>{`#00${id}  ${projectTitle[id]}  `}</motion.h2>
+        <motion.h2 style={{ y }}>{`#00${id}  ${projectTitle[id]}  `}</motion.h2>
         <motion.h3 style={{ y, maxWidth:"200px"}}>{`${projectText[id]}`}</motion.h3>
       </div>
     </section>
@@ -58,12 +57,10 @@ function Projects() {
     damping: 30,
     restDelta: 0.001,
   });
-  console.log(testRef);
   return (
-    // sx={{'&::-webkit-scrollbar': { display: 'none' }}}
-    <Box id="test" ref={testRef} style={{ backgroundColor: 'red', position: 'relative'}}>
+    <Box id="test" ref={testRef} style={{ backgroundColor: 'red', position: 'relative'}} sx={{'&::-webkit-scrollbar': { display: 'none' }}}>
       {[1, 2, 3, 4, 5].map((image) => (
-        <Image id={image} key={image} containerRef={testRef} />
+        <Image id={image} key={image} containerRef={testRef} style={{ scaleX }}/>
       ))}
       <motion.div className="progress" style={{ scaleX }} />
     </Box>

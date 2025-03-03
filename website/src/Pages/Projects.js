@@ -31,6 +31,7 @@ function useParallax(value, distance) {
 }
 
 function Image({ id, containerRef }) {
+  console.log(containerRef);
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, container: containerRef });
   const y = useParallax(scrollYProgress, 300);
@@ -57,7 +58,7 @@ function Projects() {
     damping: 30,
     restDelta: 0.001,
   });
-
+  console.log(testRef);
   return (
     // sx={{'&::-webkit-scrollbar': { display: 'none' }}}
     <Box id="test" ref={testRef} style={{ backgroundColor: 'red', position: 'relative'}}>

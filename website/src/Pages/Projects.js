@@ -33,7 +33,7 @@ function useParallax(value, distance) {
 function Image({ id, containerRef }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, container: containerRef });
-  const y = useParallax(scrollYProgress, 300);
+  const y = useParallax(scrollYProgress, 100);
 
 
   return (

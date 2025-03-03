@@ -18,8 +18,8 @@ code {
   scroll-snap-type: y mandatory;
   overflow-y: scroll;
   height: 100vh;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  /* scrollbar-width: none;
+  -ms-overflow-style: none; */
 }
 
 

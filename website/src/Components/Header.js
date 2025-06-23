@@ -12,45 +12,85 @@ import AboutContact from "../Pages/Contact";
 import Gallery from "../Pages/Gallery";
 import Projects from "../Pages/Projects";
 import { useState } from "react";
+import MenuIcon from '@mui/icons-material/Menu';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 
-const navItems = ['Home', 'Gallery' ,'About', 'Contact', 'Projects'];
-
+const navItems = ['Home', 'Projects', 'Gallery', 'About', 'Contact'];
 
 function Header() {
     const [page, setPage] = useState('');
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    return(
-        <Box id="header" style={{position:"relative", width:'auto'}} elevation={1}>
-            <AppBar id="AppBar" position='sticky' color="default" sx={{ top: '0'}}>
+    const handleDrawerToggle = () => {
+        setDrawerOpen(!drawerOpen);
+    };
+
+    const handleNavItemClick = (item) => {
+        setPage(item);
+        if (isMobile) {
+            setDrawerOpen(false);
+        }
+    };
+
+    return (
+        <Box id="header" style={{ flex: 1 }} elevation={1}>
+            <AppBar id="AppBar" position='sticky' color="default" sx={{ flex: 1 }}>
                 <Toolbar>
                     <Typography
                         variant="h6"
                         component="div"
-                        sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' }, textAlign: "center" }}
+                        sx={{ flexGrow: 1, textAlign: "center" }}
                     >
+                        My Website
                     </Typography>
-                    <Box sx={{ display: { xs: 'none', sm: 'block' }, ml:-30}} style={{}}>
-                        {navItems.map((item) => (
-                        <Button onClick={() => {setPage(item)}} key={item} sx={{ color: '000' }} variant="text">
-                            <h1>{item}</h1>
-                        </Button>
-                        ))}
-                        <IconButton>
-                            <Avatar alt="Sunny" src={require("./../Images/SelfIcon.jpg")}/>
+                    {isMobile ? (
+                        <IconButton edge="end" color="inherit" onClick={handleDrawerToggle}>
+                            <MenuIcon />
                         </IconButton>
-                    </Box>
+                    ) : (
+                        <Box sx={{ display: 'flex' }}>
+                            {navItems.map((item) => (
+                                <Button onClick={() => handleNavItemClick(item)} key={item} sx={{ color: '000' }} variant="text">
+                                    <h3>{item}</h3>
+                                </Button>
+                            ))}
+                            <IconButton>
+                                <Avatar alt="Sunny" src={require("./../Images/SelfIcon.jpg")} />
+                            </IconButton>
+                        </Box>
+                    )}
                 </Toolbar>
             </AppBar>
-            {(()　=> {
-                if(page === 'Home') return <Home/>
-                else if(page === 'About') return <About/>
-                else if(page === 'Contact') return <AboutContact/>
-                else if(page === 'Gallery') return <Gallery/>
-                else if(page === 'Projects') return <Projects/>
-                else return <Home/>
+            <Drawer
+                anchor="right"
+                open={drawerOpen}
+                onClose={handleDrawerToggle}
+            >
+                <List>
+                    {navItems.map((item) => (
+                        <ListItem button key={item} onClick={() => handleNavItemClick(item)}>
+                            <ListItemText primary={item} />
+                        </ListItem>
+                    ))}
+                </List>
+            </Drawer>
+            {(() => {
+                if (page === 'Home') return <Home />
+                else if (page === 'Projects') return <Projects />
+                else if (page === 'Gallery') return <Gallery />
+                else if (page === 'About') return <About />
+                else if (page === 'Contact') return <AboutContact />
+                else return <Home />
             })()}
         </Box>
-    )
+    );
 }
 
 export default Header;

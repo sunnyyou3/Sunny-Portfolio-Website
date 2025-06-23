@@ -5,9 +5,8 @@ import MainPageImage from '../Components/MainPageImage';
 
 function Main() {
     return(
-        <Container id="home" maxWidth="string">
+        <Container id="home"  style={{flex: 1}}>
             <MainPageImage/>
-            {/* <ParallaxSection Component={Header}/> */}
             <Header/>
         </Container>
     )

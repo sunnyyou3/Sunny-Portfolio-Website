@@ -7,8 +7,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   --accent: var(--white);
-
-  min-width: 1800px;
 }
 
 code {
@@ -48,8 +46,6 @@ section {
 }
 
 section > div {
-  width: 300px;
-  height: 400px;
   position: relative;
   max-height: 90vh;
   margin: 20px;

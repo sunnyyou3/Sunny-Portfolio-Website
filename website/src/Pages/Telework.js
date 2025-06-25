@@ -239,7 +239,7 @@ function Telework({ language }) {
       const timeoutId = setTimeout(() => {
         setDisplayedText((prev) => prev + textArray[currentIndex].text[charIndex]);
         setCharIndex((prev) => prev + 1);
-      }, 100);
+      }, 25);
       return () => clearTimeout(timeoutId);
     }
   }, [charIndex, currentIndex, textArray]);

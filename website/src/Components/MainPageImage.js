@@ -5,7 +5,7 @@ function MainPageImage() {
     return(
         <Box
             id="startImage"
-            style={{flex: 1, maxHeight:'100%', maxWidth: '100%'}}
+            style={{height: '100vh', width: '100vw'}}
             elevation={0}
             component="img"
             alt="Kyoto"

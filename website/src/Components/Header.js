@@ -31,8 +31,7 @@ function Header() {
                         variant="h6"
                         component="div"
                         sx={{ flexGrow: 1, textAlign: "center" }}
-                    >
-                        My Website
+                    >       
                     </Typography>
                    <Box sx={{ display: 'flex' }}>
                             {navItems.map((item) => (

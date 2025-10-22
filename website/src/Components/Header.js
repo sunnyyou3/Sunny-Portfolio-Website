@@ -13,6 +13,7 @@ import Projects from "../Pages/Projects";
 import { useState } from "react";
 import Title from '../Pages/Title';
 import { Container } from "@mui/system";
+import { motion } from "motion/react"
 
 const navItems = ['Home', 'Projects', 'Gallery', 'About', 'Contact', 'Game'];
 
@@ -25,7 +26,7 @@ function Header() {
 
     return (
         <Box id="header">
-            <AppBar id="AppBar" style={{ background: 'transparent', boxShadow: 'none', position: 'absolute' }}>
+            <AppBar id="AppBar" style={{ background: 'transparent', boxShadow: 'none', position: 'absolute' }} component={motion.div} initial={{y : -100}} animate={{ y : 0}} transition={{duration: 1}}>
                 <Toolbar>
                     <Typography
                         variant="h6"

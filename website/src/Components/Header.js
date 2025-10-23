@@ -31,8 +31,9 @@ function Header() {
                     <Typography
                         variant="h6"
                         component="div"
-                        sx={{ flexGrow: 1, textAlign: "center" }}
+                        sx={{ flexGrow: 1, color: 'white', fontFamily: '"BBH Sans Hegarty", sans-serif'}}
                     >       
+                    SUNNY
                     </Typography>
                    <Box sx={{ display: 'flex' }}>
                             {navItems.map((item) => (

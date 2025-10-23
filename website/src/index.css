@@ -19,6 +19,16 @@ code {
   background: linear-gradient(0deg,rgba(0, 0, 0, 1) 0%, rgba(48, 47, 47, 1) 66%, rgba(66, 64, 64, 1) 100%);
 }
 
+.loader {
+  position: relative;
+  background-color: black;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
 
 #test {
   scroll-snap-type: y mandatory;

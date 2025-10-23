@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from '../Components/Header';
 import MainPageImage from '../Components/MainPageImage';
+import Lightroom from '../Components/Lightroom';
 import '../Styles/font.css';
 import '../index.css';
 import { motion } from "motion/react"
@@ -15,9 +16,9 @@ function Main() {
 
     return(
         <div id="main" style={{backgroundColor: 'black', overflow: 'hidden', position: 'relative'}}>
-            <div id="main-background-image" style={{zIndex: 1, position: 'absolute', overflow: 'hidden'}}>
+            <motion.div initial={{opacity : 0}} animate={{opacity : 1}} transition={{duration : 2}} id="main-background-image" style={{zIndex: 1, position: 'absolute', overflow: 'hidden'}}>
                 <MainPageImage/>
-            </div>
+            </motion.div>
             <div>
                 <div id="main-content" style={{zIndex: 2, position: 'relative', backgroundColor: 'black', height: '100vh', width: '100vw', opacity: 0.5}} />
                 <Header />
@@ -43,7 +44,9 @@ function Main() {
                     </Modal>
                 </motion.span>
             </div>
-            <div id="main-content-center" style={{zIndex: 2, position: 'relative', height: '100vh', width: '100vw', opacity: 0.8, bottom: '150px', marginBottom: '-150px'}} />
+            <div id="main-content-center" style={{zIndex: 2, position: 'relative', height: '100vh', width: '100vw', opacity: 0.8, bottom: '150px'}} >
+                <Lightroom />
+            </div>
         </div>
     )
 }

@@ -24,8 +24,8 @@ function InitializeApp() {
   }, []);
   return(
     loaded ? <AnimateMainPage initial={{ opacity : 0 }} animate={{ opacity : 1 }} transition={{duration : 2}} /> : 
-    <div class="loader">
-      <motion.div class="loader" initial={{ opacity : 1 }} animate={{ opacity : 0, x : -45, y: -45 }} transition={{duration : 1, delay: 5}} style={{position: 'relative'}}>
+    <div className="loader">
+      <motion.div className="loader" initial={{ opacity : 1 }} animate={{ opacity : 0, x : -45, y: -45 }} transition={{duration : 1, delay: 5}} style={{position: 'relative'}}>
         <motion.h1 initial={{ x : -1000}} animate={{ x : 0 }} transition={{duration : 2}} style={{...style, marginRight: '100px'}}> S </motion.h1>
         <motion.h1 initial={{ y : -1000}} animate={{ y : 0 }} transition={{duration : 4}} style={{...style, marginRight: '50px'}}> U </motion.h1>
         <motion.h1 initial={{ y : 1000}} animate={{ y : 0 }} transition={{duration : 2}} style={style}> N </motion.h1>

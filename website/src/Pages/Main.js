@@ -9,7 +9,7 @@ import CameraEnhanceIcon from '@mui/icons-material/CameraEnhance';
 import { IconButton, Modal, Card, CardMedia, CardContent, Typography } from '@mui/material';
 // Website inspiration from https://www.landing.love/sites/mikkisindhunata/
 
-function Main() {
+const Main = React.forwardRef((props, ref) => {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -49,6 +49,6 @@ function Main() {
             </div>
         </div>
     )
-}
+});
 
 export default Main;

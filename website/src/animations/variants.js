@@ -1,7 +1,6 @@
 export const loaderContainer = {
   initial: { opacity: 1 },
-  animate: { opacity: 1, x: -45, y: -45 },
-  transition: { duration: 1, delay: 5 },
+  animate: { opacity: 0, x: -45, y: -45 , transition: { duration: 1, delay: 5 }}
 };
 
 export const letters = {

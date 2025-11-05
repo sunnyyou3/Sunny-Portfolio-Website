@@ -41,7 +41,7 @@ function Image({ id, containerRef }) {
 			<motion.img
 				style={{ x, borderRadius: '15px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)' }}
 				className='projectIMG'
-				src={require(`./../Images/${id}.jpg`)}
+				src={require(`./../assets/Portfolio/Images/${id}.jpg`)}
 				alt="A London skyscraper"
 			/>
 		</div>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Box from '@mui/material/Box';
 import { Button } from "@mui/material";
-import Title from "../Images/Telework/Title.png";
+import Title from "../assets/TeleworkGame/Misc/Title.png";
 import Telework from "./Telework";
 import Typography from '@mui/material/Typography';
 

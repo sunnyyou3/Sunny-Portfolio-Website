@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import Title from "../Images/Telework/Title.png";
+import Title from "../assets/TeleworkGame/Misc/Title.png";
 import Typography from '@mui/material/Typography';
 
 function Home() {

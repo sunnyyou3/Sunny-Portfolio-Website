@@ -5,13 +5,13 @@ import Button from '@mui/material/Button';
 import { Typography } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
-import Home from "../Pages/Home";
-import About from "../Pages/About";
-import AboutContact from "../Pages/Contact";
-import Gallery from "../Pages/Gallery";
-import Projects from "../Pages/Projects";
+import Home from "../pages/Home";
+import About from "../pages/About";
+import AboutContact from "../pages/Contact";
+import Gallery from "../pages/Gallery";
+import Projects from "../pages/Projects";
 import { useState } from "react";
-import Title from '../Pages/Title';
+import Title from '../pages/Title';
 import { Container } from "@mui/system";
 import { motion } from "motion/react"
 
@@ -48,7 +48,7 @@ function Header() {
                                 </Button>
                             ))}
                             <IconButton>
-                                <Avatar alt="Sunny" src={require("./../Images/SelfIcon.jpg")} />
+                                <Avatar alt="Sunny" src={require("./../assets/Portfolio/Images/SelfIcon.jpg")} />
                             </IconButton>
                         </Box>
                 </Toolbar>

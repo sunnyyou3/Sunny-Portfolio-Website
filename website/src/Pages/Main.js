@@ -1,14 +1,15 @@
 import React from 'react';
-import Header from '../Components/Header';
-import MainPageImage from '../Components/MainPageImage';
-import Lightroom from '../Components/Lightroom';
-import '../Styles/font.css';
-import '../index.css';
+import Header from '../components/Header';
+import MainPageImage from '../components/MainPageImage';
+import Lightroom from '../components/Lightroom';
+import '../styles/font.css';
+import '../styles/index.css';
 import { motion } from "motion/react"
 import CameraEnhanceIcon from '@mui/icons-material/CameraEnhance';
 import { IconButton, Modal, Card, CardMedia, CardContent, Typography } from '@mui/material';
 // Website inspiration from https://www.landing.love/sites/mikkisindhunata/
 
+// Using forwardRef to prevent error when using motion's createMotion method
 const Main = React.forwardRef((props, ref) => {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -22,7 +23,7 @@ const Main = React.forwardRef((props, ref) => {
             <div>
                 <div id="main-content" style={{zIndex: 2, position: 'relative', backgroundColor: 'black', height: '100vh', width: '100vw', opacity: 0.5}} />
                 <Header />
-                <motion.span initial={{opacity: 0}} animate={{opacity: 1}} transition={{duration: 2, delay: 1}} style={{zIndex: 4, overflow: 'hidden', position: 'absolute', top:'200px', color:'white', backgroundColor: 'rgba(0, 0, 0, 0.4)', padding:'75px 45px 75px 45px' , minHeight:'55   vh', marginLeft:'170px', fontSize:'15px', maxWidth: '30vw', minWidth: '10vw'}}>
+                <motion.span initial={{opacity: 0}} animate={{opacity: 1}} transition={{duration: 2, delay: 1}} style={{zIndex: 4, overflow: 'hidden', position: 'absolute', top:'200px', color:'white', backgroundColor: 'rgba(0, 0, 0, 0.4)', padding:'75px 45px 75px 45px' , minHeight:'55vh', marginLeft:'170px', fontSize:'15px', maxWidth: '30vw', minWidth: '10vw'}}>
                     <motion.p initial={{opacity: 0}} animate={{opacity: 1}} transition={{duration: 2, delay: 2}}> In the heart of the bustling city, where the skyscrapers kissed the sky and the streets buzzed with life, there was a small, unassuming café tucked away in a quiet alley. The aroma of freshly brewed coffee wafted through the air, drawing in passersby with its irresistible allure. Inside, the walls were adorned with eclectic art, and the soft hum of conversation created a cozy atmosphere. Patrons sipped their drinks, lost in thought or deep in discussion, as the world outside rushed by. It was a haven of tranquility amidst the chaos, a place where time seemed to slow down, allowing its visitors a moment of respite from the frenetic pace of urban life. </motion.p>
                     <motion.div animate={{y: [0, -20, 0], x: [0, -10, 10, -10, 10, 0]}} transition={{duration: 1, delay: 3, repeat: Infinity, repeatDelay: 10}}>
                         <IconButton onClick={handleOpen} sx={{zIndex: 4, position: 'absolute', marginLeft: '90px', marginTop: '20px'}} children={
@@ -31,7 +32,7 @@ const Main = React.forwardRef((props, ref) => {
                     </motion.div>
                     <Modal open={open} onClose={handleClose} component={motion.div} initial={{scale: 0}} animate={{scale: 1}} transition={{duration: 1}}>
                         <Card sx={{ margin: '50px 0 200px 18%', maxWidth: 1245}}>
-                            <CardMedia sx={{ height: 640 }} image={require("./../Images/Nature_Image1.jpg")} title="very awesome"/>
+                            <CardMedia sx={{ height: 640 }} image={require("./../assets/Portfolio/Images/Nature_Image1.jpg")} title="very awesome"/>
                             <CardContent>
                                 <Typography gutterBottom variant="h5" component="div">
                                     The Old Oak Tree

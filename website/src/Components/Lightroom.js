@@ -2,7 +2,7 @@ import React from "react";
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
 import { IconButton } from '@mui/material';
 import { motion } from "motion/react";
-import roomImage from './../Images/Background/room.jpg'; // Import the image
+import roomImage from './../assets/Portfolio/Images/room.jpg'; // Import the image
 
 const IconButtonStyle = {
     color: 'white', 

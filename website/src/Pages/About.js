@@ -1,8 +1,7 @@
-import React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
-import { Grid2, Item, Stack } from '@mui/material';
+import { Grid2, Stack } from '@mui/material';
 
 function About() {
 	return (

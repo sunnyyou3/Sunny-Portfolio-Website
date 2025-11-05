@@ -35,7 +35,7 @@ function Image({ id, containerRef }) {
 			<div ref={ref} style={{ borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'}}>
 				<motion.img
 					className='projectIMG'
-					src={require(`./../Images/${id}.jpg`)}
+					src={require(`./../assets/Portfolio/Images/${id}.jpg`)}
 					alt={`Project ${id}`}
 				/>
 			</div>

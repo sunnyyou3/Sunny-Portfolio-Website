@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import Main from './Pages/Main'
-import './index.css';
+import Main from './pages/Main'
+import './styles/index.css';
 import reportWebVitals from './reportWebVitals';
 import { motion } from "motion/react"
 

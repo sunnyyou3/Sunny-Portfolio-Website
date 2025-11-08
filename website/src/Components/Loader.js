@@ -1,11 +1,5 @@
 import { motion } from "motion/react"
-import { loaderContainer, letters } from "./../animations/variants";
-
-const baseStyle = {
-  fontSize: "4rem",
-  fontWeight: 700,
-  display: "inline-block",
-};
+import { loaderContainer, letters } from "../animations/variants";
 
 const style = {
   position: 'absolute',

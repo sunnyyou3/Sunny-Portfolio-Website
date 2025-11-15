@@ -1,14 +1,20 @@
 import React from 'react';
 import Header from '../components/Header';
 import MainPageImage from '../components/MainPageImage';
-import Lightroom from '../components/Lightroom';
 import '../styles/font.css';
 import '../styles/index.css';
 import { motion } from "motion/react"
 import CameraEnhanceIcon from '@mui/icons-material/CameraEnhance';
-import { IconButton, Modal, Card, CardMedia, CardContent, Typography } from '@mui/material';
+import { IconButton, Modal, Card, CardMedia, CardContent, Typography} from '@mui/material';
 import { mainText, modalText } from '../assets/Text/text';
 import { fadeIn } from '../animations/variants';
+import ProjectSection from '../components/ProjectSection';
+import VR_MainMenu from './../assets/Portfolio/Gif/VR_Menu.gif';
+import VR_Setting from './../assets/Portfolio/Images/VR_Setting.png';
+import VR_Tutorial from './../assets/Portfolio/Images/VR_Tutorial.png';
+import VR_InGame from './../assets/Portfolio/Images/VR_InGame.jpg';
+
+
 // Website inspiration from https://www.landing.love/sites/mikkisindhunata/
 
 // Using forwardRef to prevent error when using motion's createMotion method
@@ -85,9 +91,10 @@ const Main = React.forwardRef((props, ref) => {
                     </Modal>
                 </motion.span>
             </div>
-            <div id="main-content-center" >
-                <Lightroom />
-            </div>
+            <ProjectSection images={[VR_MainMenu, VR_Setting, VR_Tutorial, VR_InGame]} title="VR App for Students with EBD" body="Test" diagonalSide = "left"/>
+            <ProjectSection images={{}} title="" body="" diagonalSide = "right"/>
+            <ProjectSection images={{}} title="" body="" diagonalSide = "left"/>
+            <ProjectSection images={{}} title="" body="" diagonalSide = "right"/>
         </div>
     )
 });

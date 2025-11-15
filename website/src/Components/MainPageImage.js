@@ -5,11 +5,11 @@ function MainPageImage() {
     return(
         <Box
             id="startImage"
-            style={{height: '970px', width: '100vw'}}
+            style={{height: '100vh', width: '100vw'}}
             elevation={0}
             component="img"
             alt="Kyoto"
-            src={require("./../assets/Portfolio/Images/Nature_Image1.jpg")
+            src={require("./../assets/Portfolio/Images/SunnyFuji.jpg")
 
         }/>
     )

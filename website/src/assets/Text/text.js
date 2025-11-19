@@ -16,3 +16,20 @@ export const modalText = "In the heart of the ancient forest, where the sunlight
 "and the air was thick with the scent of earth and life. It was here that the villagers " +
 "would come to seek solace, to listen to the tales carried by the breeze, and to find a " +
 "moment of peace in the embrace of nature's timeless beauty.";
+
+export const BuzzSubText = "Buzz is a social media platform that allows users to create, share, " +
+"and interact with content in a dynamic and engaging way. With features such as posting text and images, " +
+"liking, and commenting, Buzz fosters a vibrant community where users can connect and express themselves. " +
+"The platform utilizes Google authentication for secure and easy access, ensuring a smooth user experience." +
+" Whether you're looking to share your thoughts, discover new ideas, or engage with others, " +
+"Buzz provides the perfect space to do so.";
+
+export const BuzzMainText = "";
+
+export const VRGameSubText = "Project aimed at creating a virtual reality experience that " +
+"immerses players in a cartoonish world where players witness short stories and learn how the characters " +
+"overcome various emotional challenges. The game is designed to educate players on emotional " +
+"issues in an engaging and interactive way, using humor and relatable scenarios to foster empathy " +
+"and understanding.";
+
+export const VRGameMainText = ""

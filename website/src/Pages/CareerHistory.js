@@ -9,22 +9,34 @@ import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
 
+const projectDate = [
+	"",
+	"Jan 2022",
+	"Aug 2022",
+	"May 2023 - Aug 2023",
+	"Jan 2024",
+	"Sept 2024",
+	"March 2025",
+];
+
 const projectTitle = [
 	"",
-	"Time Date 1",
-	"Time Date 2",
-	"Time Date 3",
-	"Time Date 4",
-	"Time Date 5"
+	"Technology Consultant at Lehigh University",
+	"Software Engineer Teaching Assistant at Lehigh University",
+	"Software Engineer Intern at FreeWheel",
+	"Software Engineer Head Teaching Assistant",
+	"Software Developer (Application) at ID Holdings",
+	"Software Developer (Databases) at ID Holdings",
 ];
 
 const projectText = [
 	"",
+	"Software Engineer Intern at FreeWheel", 
 	"hello from the other side hello from the other side hello from the other side hello from the other side hello from the other side", 
 	"hello from the other side hello from the other side hello from the other side hello from the other side hello from the other side", 
 	"hello from the other side hello from the other side hello from the other side hello from the other side hello from the other side", 
-	"hello from the other side hello from the other side hello from the other side hello from the other side hello from the other side", 
-	"hello from the other side hello from the other side hello from the other side hello from the other side hello from the other side"
+	"hello from the other side hello from the other side hello from the other side hello from the other side hello from the other side",
+	""
 ];
 
 function Image({ id, containerRef }) {
@@ -35,15 +47,18 @@ function Image({ id, containerRef }) {
 			<div ref={ref} style={{ borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'}}>
 				<motion.img
 					className='projectIMG'
-					src={require(`./../assets/Portfolio/Images/${id}.jpg`)}
+					src={{}}
 					alt={`Project ${id}`}
 				/>
 			</div>
 			<div style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)', padding: '20px', borderRadius: '10px', marginTop: '-50px', position: 'relative', zIndex: 1 }}>
-				<motion.h2 style={{ color: '#ffcc00', fontSize: '1.5rem', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>
-					{`#00${id}  ${projectTitle[id]}  `}
+				<motion.h1 style={{ color: '#ffcc00', fontSize: '1.25rem', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>
+					{`${projectDate[id]}  `}
+				</motion.h1>
+				<motion.h2 style={{ color: '#ffcc00', fontSize: '1rem', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', marginTop: '-15px' }}>
+					{`${projectTitle[id]}  `}
 				</motion.h2>
-				<motion.h3 style={{ maxWidth: "200px", color: 'white', fontSize: '1rem', textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)' }}>
+				<motion.h3 style={{ color: 'white', fontSize: '0.75rem', textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)' }}>
 					{`${projectText[id]}`}
 				</motion.h3>
 			</div>
@@ -51,7 +66,7 @@ function Image({ id, containerRef }) {
 	);
 }
 
-function Projects() {
+function CareerHistory() {
 	const testRef = useRef(null);
 	const { scrollYProgress } = useScroll({ container: testRef });
 	const scaleX = useSpring(scrollYProgress, {
@@ -64,9 +79,9 @@ function Projects() {
     <Box style={{
 			background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
 			position: 'relative',
-			padding: '20px',
+			padding: '60px',
 			height: '100vh',
-			overflow: 'hidden'
+			overflow: 'hidden',
 		}}>
       	<Box sx={{
 			display: 'flex',
@@ -89,7 +104,7 @@ function Projects() {
 			sx={{ '&::-webkit-scrollbar': { display: 'none' } }}
 		>
 			<Timeline position="alternate">
-			{[1, 2, 3, 4, 5].map((id) => (
+			{[1, 2, 3, 4, 5, 6].map((id) => (
 				<TimelineItem key={id}>
 				<TimelineSeparator>
 					<TimelineDot color="primary" />
@@ -109,4 +124,4 @@ function Projects() {
   );
 }
 
-export default Projects;
+export default CareerHistory;

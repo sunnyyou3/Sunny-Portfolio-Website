@@ -9,13 +9,13 @@ import Home from "../pages/Home";
 import About from "../pages/About";
 import AboutContact from "../pages/Contact";
 import Gallery from "../pages/Gallery";
-import Projects from "../pages/Projects";
+import CareerHistory from "../pages/CareerHistory";
 import { useState } from "react";
 import Title from '../pages/Title';
 import { Container } from "@mui/system";
 import { motion } from "motion/react"
 
-const navItems = ['Home', 'Projects', 'Gallery', 'About', 'Contact', 'Game'];
+const navItems = ['Home', 'Career History', 'Gallery', 'About', 'Contact', 'Game'];
 
 function Header() {
     const [page, setPage] = useState('');
@@ -55,7 +55,7 @@ function Header() {
             </AppBar>
             {(() => {
                 if (page === 'Home') return <Home />
-                else if (page === 'Projects') return <Projects />
+                else if (page === 'Career History') return <CareerHistory />
                 else if (page === 'Gallery') return <Gallery />
                 else if (page === 'About') return <About />
                 else if (page === 'Contact') return <AboutContact />

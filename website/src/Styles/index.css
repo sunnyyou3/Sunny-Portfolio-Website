@@ -37,15 +37,15 @@ code {
 
 #main-span {
   position: absolute;
-  top: 150px;
+  top: 100px;
   left: 100px;
   z-index: 4;
   overflow: hidden;
   color: white;
   background-color: rgba(0, 0, 0, 0.4);
-  padding: 75px 45px;
+  padding: 20px 45px;
   width: 400px;
-  height: 500px; 
+  height: 80vh; 
   font-size: 15px;
 }
 

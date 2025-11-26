@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
+import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
@@ -40,87 +41,178 @@ const projectText = [
 	"I was moved to a new team where my skills of being a developer and being fluent in English is better utilized. I obtained my JLPT N2 certification with the help of team members"
 ];
 
-function Image({ id, containerRef }) {
-	const ref = useRef(null);
+const COLORS = {
+  yellow: "#ffcc00",
+  textShadowLg: "2px 2px 4px rgba(0,0,0,0.5)",
+  textShadowSm: "1px 1px 3px rgba(0,0,0,0.5)",
+};
 
-	return (
-		<section style={{ position: 'relative', marginBottom: '50px', overflow: 'hidden', scrollSnapAlign: 'start' }}>
-			<div ref={ref} style={{ borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'}}>
-				<motion.img
-					className='projectIMG'
-					src={{testImage}}
-					alt={`Project ${id}`}
-				/>
-			</div>
-			<div style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)', padding: '20px', borderRadius: '10px', marginTop: '-50px', position: 'relative', zIndex: 1 }}>
-				<motion.h1 style={{ color: '#ffcc00', fontSize: '1.25rem', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>
-					{`${projectDate[id]}  `}
-				</motion.h1>
-				<motion.h2 style={{ color: '#ffcc00', fontSize: '1rem', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', marginTop: '-15px' }}>
-					{`${projectTitle[id]}  `}
-				</motion.h2>
-				<motion.h3 style={{ color: 'white', fontSize: '0.75rem', textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)' }}>
-					{`${projectText[id]}`}
-				</motion.h3>
-			</div>
-		</section>
-	);
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+};
+
+
+function CareerText({ id }) {
+  return (
+    <Box
+      sx={{
+        position: "relative",
+        mb: 6,
+        overflow: "hidden",
+        scrollSnapAlign: "start",
+      }}
+    >
+      <Box
+        component={motion.div}
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        sx={{
+          backgroundColor: "rgba(0,0,0,0.7)",
+          p: 2.5,
+          borderRadius: 2,
+        }}
+      >
+        <Typography
+          variant="h6"
+          sx={{
+            color: COLORS.yellow,
+            textShadow: COLORS.textShadowLg,
+            fontSize: "1.25rem",
+            mb: -1,
+          }}
+        >
+          {projectDate[id] ?? "Unknown Date"}
+        </Typography>
+
+        <Typography
+          variant="subtitle1"
+          sx={{
+            color: COLORS.yellow,
+            textShadow: COLORS.textShadowLg,
+            fontSize: "1rem",
+            mb: 1,
+          }}
+        >
+          {projectTitle[id] ?? "Untitled Project"}
+        </Typography>
+
+        <Typography
+          variant="body2"
+          sx={{
+            color: "white",
+            textShadow: COLORS.textShadowSm,
+            fontSize: "0.9rem",
+          }}
+        >
+          {projectText[id] ?? "No description available."}
+        </Typography>
+      </Box>
+    </Box>
+  );
 }
 
 function CareerHistory() {
-	const testRef = useRef(null);
-	const { scrollYProgress } = useScroll({ container: testRef });
-	const scaleX = useSpring(scrollYProgress, {
-		stiffness: 100,
-		damping: 30,
-		restDelta: 0.001,
-	});
+  const testRef = useRef(null);
+  const { scrollYProgress } = useScroll({ container: testRef });
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
 
   return (
-    <Box style={{
-			background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
-			position: 'relative',
-			padding: '60px',
-			height: '100vh',
-			overflow: 'hidden',
-		}}>
-      	<Box sx={{
-			display: 'flex',
-			justifyContent: 'center',
-			position: 'sticky',
-			background: 'linear-gradient(135deg, #2a5298 0%, #1e3c72 100%)',
-			boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
-			padding: '15px',
-      	}}>
-        <Typography variant="h5" sx={{ color: 'white', fontWeight: 'bold', letterSpacing: '1px' }}>Career Timeline</Typography>
+    <Box
+      sx={{
+        background: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)",
+        height: "100vh",
+        overflow: "hidden",
+        position: "relative",
+        padding: '50px',
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
+          p: 2,
+          background: "linear-gradient(135deg, #2a5298 0%, #1e3c72 100%)",
+          boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
+        }}
+      >
+        <Typography
+          variant="h5"
+          sx={{ color: "white", fontWeight: "bold", letterSpacing: 1 }}
+        >
+          Career Timeline
+        </Typography>
       </Box>
-		<Box
-				id="test"
-				ref={testRef}
-				style={{
-				overflowY: 'scroll',
-				scrollSnapType: 'y mandatory',
-				height: 'calc(100vh - 80px)',
-			}}
-			sx={{ '&::-webkit-scrollbar': { display: 'none' } }}
-		>
-			<Timeline position="alternate">
-			{[1, 2, 3, 4, 5, 6].map((id) => (
-				<TimelineItem key={id}>
-				<TimelineSeparator>
-					<TimelineDot color="primary" />
-					<TimelineConnector />
-				</TimelineSeparator>
-				<TimelineContent>
-					<Image id={id} containerRef={testRef} />
-				</TimelineContent>
-				</TimelineItem>
-			))}
-			</Timeline>
-		</Box>
 
-      {/* Progress Bar */}
-      <motion.div className="progress" style={{ scaleX, position: 'fixed', bottom: '0' }} />
+      <Box
+        id="test"
+        ref={testRef}
+        sx={{
+          overflowY: "scroll",
+          scrollSnapType: "y mandatory",
+          height: "calc(100vh - 80px)",
+          "&::-webkit-scrollbar": { display: "none" },
+          pr: 1,
+        }}
+      >
+        <Timeline position="alternate">
+          {[1, 2, 3, 4, 5, 6].map((id, i) => (
+            <TimelineItem key={id}>
+              
+              <TimelineOppositeContent
+                sx={{ display: "flex", alignItems: "center" }}
+              >
+                <img
+                  src={testImage}
+                  alt="timeline"
+                  style={{
+                    width: "120px",
+                    borderRadius: "8px",
+                    boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
+                  }}
+                />
+              </TimelineOppositeContent>
+
+              <TimelineSeparator>
+                <TimelineDot color="primary" />
+                {i !== 5 && <TimelineConnector />}
+              </TimelineSeparator>
+
+              <TimelineContent>
+                <CareerText id={id} />
+              </TimelineContent>
+
+            </TimelineItem>
+          ))}
+        </Timeline>
+      </Box>
+
+      <motion.div
+        style={{
+          scaleX,
+          transformOrigin: "0 0",
+          height: "4px",
+          background: COLORS.yellow,
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 20,
+        }}
+      />
     </Box>
   );
 }

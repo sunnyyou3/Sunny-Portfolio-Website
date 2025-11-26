@@ -87,7 +87,7 @@ function Home() {
                 </motion.span>
             </div>
             <ProjectSection images={[VR_MainMenu, VR_Setting, VR_Tutorial, VR_InGame]} title="VR App for Students with EBD" body={VRGameSubText} diagonalSide = "left"/>
-            <ProjectSection images={{Buzz_LoginScreen, Buzz_HomeScreen, Buzz_AdminConsole}} title="" body={BuzzSubText} diagonalSide = "right"/>
+            <ProjectSection images={[Buzz_LoginScreen, Buzz_HomeScreen, Buzz_AdminConsole]} title="Buzz" body={BuzzSubText} diagonalSide = "right"/>
             <ProjectSection images={{}} title="" body="" diagonalSide = "left"/>
             <ProjectSection images={{}} title="" body="" diagonalSide = "right"/>
         </div>

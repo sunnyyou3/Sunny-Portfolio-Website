@@ -119,8 +119,8 @@ function CareerText({ id }) {
 }
 
 function CareerHistory() {
-  const testRef = useRef(null);
-  const { scrollYProgress } = useScroll({ container: testRef });
+  const Ref = useRef(null);
+  const { scrollYProgress } = useScroll({ container: Ref });
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
@@ -158,8 +158,8 @@ function CareerHistory() {
       </Box>
 
       <Box
-        id="test"
-        ref={testRef}
+        id="timeline-container"
+        ref={Ref}
         sx={{
           overflowY: "scroll",
           scrollSnapType: "y mandatory",

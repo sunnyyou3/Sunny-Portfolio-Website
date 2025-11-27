@@ -102,7 +102,7 @@ export default function About() {
           SUNNY YOU
         </Typography>
         <Typography sx={{ opacity: 0.8, letterSpacing: 2, mt: 1 }}>
-          Fullstack Engineer • Database Engineer
+          Fullstack Engineer • Database Engineer • Problem Solver
         </Typography>
       </motion.div>
 

@@ -45,7 +45,7 @@ function Image({ id, containerRef }) {
 		<div style={{ background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)', padding: '20px', borderRadius: '15px', flex: 1 , minHeight: '25vmin', maxWidth: '25vmin'}} ref={ref}>
 			<motion.img
 				style={{ x, borderRadius: '15px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)' }}
-				className='projectIMG'
+				className='gallery-image-tag'
 				src={require(`./../assets/Portfolio/Images/${id}.jpg`)}
 				alt="A London skyscraper"
 			/>
@@ -76,9 +76,9 @@ function Gallery() {
 	const handleClose = () => setOpen(false);
 
 	return (
-		<div id="main">
+		<div id="main-gallery">
 			<motion.div
-				id="main-background-image"
+				id="gallery-background-image"
 				variants={fadeIn}
 				initial="initial"
 				animate="animate"
@@ -87,9 +87,9 @@ function Gallery() {
 				<MainPageImage/>
 			</motion.div>
 			<div>
-				<div id="main-content" />
+				<div id="gallery-content" />
 				<motion.span 
-					id="main-span"
+					id="gallery-modal-span"
 					variants={fadeIn}
 					initial="initial"
 					animate="animate"
@@ -152,7 +152,7 @@ function Gallery() {
 						<Image id={image} key={image} containerRef={testRef} />
 					))}
 
-					<motion.div className="progress" style={{ scaleX, position: 'fixed', bottom: '0' }} />
+					<motion.div className="progressBar" style={{ scaleX, position: 'fixed', bottom: '0' }} />
 				</Box>
 		</div>
 	);

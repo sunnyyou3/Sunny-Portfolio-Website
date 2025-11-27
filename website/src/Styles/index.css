@@ -9,24 +9,24 @@ body {
   --accent: var(--white);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+#AppBar{
+  scroll-snap-align: start;
+  padding-top: -500px;
 }
 
-#main {
+#main-gallery {
   background-color: #000000;
   overflow: hidden;
   position: relative;
 }
 
-#main-background-image {
+#gallery-background-image {
   z-index: 1; 
   position: absolute;
   overflow: hidden;
 }
 
-#main-content {
+#gallery-content {
   z-index: 2;
   position: relative;
   background-color: #000000;
@@ -35,7 +35,7 @@ code {
   opacity: 0.5;
 }
 
-#main-span {
+#gallery-modal-span {
   position: absolute;
   top: 100px;
   left: 100px;
@@ -47,6 +47,64 @@ code {
   width: 400px;
   height: 80vh; 
   font-size: 15px;
+}
+
+.gallery-image-tag {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+}
+
+section {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  scroll-snap-align: center;
+  perspective: 500px;
+}
+
+section > div {
+  position: relative;
+  max-height: 90vh;
+  margin: 20px;
+  background: var(--white);
+  overflow: hidden;
+}
+
+.loader {
+  position: relative;
+  background-color: #000000;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+#timeline-container {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  overflow-y: scroll;
+  height: 100vh;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.progressBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: var(--accent);
+  bottom: 100px;
+  margin: 0 41px 0 24px;
 }
 
 #Lightbulb {
@@ -71,74 +129,4 @@ code {
   z-index: 1;
   filter: blur(20px);
   margin-left: 100px;
-}
-
-.loader {
-  position: relative;
-  background-color: #000000;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
-
-#test {
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
-  overflow-y: scroll;
-  height: 100vh;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-#home {
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
-  overflow-y: hidden;
-  height: 100vh;
-}
-
-#AppBar{
-  scroll-snap-align: start;
-  padding-top: -500px;
-}
-
-section {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  scroll-snap-align: center;
-  perspective: 500px;
-}
-
-section > div {
-  position: relative;
-  max-height: 90vh;
-  margin: 20px;
-  background: var(--white);
-  overflow: hidden;
-}
-
-.projectIMG {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.progress {
-  position: fixed;
-  left: 0;
-  right: 0;
-  height: 5px;
-  background: var(--accent);
-  bottom: 100px;
-  margin: 0 41px 0 24px;
 }

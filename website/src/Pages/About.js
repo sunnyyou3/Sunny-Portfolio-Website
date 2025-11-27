@@ -75,7 +75,7 @@ export default function About() {
         style={{ textAlign: "center", position: "relative", zIndex: 2, justifyContent: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
       >
         <Avatar
-          src=""
+          src={require("./../assets/Portfolio/Images/sunny.png")}
           sx={{
             width: 150,
             height: 150,

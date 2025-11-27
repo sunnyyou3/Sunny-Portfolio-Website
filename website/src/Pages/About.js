@@ -16,7 +16,7 @@ const fadeIn = {
   }),
 };
 
-export default function CyberpunkGlowAbout() {
+export default function About() {
   const skills = [
     "React",
 	"Java",
@@ -229,13 +229,13 @@ export default function CyberpunkGlowAbout() {
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
           {[
             {
-              title: "",
-              year: "",
+              title: "Gmail Scrapper for Finance Tracking",
+              year: "tbh",
               desc: "",
             },
             {
-              title: "",
-              year: "",
+              title: "AI Response to messages on Watch OS",
+              year: "tbh",
               desc: "",
             },
           ].map((item, i) => (

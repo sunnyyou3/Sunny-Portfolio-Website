@@ -229,12 +229,12 @@ export default function About() {
           {[
             {
               title: "Gmail Scrapper for Finance Tracking",
-              year: "tbh",
+              year: "I want to complete this by Feb/March",
               desc: "Keeping track of spendings in Japan is a pain because the banking apps don't always show transaction details like merchant name and sometimes don't update fast enough to be useful. So my goal is to create a Gmail scrapper that extracts transaction data from email receipts and compiles them into a database for easy tracking and analysis.",
             },
             {
               title: "AI Response to messages on Watch OS",
-              year: "tbh",
+              year: "I want to complete this by June",
               desc: "The AI suggested replies on the Samsung Watch is good but it's not personalized and often misses the context of the conversation. I want to build an AI system that can analyze incoming messages and generate context-aware responses that feel more natural and tailored to my communication style.",
             },
           ].map((item, i) => (
@@ -243,7 +243,7 @@ export default function About() {
               component={motion.div}
               whileHover={{ scale: 1.03 }}
               sx={{
-                p: 3,
+                padding: 3,
                 borderRadius: 2,
                 background: "rgba(255,255,255,0.07)",
                 border: "1px solid rgba(255,255,255,0.3)",

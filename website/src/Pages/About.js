@@ -19,12 +19,12 @@ const fadeIn = {
 export default function About() {
   const skills = [
     "React",
-	"Java",
-	"Javascript",
-	"Databases",
-	"SQL",
-	"Full Stack",
-	"Frontend/Backend Design"
+    "Java",
+    "Javascript",
+    "Databases",
+    "SQL",
+    "Full Stack",
+    "Frontend/Backend Design"
   ];
 
   return (
@@ -223,7 +223,7 @@ export default function About() {
             WebkitTextFillColor: "transparent",
           }}
         >
-          Experience
+          Things I want to Build
         </Typography>
 
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
@@ -231,12 +231,12 @@ export default function About() {
             {
               title: "Gmail Scrapper for Finance Tracking",
               year: "tbh",
-              desc: "",
+              desc: "Keeping track of spendings in Japan is a pain because the banking apps don't always show transaction details like merchant name and sometimes don't update fast enough to be useful. So my goal is to create a Gmail scrapper that extracts transaction data from email receipts and compiles them into a database for easy tracking and analysis.",
             },
             {
               title: "AI Response to messages on Watch OS",
               year: "tbh",
-              desc: "",
+              desc: "The AI suggested replies on the Samsung Watch is good but it's not personalized and often misses the context of the conversation. I want to build an AI system that can analyze incoming messages and generate context-aware responses that feel more natural and tailored to my communication style.",
             },
           ].map((item, i) => (
             <Box

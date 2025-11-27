@@ -72,14 +72,13 @@ export default function About() {
         initial="hidden"
         animate="visible"
         custom={0}
-        style={{ textAlign: "center", position: "relative", zIndex: 2 }}
+        style={{ textAlign: "center", position: "relative", zIndex: 2, justifyContent: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
       >
         <Avatar
           src=""
           sx={{
             width: 150,
             height: 150,
-			marginLeft: '110px',
             border: "3px solid #ff00ff",
             boxShadow: `
               0 0 20px #ff00ff,

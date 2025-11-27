@@ -6,6 +6,11 @@ import {
   useTransform
 } from "framer-motion";
 import Box from '@mui/material/Box';
+import CameraEnhanceIcon from '@mui/icons-material/CameraEnhance';
+import { IconButton, Modal, Card, CardMedia, CardContent, Typography} from '@mui/material';
+import { mainText, modalText } from '../assets/Text/text';
+import { fadeIn } from '../animations/variants';
+import MainPageImage from '../components/MainPageImage';
 
 const projectTitle = [
 	"",
@@ -66,19 +71,90 @@ function Gallery() {
 		restDelta: 0.001,
 	});
 
-	return (
-		<Box
-			id="test"
-			ref={testRef}
-			style={{ backgroundColor: '#121212', position: 'relative', padding: '20px', flex: 1 }}
-			sx={{ '&::-webkit-scrollbar': { display: 'none' } }}
-		>
-			{[1, 2, 3, 4, 5].map((image) => (
-				<Image id={image} key={image} containerRef={testRef} />
-			))}
+	const [open, setOpen] = React.useState(false);
+	const handleOpen = () => setOpen(true);
+	const handleClose = () => setOpen(false);
 
-			<motion.div className="progress" style={{ scaleX, position: 'fixed', bottom: '0' }} />
-		</Box>
+	return (
+		<div id="main">
+			<motion.div
+				id="main-background-image"
+				variants={fadeIn}
+				initial="initial"
+				animate="animate"
+				transition={{ duration: 2 }}
+			>
+				<MainPageImage/>
+			</motion.div>
+			<div>
+				<div id="main-content" />
+				<motion.span 
+					id="main-span"
+					variants={fadeIn}
+					initial="initial"
+					animate="animate"
+					transition={{duration: 2, delay: 1}}
+				>
+					<motion.p 
+						variants={fadeIn}
+						initial="initial"
+						animate="animate"
+						transition={{duration: 2, delay: 2}}
+					> 
+						{mainText} 
+					</motion.p>
+
+					<motion.div 
+						animate={{y: [0, -20, 0], 
+						x: [0, -10, 10, -10, 10, 0]}} 
+						transition={{duration: 1, delay: 3, repeat: Infinity, repeatDelay: 10}}
+					>
+						<IconButton 
+							onClick={handleOpen} 
+							sx={{zIndex: 4, position: 'absolute', marginLeft: '90px', marginTop: '20px'}} 
+							children={
+								<CameraEnhanceIcon sx={{color: 'white', minWidth: '200px', minHeight: '200px'}}/>
+							}
+						/>
+					</motion.div>
+					<Modal 
+						open={open} 
+						onClose={handleClose} 
+						component={motion.div} 
+						initial={{scale: 0}} 
+						animate={{scale: 1}} 
+						transition={{duration: 1}}
+					>
+						<Card sx={{ margin: '50px 0 200px 18%', maxWidth: 1245}}>
+							<CardMedia 
+								sx={{ height: 640 }} 
+								image={require("./../assets/Portfolio/Images/Nature_Image1.jpg")} 
+								title="very awesome"/>
+							<CardContent>
+								<Typography gutterBottom variant="h5" component="div">
+									The Old Oak Tree
+								</Typography>
+								<Typography variant="body2" sx={{ color: 'text.secondary' }}> 
+									{modalText}
+								</Typography>
+							</CardContent>
+						</Card>
+					</Modal>
+				</motion.span>
+			</div>
+				<Box
+					id="test"
+					ref={testRef}
+					style={{ backgroundColor: '#121212', position: 'relative', padding: '20px', flex: 1 }}
+					sx={{ '&::-webkit-scrollbar': { display: 'none' } }}
+				>
+					{[1, 2, 3, 4, 5].map((image) => (
+						<Image id={image} key={image} containerRef={testRef} />
+					))}
+
+					<motion.div className="progress" style={{ scaleX, position: 'fixed', bottom: '0' }} />
+				</Box>
+		</div>
 	);
 }
 

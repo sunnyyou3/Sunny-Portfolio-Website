@@ -1,8 +1,8 @@
 {
-  "name": "website",
+  "name": "Sunny-Portfolio-Website",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://sunnyyou3.github.io/Website",
+  "homepage": "https://sunnyyou3.github.io/Sunny-Portfolio-Website/",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",

@@ -158,7 +158,7 @@ function CareerHistory() {
       </Box>
 
       <Box
-        id="timeline-container"
+        id="parallax-container"
         ref={Ref}
         sx={{
           overflowY: "scroll",

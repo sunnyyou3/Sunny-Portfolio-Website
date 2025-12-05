@@ -143,7 +143,7 @@ function Gallery() {
 				</motion.span>
 			</div>
 				<Box
-					id="test"
+					id="parallax-container"
 					ref={testRef}
 					style={{ backgroundColor: '#121212', position: 'relative', padding: '20px', flex: 1 }}
 					sx={{ '&::-webkit-scrollbar': { display: 'none' } }}

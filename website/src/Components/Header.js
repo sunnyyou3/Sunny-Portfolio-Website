@@ -7,7 +7,6 @@ import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
 import Home from "../pages/Home";
 import About from "../pages/About";
-import AboutContact from "../pages/Contact";
 import Gallery from "../pages/Gallery";
 import CareerHistory from "../pages/CareerHistory";
 import { useState } from "react";
@@ -15,7 +14,7 @@ import Title from '../pages/Title';
 import { Container } from "@mui/system";
 import { motion } from "motion/react"
 
-const navItems = ['Projects', 'Career History', 'Gallery', 'About', 'Contact', 'Game'];
+const navItems = ['Projects', 'Career History', 'Gallery', 'About', 'Game'];
 
 function Header() {
     const [page, setPage] = useState('');
@@ -58,7 +57,6 @@ function Header() {
                 else if (page === 'Career History') return <CareerHistory />
                 else if (page === 'Gallery') return <Gallery />
                 else if (page === 'About') return <About />
-                else if (page === 'Contact') return <AboutContact />
                 else if (page === 'Game') return <Container> <Title /> </Container>
                 else return <About />
             })()}

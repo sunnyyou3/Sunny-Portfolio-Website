@@ -107,6 +107,19 @@ section > div {
   margin: 0 41px 0 24px;
 }
 
+.link-chip {
+  color: white !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(12px);
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+  
+  box-shadow: 
+    0 10px 5px #ff00ff88;
+}
+
+
 #Lightbulb {
   position: absolute;
   left: 10%;

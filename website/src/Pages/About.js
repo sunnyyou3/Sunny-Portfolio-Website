@@ -16,6 +16,26 @@ const fadeIn = {
   }),
 };
 
+function LinkChip({ label, href }) {
+  return (
+    <Chip 
+      className="link-chip"
+      label={label}
+      component={motion.a} 
+      href={href}
+      clickable 
+      whileHover={{ scale: 1.2 }}
+      sx={{
+        "& .MuiChip-label": {
+            fontFamily: "monospace",
+            fontSize: "0.9rem",
+            fontWeight: 600,
+          }
+      }}
+    />
+  );
+}
+
 export default function About() {
   const skills = [
     "React",
@@ -23,8 +43,7 @@ export default function About() {
     "Javascript",
     "Databases",
     "SQL",
-    "Full Stack",
-    "Frontend/Backend Design"
+    "Full Stack"
   ];
 
   return (
@@ -146,6 +165,32 @@ export default function About() {
 		  problems and providing innovative solutions. With a never ending thirst for knowledge,
 		  I aim to build on my skills and provide my services to a wide range of organizations.
         </Typography>
+
+        <Divider
+          sx={{
+            borderColor: "rgba(255,255,255,0.2)",
+            my: 3,
+            boxShadow: "0 0 10px #ff00ff",
+          }}
+        />
+
+        <Typography
+          variant="h6"
+          fontWeight="bold"
+          sx={{
+            mb: 1,
+            background: "linear-gradient(90deg, #ff00ff, #00eaff)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
+          Links
+        </Typography>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5, mt: 2 }}>
+            <LinkChip label="Github" href="https://github.com/sunnyyou3" />
+            <LinkChip label="Linkedin" href="https://linkedin.com/in/sunnyyou3" />
+            <LinkChip label="Email" href="mailto:yousunny3@gmail.com" />
+          </Box>
 
         <Divider
           sx={{

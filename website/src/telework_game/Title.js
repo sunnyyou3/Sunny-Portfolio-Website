@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Box from '@mui/material/Box';
 import { Button } from "@mui/material";
-import Title from "../assets/TeleworkGame/Misc/Title.png";
+import Title from "./assets/Misc/Title.png";
 import Telework from "./Telework";
 import Typography from '@mui/material/Typography';
 
@@ -54,7 +54,7 @@ function Home() {
                         日本語
                     </Button>
                 </div>
-                <Box sx={{ mt: 5, bgcolor: 'grey.300', p: 2, borderRadius: 1, width: '100%', textAlign: 'center' }}>
+                <Box sx={{ mt: 1, bgcolor: 'grey.300', p: 2, borderRadius: 1, width: '100%', textAlign: 'center' }}>
                     <Typography variant="body2" color="textSecondary">
                         © 2026 Sunny made this for funs.
                     </Typography>

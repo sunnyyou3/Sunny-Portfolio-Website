@@ -15,3 +15,8 @@ export const fadeIn = {
   initial: { opacity: 0 },
   animate: { opacity: 1 }
 }
+
+export const fadeOut = {
+  initial: { opacity: 1 },
+  animate: { opacity: 0 },
+}

@@ -12,8 +12,6 @@ export const Loader = () => (
     <motion.div
       className="loader"
       variants={loaderContainer}
-      initial="initial"
-      animate="animate"
       style={{ position: "relative" }}
     >
       <motion.h1 {...letters.S} style={{ ...style, marginRight: "100px" }}>S</motion.h1>

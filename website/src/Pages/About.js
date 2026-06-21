@@ -1,6 +1,6 @@
 function About() {
     return(
-        <div>
+        <div style={{backgroundColor: 'black'}}>
             <p>hi</p>
         </div>
     )

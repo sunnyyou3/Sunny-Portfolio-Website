@@ -1,8 +1,9 @@
 {
   "files": {
-    "main.css": "/Sunny-Portfolio-Website/static/css/main.b8874ece.css",
-    "main.js": "/Sunny-Portfolio-Website/static/js/main.cd1b1981.js",
+    "main.css": "/Sunny-Portfolio-Website/static/css/main.7ba63cb7.css",
+    "main.js": "/Sunny-Portfolio-Website/static/js/main.d47f925e.js",
     "static/js/453.fc8bd9a6.chunk.js": "/Sunny-Portfolio-Website/static/js/453.fc8bd9a6.chunk.js",
+    "static/media/intro.mp4": "/Sunny-Portfolio-Website/static/media/intro.94b12b5e42344e816abc.mp4",
     "static/media/SunnyFuji.jpg": "/Sunny-Portfolio-Website/static/media/SunnyFuji.8034355433f4277f5205.jpg",
     "static/media/Nature_Image1.jpg": "/Sunny-Portfolio-Website/static/media/Nature_Image1.f7538992cc86a150e900.jpg",
     "static/media/Arms_Crossed_Talk.gif": "/Sunny-Portfolio-Website/static/media/Arms_Crossed_Talk.a37d158fe40d07c5f7c9.gif",
@@ -44,12 +45,12 @@
     "static/media/Title.png": "/Sunny-Portfolio-Website/static/media/Title.da045103f6b6557fe615.png",
     "static/media/Buzz_LoginScreen.jpg": "/Sunny-Portfolio-Website/static/media/Buzz_LoginScreen.dc924b156603f1904042.jpg",
     "index.html": "/Sunny-Portfolio-Website/index.html",
-    "main.b8874ece.css.map": "/Sunny-Portfolio-Website/static/css/main.b8874ece.css.map",
-    "main.cd1b1981.js.map": "/Sunny-Portfolio-Website/static/js/main.cd1b1981.js.map",
+    "main.7ba63cb7.css.map": "/Sunny-Portfolio-Website/static/css/main.7ba63cb7.css.map",
+    "main.d47f925e.js.map": "/Sunny-Portfolio-Website/static/js/main.d47f925e.js.map",
     "453.fc8bd9a6.chunk.js.map": "/Sunny-Portfolio-Website/static/js/453.fc8bd9a6.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.b8874ece.css",
-    "static/js/main.cd1b1981.js"
+    "static/css/main.7ba63cb7.css",
+    "static/js/main.d47f925e.js"
   ]
 }

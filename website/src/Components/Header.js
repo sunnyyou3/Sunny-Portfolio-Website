@@ -1,38 +1,27 @@
 import { AppBar, Toolbar, Box, Button, IconButton, Avatar, Drawer, List, ListItem } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import Home from "../pages/Home";
-import About from "../pages/About";
-import Gallery from "../pages/Gallery";
-import CareerHistory from "../pages/CareerHistory";
 import { useState } from "react";
-import Title from '../telework_game/Title';
 import { motion } from "motion/react"
 
-const navItems = ['Projects', 'Career History', 'Gallery', 'About', 'Game'];
-
-function Header() {
-    const [page, setPage] = useState('');
-    const [appbarTransparency, setTransparency] = useState('transparent');
+function Header({ navItems, callback }) {
     const [mobileOpen, setMobileOpen] = useState(false);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
     const handleNavItemClick = (item) => {
-        setPage(item);
-        if(item === 'Game') setTransparency('#2E3B55');
-        else setTransparency('transparent')
+        callback(item);
     };
 
     return (
         <Box id="header">
             <AppBar 
                 id="AppBar" 
-                style={{ background: appbarTransparency, boxShadow: "none", position: "absolute" }} 
+                style={{ backgroundColor: 'transparent', boxShadow: "none"}} 
                 component={motion.div} 
                 initial={{ y: -100 }} 
                 animate={{ y: 0 }} 
-                transition={{ duration: 1 }}
+                transition={{ delay: 6, duration: 1 }}
             >
                 <Toolbar>
                     <Box sx={{ flexGrow: 1 }} />
@@ -85,7 +74,7 @@ function Header() {
                             borderColor: "white", 
                             borderRadius: "30px", 
                             padding: "5px 20px", 
-                            width: "80%", /* Full width buttons inside the sidebar */
+                            width: "80%", 
                             "&:hover": {
                                 color: "black",
                                 backgroundColor: "white"
@@ -98,14 +87,6 @@ function Header() {
                 ))}
                 </List>
             </Drawer>
-            {/* {(() => {
-                if (page === 'Projects') return <Home />
-                else if (page === 'Career History') return <CareerHistory />
-                else if (page === 'Gallery') return <Gallery />
-                else if (page === 'About') return <About />
-                else if (page === 'Game') return <Box sx={{ mt: 8}} > <Title /> </Box>
-                else return <About />
-            })()} */}
         </Box>
     );
 }

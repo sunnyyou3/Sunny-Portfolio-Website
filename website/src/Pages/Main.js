@@ -14,6 +14,35 @@ import { slides as gallerySlides } from '../pages/Gallery';
 // Using forwardRef to prevent error when using motion's createMotion method
 const pages = ['Projects', 'Career History', 'Gallery', 'About'];
 
+function MobileLanding({ pages, pageSlides, currentPage, navigateToPage }) {
+    const mobilePages = pages.filter((page) => pageSlides[page]);
+    const currentSlides = pageSlides[currentPage] || [];
+
+    return (
+        <Box sx={{ display: { xs: 'flex', md: 'none' }, height: '100vh', width: '100%', overflowY: 'auto', flexDirection: 'column', background: '#08090b', color: '#f6f4ef', pb: 5 }}>
+            <Box sx={{ position: 'sticky', top: 0, zIndex: 30, px: 2, py: 2, background: 'rgba(8,9,11,0.94)', backdropFilter: 'blur(14px)', borderBottom: '1px solid rgba(255,255,255,0.14)' }}>
+                <Typography sx={{ color: '#e8b6a2', fontFamily: 'monospace', fontSize: 11, letterSpacing: 2 }}>SUNNY YOU / PORTFOLIO</Typography>
+                <Typography sx={{ mt: 0.5, fontSize: 24, fontWeight: 800 }}>{currentPage}</Typography>
+                <Box sx={{ display: 'flex', gap: 1, overflowX: 'auto', mt: 1.5, pb: 0.5 }}>
+                    {mobilePages.map((page) => (
+                        <Button key={page} size="small" onClick={() => navigateToPage(page)} variant={page === currentPage ? 'contained' : 'outlined'} sx={{ flexShrink: 0, color: page === currentPage ? '#111217' : '#f6f4ef', background: page === currentPage ? '#e8b6a2' : 'transparent', borderColor: 'rgba(255,255,255,0.35)', whiteSpace: 'nowrap' }}>
+                            {page}
+                        </Button>
+                    ))}
+                </Box>
+            </Box>
+
+            <Box component="main" sx={{ display: 'flex', flexDirection: 'column', gap: 2, px: 1.5, pt: 2 }}>
+                {currentSlides.map((slide, index) => (
+                    <Box key={`${currentPage}-mobile-${index}`} sx={{ width: '100%', aspectRatio: '5 / 4', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.14)', background: '#111217' }}>
+                        {slide}
+                    </Box>
+                ))}
+            </Box>
+        </Box>
+    );
+}
+
 const Main = React.forwardRef((props, ref) => {
     const [ currentPage, setCurrentPage ] = useState('About');
     const [ slideIndex, setSlideIndex ] = useState(0);
@@ -43,7 +72,9 @@ const Main = React.forwardRef((props, ref) => {
     };
 
     return(
-        <Box style={{ 
+           <>
+           <MobileLanding pages={pages} pageSlides={pageSlides} currentPage={currentPage} navigateToPage={navigateToPage} />
+        <Box sx={{ display: { xs: 'none', md: 'flex' } }} style={{
             width: '100vw', 
             height: '100vh', 
             backgroundColor: 'black', 
@@ -143,6 +174,7 @@ const Main = React.forwardRef((props, ref) => {
                 </Box>
             </Box>
         </Box>
+        </>
     )
 });
 

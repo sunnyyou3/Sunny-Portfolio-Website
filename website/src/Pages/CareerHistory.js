@@ -1,15 +1,6 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useSpring } from 'framer-motion';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Timeline from '@mui/lab/Timeline';
-import TimelineItem from '@mui/lab/TimelineItem';
-import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
-import TimelineConnector from '@mui/lab/TimelineConnector';
-import TimelineContent from '@mui/lab/TimelineContent';
-import TimelineDot from '@mui/lab/TimelineDot';
-import testImage from './../assets/Portfolio/Images/1.jpg'
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Box, Typography } from '@mui/material';
 
 const projectDate = [
 	"",
@@ -41,180 +32,17 @@ const projectText = [
 	"I was moved to a new team where my skills of being a developer and being fluent in English is better utilized. I obtained my JLPT N2 certification with the help of team members"
 ];
 
-const COLORS = {
-  yellow: "#ffcc00",
-  textShadowLg: "2px 2px 4px rgba(0,0,0,0.5)",
-  textShadowSm: "1px 1px 3px rgba(0,0,0,0.5)",
-};
+// Simple slides: header + date + description
+export const slides = [1,2,3,4,5,6].map((id) => (
+	<motion.div key={`career-slide-${id}`} style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 20, boxSizing: 'border-box' }}>
+		<Box sx={{ width: '100%', maxWidth: 760, background: 'linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 2, p: 3, boxShadow: '0 8px 20px rgba(0,0,0,0.5)' }}>
+			<Typography variant="h6" sx={{ color: '#ffcc00', fontWeight: 'bold', mb: 1 }}>{projectTitle[id]}</Typography>
+			<Typography variant="subtitle2" sx={{ color: 'rgba(255,255,255,0.8)', mb: 1 }}>{projectDate[id]}</Typography>
+			<Typography sx={{ color: 'rgba(255,255,255,0.95)', lineHeight: 1.6 }}>{projectText[id]}</Typography>
+		</Box>
+	</motion.div>
+));
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
-  },
-};
-
-
-function CareerText({ id }) {
-  return (
-    <Box
-      sx={{
-        position: "relative",
-        mb: 6,
-        overflow: "hidden",
-        scrollSnapAlign: "start",
-      }}
-    >
-      <Box
-        component={motion.div}
-        variants={fadeUp}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        sx={{
-          backgroundColor: "rgba(0,0,0,0.7)",
-          p: 2.5,
-          borderRadius: 2,
-        }}
-      >
-        <Typography
-          variant="h6"
-          sx={{
-            color: COLORS.yellow,
-            textShadow: COLORS.textShadowLg,
-            fontSize: "1.25rem",
-            mb: -1,
-          }}
-        >
-          {projectDate[id] ?? "Unknown Date"}
-        </Typography>
-
-        <Typography
-          variant="subtitle1"
-          sx={{
-            color: COLORS.yellow,
-            textShadow: COLORS.textShadowLg,
-            fontSize: "1rem",
-            mb: 1,
-          }}
-        >
-          {projectTitle[id] ?? "Untitled Project"}
-        </Typography>
-
-        <Typography
-          variant="body2"
-          sx={{
-            color: "white",
-            textShadow: COLORS.textShadowSm,
-            fontSize: "0.9rem",
-          }}
-        >
-          {projectText[id] ?? "No description available."}
-        </Typography>
-      </Box>
-    </Box>
-  );
+export default function CareerHistory() {
+	return slides[0] || null;
 }
-
-function CareerHistory() {
-  const Ref = useRef(null);
-  const { scrollYProgress } = useScroll({ container: Ref });
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  });
-
-  return (
-    <Box
-      sx={{
-        background: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)",
-        height: "100vh",
-        overflow: "hidden",
-        position: "relative",
-        padding: '50px',
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          position: "sticky",
-          top: 0,
-          zIndex: 10,
-          p: 2,
-          background: "linear-gradient(135deg, #2a5298 0%, #1e3c72 100%)",
-          boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
-        }}
-      >
-        <Typography
-          variant="h5"
-          sx={{ color: "white", fontWeight: "bold", letterSpacing: 1 }}
-        >
-          Career Timeline
-        </Typography>
-      </Box>
-
-      <Box
-        id="parallax-container"
-        ref={Ref}
-        sx={{
-          overflowY: "scroll",
-          scrollSnapType: "y mandatory",
-          height: "calc(100vh - 80px)",
-          "&::-webkit-scrollbar": { display: "none" },
-          pr: 1,
-        }}
-      >
-        <Timeline position="alternate">
-          {[1, 2, 3, 4, 5, 6].map((id, i) => (
-            <TimelineItem key={id}>
-              
-              <TimelineOppositeContent
-                sx={{ display: "flex", alignItems: "center" }}
-              >
-                <img
-                  src={testImage}
-                  alt="timeline"
-                  style={{
-                    width: "120px",
-                    borderRadius: "8px",
-                    boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
-                  }}
-                />
-              </TimelineOppositeContent>
-
-              <TimelineSeparator>
-                <TimelineDot color="primary" />
-                {i !== 5 && <TimelineConnector />}
-              </TimelineSeparator>
-
-              <TimelineContent>
-                <CareerText id={id} />
-              </TimelineContent>
-
-            </TimelineItem>
-          ))}
-        </Timeline>
-      </Box>
-
-      <motion.div
-        style={{
-          scaleX,
-          transformOrigin: "0 0",
-          height: "4px",
-          background: COLORS.yellow,
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          zIndex: 20,
-        }}
-      />
-    </Box>
-  );
-}
-
-export default CareerHistory;

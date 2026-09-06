@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/Sunny-Portfolio-Website/static/css/main.7ba63cb7.css",
-    "main.js": "/Sunny-Portfolio-Website/static/js/main.c6ee2127.js",
+    "main.js": "/Sunny-Portfolio-Website/static/js/main.36bcad17.js",
     "static/js/453.9f2eae4e.chunk.js": "/Sunny-Portfolio-Website/static/js/453.9f2eae4e.chunk.js",
     "static/media/intro.mp4": "/Sunny-Portfolio-Website/static/media/intro.94b12b5e42344e816abc.mp4",
     "static/media/SunnyFuji.jpg": "/Sunny-Portfolio-Website/static/media/SunnyFuji.8034355433f4277f5205.jpg",
@@ -23,11 +23,11 @@
     "static/media/Buzz_LoginScreen.jpg": "/Sunny-Portfolio-Website/static/media/Buzz_LoginScreen.dc924b156603f1904042.jpg",
     "index.html": "/Sunny-Portfolio-Website/index.html",
     "main.7ba63cb7.css.map": "/Sunny-Portfolio-Website/static/css/main.7ba63cb7.css.map",
-    "main.c6ee2127.js.map": "/Sunny-Portfolio-Website/static/js/main.c6ee2127.js.map",
+    "main.36bcad17.js.map": "/Sunny-Portfolio-Website/static/js/main.36bcad17.js.map",
     "453.9f2eae4e.chunk.js.map": "/Sunny-Portfolio-Website/static/js/453.9f2eae4e.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.7ba63cb7.css",
-    "static/js/main.c6ee2127.js"
+    "static/js/main.36bcad17.js"
   ]
 }

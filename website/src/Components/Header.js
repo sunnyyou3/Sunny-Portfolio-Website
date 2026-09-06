@@ -26,7 +26,7 @@ function Header({ navItems, callback }) {
                 <Toolbar>
                     <Box sx={{ flexGrow: 1 }} />
                     <IconButton sx={{p: 0, marginRight: "10px" }}>
-                        <Avatar alt="Sunny" src={require("./../assets/Portfolio/Images/SelfIcon.jpg")} />
+                        <Avatar alt="Sunny" src={require("./../assets/Portfolio/Images/Profile/SelfIcon.jpg")} />
                     </IconButton>
 
                     <IconButton

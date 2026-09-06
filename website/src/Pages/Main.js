@@ -5,13 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import '../styles/font.css';
 import '../styles/index.css';
 import IntroVideo from './../assets/video/intro.mp4';
-
-// pages
-import Home from "../pages/Home";
-import Gallery from "../pages/Gallery";
-import CareerHistory from "../pages/CareerHistory";
-import Title from '../telework_game/Title';
-import { slides as aboutSlides } from '../pages/About_old';
+import { slides as projectSlides } from '../pages/Project';
+import { slides as aboutSlides } from '../pages/About';
 import { slides as careerSlides } from '../pages/CareerHistory';
 import { slides as gallerySlides } from '../pages/Gallery';
 
@@ -24,6 +19,7 @@ const Main = React.forwardRef((props, ref) => {
 
     // map of pages that provide slides
     const pageSlides = {
+        'Projects': projectSlides,
         'About': aboutSlides,
         'Career History': careerSlides,
         'Gallery': gallerySlides,
@@ -96,19 +92,12 @@ const Main = React.forwardRef((props, ref) => {
                 >
                     {currentSlides ? (
                         <AnimatePresence initial={false} mode="wait">
-                            <motion.div key={`${currentPage}-${slideIndex}`} initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} transition={{ duration: 0.45 }} style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 12, boxSizing: 'border-box' }}>
+                            <motion.div key={`${currentPage}-${slideIndex}`} initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} transition={{ duration: 0.45 }} style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', boxSizing: 'border-box' }}>
                                 {currentSlides[slideIndex]}
                             </motion.div>
                         </AnimatePresence>
-                    ) : (
-                        (() => {
-                            if (currentPage === 'Projects') return <Home />
-                            else if (currentPage === 'Career History') return <CareerHistory />
-                            else if (currentPage === 'Gallery') return <Gallery />
-                            else if (currentPage === 'Game') return <Title />
-                            else return null
-                        })()
-                    )}
+                    ) : null}
+
                 </Box>
             </Box>
         </Box>

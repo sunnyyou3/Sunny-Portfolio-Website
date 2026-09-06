@@ -9,7 +9,7 @@ function MainPageImage() {
             elevation={0}
             component="img"
             alt="Kyoto"
-            src={require("./../assets/Portfolio/Images/SunnyFuji.jpg")
+            src={require("./../assets/Portfolio/Images/Gallery/SunnyFuji.jpg")
 
         }/>
     )

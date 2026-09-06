@@ -1,27 +1,37 @@
 import React from 'react';
+import { Box, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 
-// Dynamically discover images in the Portfolio/Images folder so photos can be added without editing code
-function importImages() {
-  // require.context is supported by webpack (Create React App). It loads files matching the pattern from the images folder.
-  const r = require.context('./../assets/Portfolio/Images', false, /\.(png|jpe?g|webp|gif)$/);
-  // sort keys to get a predictable order
-  const keys = r.keys().sort();
-  return keys.map((k) => r(k));
-}
+const imageContext = require.context('../assets/Portfolio/Images/Gallery', false, /\.(png|jpe?g|webp|gif)$/i);
+const photos = imageContext
+    .keys()
+    .sort()
+    .map((filePath) => {
+        const image = imageContext(filePath);
+        return image.default || image;
+    });
 
-const images = importImages();
+const gallerySurface = {
+    width: '100%',
+    height: '100%',
+    boxSizing: 'border-box',
+    overflow: 'hidden',
+    background: '#08090b',
+    color: '#f6f4ef',
+};
 
-export const slides = images.map((src, idx) => {
-  // src is the module result; in CRA it resolves to a public URL string
-  const url = src.default || src;
-  return (
-    <motion.div key={`gallery-slide-${idx}`} style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 12, boxSizing: 'border-box' }}>
-      <img src={url} alt={`gallery-${idx}`} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: 8, boxShadow: '0 10px 30px rgba(0,0,0,0.6)' }} loading="lazy" />
-    </motion.div>
-  );
-});
+export const slides = photos.map((photo, index) => (
+    <Box key={`gallery-slide-${index}`} component={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} sx={{ ...gallerySurface, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Box component="img" src={photo} loading={index === 0 ? 'eager' : 'lazy'} sx={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
+        <Box sx={{ position: 'absolute', left: 0, right: 0, bottom: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'end', gap: 2, p: { xs: 1.5, md: 2.5 }, pt: 5, background: 'linear-gradient(transparent, rgba(0,0,0,0.78))' }}>
+            <Box>
+                <Typography sx={{ color: '#e4c28f', fontFamily: 'monospace', fontSize: 11, letterSpacing: 2 }}>PHOTOGRAPHY</Typography>
+            </Box>
+            <Typography sx={{ color: 'rgba(246,244,239,0.7)', fontFamily: 'monospace', fontSize: 11 }}>{String(index + 1).padStart(2, '0')} / {String(photos.length).padStart(2, '0')}</Typography>
+        </Box>
+    </Box>
+));
 
 export default function Gallery() {
-  return slides[0] || null;
+    return slides[0] || null;
 }

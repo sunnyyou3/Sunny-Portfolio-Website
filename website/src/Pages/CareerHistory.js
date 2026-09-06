@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Chip, Typography } from '@mui/material';
-import { motion } from 'framer-motion';
+import ScaledSlide from '../components/ScaledSlide';
 
 const careerEntries = [
 	{
@@ -60,8 +60,8 @@ const careerEntries = [
 ];
 
 const slideSurface = {
-	width: '100%',
-	height: '100%',
+	width: 760,
+	height: 608,
 	boxSizing: 'border-box',
 	overflow: 'hidden',
 	color: '#f6f4ef',
@@ -70,24 +70,25 @@ const slideSurface = {
 
 function CareerSlide({ career, index }) {
 	return (
-		<Box component={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} sx={{ ...slideSurface, display: 'grid', gridTemplateRows: 'auto minmax(0, 1fr) auto', p: { xs: 2.5, md: 4 } }}>
+		<ScaledSlide>
+		<Box sx={{ ...slideSurface, display: 'grid', gridTemplateRows: 'auto minmax(0, 1fr) auto', p: 4 }}>
 			<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2 }}>
 				<Typography sx={{ color: '#a9d6b7', fontFamily: 'monospace', fontSize: 12, letterSpacing: 2 }}>CAREER HISTORY / {String(index + 1).padStart(2, '0')}</Typography>
 				<Typography sx={{ color: 'rgba(246,244,239,0.66)', fontFamily: 'monospace', fontSize: 12 }}>{career.date}</Typography>
 			</Box>
 
-			<Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: 0, py: { xs: 2, md: 3 } }}>
+			<Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: 0, py: 3 }}>
 				<Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-					<Box sx={{ width: { xs: 62, md: 78 }, height: { xs: 62, md: 78 }, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', border: '1px solid rgba(169,214,183,0.7)', background: 'rgba(169,214,183,0.12)', color: '#a9d6b7', fontWeight: 800, fontSize: { xs: 18, md: 24 }, letterSpacing: 1 }}>
+					<Box sx={{ width: 78, height: 78, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', border: '1px solid rgba(169,214,183,0.7)', background: 'rgba(169,214,183,0.12)', color: '#a9d6b7', fontWeight: 800, fontSize: 24, letterSpacing: 1 }}>
 						{career.logo ? <Box component="img" src={career.logo} alt={`${career.company} logo`} sx={{ width: '100%', height: '100%', objectFit: 'contain', p: 1 }} /> : career.initials}
 					</Box>
 					<Box>
-						<Typography variant="h4" sx={{ maxWidth: 600, fontWeight: 800, lineHeight: 1.05, fontSize: { xs: '1.35rem', md: '2rem' } }}>{career.role}</Typography>
-						<Typography sx={{ color: '#a9d6b7', mt: 0.8, fontSize: { xs: 14, md: 16 } }}>{career.company}</Typography>
+						<Typography variant="h4" sx={{ maxWidth: 600, fontWeight: 800, lineHeight: 1.05, fontSize: '2rem' }}>{career.role}</Typography>
+						<Typography sx={{ color: '#a9d6b7', mt: 0.8, fontSize: 16 }}>{career.company}</Typography>
 					</Box>
 				</Box>
 
-				<Typography sx={{ maxWidth: 720, color: 'rgba(246,244,239,0.8)', fontSize: { xs: 13, md: 16 }, lineHeight: 1.65 }}>{career.description}</Typography>
+				<Typography sx={{ maxWidth: 720, color: 'rgba(246,244,239,0.8)', fontSize: 16, lineHeight: 1.65 }}>{career.description}</Typography>
 			</Box>
 
 			<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 2, flexWrap: 'wrap', borderTop: '1px solid rgba(255,255,255,0.16)', pt: 2 }}>
@@ -97,21 +98,24 @@ function CareerSlide({ career, index }) {
 				<Typography sx={{ color: 'rgba(246,244,239,0.52)', fontFamily: 'monospace', fontSize: 11 }}>ROLE {String(index + 1).padStart(2, '0')} / {String(careerEntries.length).padStart(2, '0')}</Typography>
 			</Box>
 		</Box>
+		</ScaledSlide>
 	);
 }
 
 export const slides = [
-	<Box key="career-intro" sx={{ ...slideSurface, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: { xs: 3, md: 5 }, background: 'radial-gradient(circle at 85% 15%, rgba(169,214,183,0.3), transparent 35%), linear-gradient(135deg, #101217, #202832)' }}>
+	<ScaledSlide key="career-intro">
+	<Box sx={{ ...slideSurface, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: 5, background: 'radial-gradient(circle at 85% 15%, rgba(169,214,183,0.3), transparent 35%), linear-gradient(135deg, #101217, #202832)' }}>
 		<Typography sx={{ color: '#a9d6b7', fontFamily: 'monospace', fontSize: 12, letterSpacing: 2 }}>CAREER HISTORY</Typography>
 		<Box sx={{ maxWidth: 560 }}>
-			<Typography variant="h2" sx={{ fontSize: { xs: '2.4rem', md: '3.8rem' }, fontWeight: 800, lineHeight: 0.95 }}>Curiosity, then responsibility.</Typography>
-			<Typography sx={{ mt: 2, maxWidth: 490, color: 'rgba(246,244,239,0.78)', fontSize: { xs: 14, md: 17 }, lineHeight: 1.5 }}>Worked internationally across the United States and Japan, building software, mentoring developers, and growing through every new challenge.</Typography>
+			<Typography variant="h2" sx={{ fontSize: '3.8rem', fontWeight: 800, lineHeight: 0.95 }}>Curiosity, then responsibility.</Typography>
+			<Typography sx={{ mt: 2, maxWidth: 490, color: 'rgba(246,244,239,0.78)', fontSize: 17, lineHeight: 1.5 }}>Worked internationally across the United States and Japan, building software, mentoring developers, and growing through every new challenge.</Typography>
 			<Box sx={{ display: 'flex', gap: 1, mt: 3, flexWrap: 'wrap' }}>
 				<Chip label="United States" sx={{ color: '#111217', background: '#a9d6b7', fontWeight: 700 }} />
 				<Chip label="Tokyo, Japan" variant="outlined" sx={{ color: '#f6f4ef', borderColor: 'rgba(255,255,255,0.3)' }} />
 			</Box>
 		</Box>
-	</Box>,
+	</Box>
+	</ScaledSlide>,
 	...careerEntries.map((career, index) => <CareerSlide key={`career-slide-${index}`} career={career} index={index} />),
 ];
 

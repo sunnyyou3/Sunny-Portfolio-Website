@@ -5,17 +5,19 @@ import { motion, AnimatePresence } from "framer-motion";
 import '../styles/font.css';
 import '../styles/index.css';
 import IntroVideo from './../assets/video/intro.mp4';
+import ScaledSlide from '../components/ScaledSlide';
 import { slides as projectSlides } from '../pages/Project';
 import { slides as aboutSlides } from '../pages/About';
 import { slides as careerSlides } from '../pages/CareerHistory';
 import { slides as gallerySlides } from '../pages/Gallery';
 
 // Using forwardRef to prevent error when using motion's createMotion method
-const pages = ['Projects', 'Career History', 'Gallery', 'About', 'Game'];
+const pages = ['Projects', 'Career History', 'Gallery', 'About'];
 
 const Main = React.forwardRef((props, ref) => {
     const [ currentPage, setCurrentPage ] = useState('About');
     const [ slideIndex, setSlideIndex ] = useState(0);
+    const [ showInteractionHint, setShowInteractionHint ] = useState(true);
 
     // map of pages that provide slides
     const pageSlides = {
@@ -33,6 +35,12 @@ const Main = React.forwardRef((props, ref) => {
         if (pageSlides[page]) setSlideIndex(0);
         setCurrentPage(page);
     }
+
+    const navigateByPage = (direction) => {
+        const currentPageIndex = pages.indexOf(currentPage);
+        const nextPageIndex = (currentPageIndex + direction + pages.length) % pages.length;
+        navigateToPage(pages[nextPageIndex]);
+    };
 
     return(
         <Box style={{ 
@@ -71,9 +79,44 @@ const Main = React.forwardRef((props, ref) => {
                 </video>
 
                 {/* Slide controls - universally available */}
-                <Box sx={{ position: 'absolute', bottom: 18, left: '50%', transform: 'translateX(-50%)', zIndex: 20, display: 'flex', gap: 12, alignItems: 'center' }}>
-                    <Button variant="contained" color="primary" disabled={!currentSlides || currentSlides.length <= 0} onClick={() => currentSlides && setSlideIndex((slideIndex - 1 + currentSlides.length) % currentSlides.length)}>{'<'}</Button>
-                    <Button variant="contained" color="primary" disabled={!currentSlides || currentSlides.length <= 0} onClick={() => currentSlides && setSlideIndex((slideIndex + 1) % currentSlides.length)}>{'>'}</Button>
+                <Box component={motion.div} id="interaction_overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{delay: 6, duration: 1.2, ease: "easeInOut"}} onClick={() => showInteractionHint && setShowInteractionHint(false)} sx={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', zIndex: 100, pointerEvents: showInteractionHint ? 'auto' : 'none', backgroundColor: showInteractionHint ? 'rgba(0, 0, 0, 0.82)' : 'transparent' }}>
+                    <AnimatePresence>
+                        {showInteractionHint && (
+                            <Box sx={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', cursor: 'pointer', pointerEvents: 'auto' }}>
+                                <Typography sx={{ maxWidth: 260, px: 2, color: 'white', fontSize: 15, lineHeight: 1.4, textAlign: 'center', textShadow: '0 1px 4px rgba(0,0,0,0.9)' }}>
+                                    Use {'<'} and {'>'} to change slides. Use ^ and v to change pages.
+                                </Typography>
+                            </Box>
+                        )}
+                    </AnimatePresence>
+                </Box>
+
+                {showInteractionHint && (
+                    <Box sx={{ position: 'absolute', inset: 0, zIndex: 105, pointerEvents: 'none' }}>
+                        <ScaledSlide>
+                            <Box sx={{ position: 'relative', width: 760, height: 608 }}>
+                                <Box component={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 6.8, duration: 0.6 }} sx={{ position: 'absolute', bottom: 160, left: '92.5%', transform: 'translateX(-50%)', display: 'grid', gridTemplateColumns: '40px 70px 40px', gridTemplateRows: '40px 70px 40px', gap: 2 }}>
+                                    <Button variant="contained" color="primary" disabled sx={{ gridColumn: 2, gridRow: 1, minWidth: 70, minHeight: 40, opacity: 1, '&.Mui-disabled': { color: 'white', backgroundColor: 'rgba(25,118,210,0.72)', border: '2px solid rgba(255,255,255,0.95)', boxShadow: '0 0 0 3px rgba(255,255,255,0.85), 0 0 22px rgba(90,180,255,0.95)' } }}>{'^'}</Button>
+                                    <Button variant="contained" color="primary" disabled sx={{ gridColumn: 1, gridRow: 2, minWidth: 40, minHeight: 70, opacity: 1, '&.Mui-disabled': { color: 'white', backgroundColor: 'rgba(25,118,210,0.72)', border: '2px solid rgba(255,255,255,0.95)', boxShadow: '0 0 0 3px rgba(255,255,255,0.85), 0 0 22px rgba(90,180,255,0.95)' } }}>{'<'}</Button>
+                                    <Button variant="contained" color="primary" disabled sx={{ gridColumn: 3, gridRow: 2, minWidth: 40, minHeight: 70, opacity: 1, '&.Mui-disabled': { color: 'white', backgroundColor: 'rgba(25,118,210,0.72)', border: '2px solid rgba(255,255,255,0.95)', boxShadow: '0 0 0 3px rgba(255,255,255,0.85), 0 0 22px rgba(90,180,255,0.95)' } }}>{'>'}</Button>
+                                    <Button variant="contained" color="primary" disabled sx={{ gridColumn: 2, gridRow: 3, minWidth: 70, minHeight: 40, opacity: 1, '&.Mui-disabled': { color: 'white', backgroundColor: 'rgba(25,118,210,0.72)', border: '2px solid rgba(255,255,255,0.95)', boxShadow: '0 0 0 3px rgba(255,255,255,0.85), 0 0 22px rgba(90,180,255,0.95)' } }}>{'v'}</Button>
+                                </Box>
+                            </Box>
+                        </ScaledSlide>
+                    </Box>
+                )}
+
+                <Box sx={{ position: 'absolute', inset: 0, zIndex: showInteractionHint ? 90 : 110, pointerEvents: 'none' }}>
+                    <ScaledSlide>
+                        <Box sx={{ position: 'relative', width: 760, height: 608 }}>
+                            <Box component={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 6, duration: 0.8 }} sx={{ position: 'absolute', bottom: 160, left: '92.5%', transform: 'translateX(-50%)', display: 'grid', gridTemplateColumns: '40px 70px 40px', gridTemplateRows: '40px 70px 40px', gap: 2, pointerEvents: 'auto' }}>
+                                <Button variant="contained" color="primary" sx={{ gridColumn: 2, gridRow: 1, minWidth: 70, minHeight: 40 }} onClick={() => navigateByPage(-1)}>{'^'}</Button>
+                                <Button variant="contained" color="primary" sx={{ gridColumn: 1, gridRow: 2, minWidth: 40, minHeight: 70 }} onClick={() => currentSlides && setSlideIndex((slideIndex - 1 + currentSlides.length) % currentSlides.length)}>{'<'}</Button>
+                                <Button variant="contained" color="primary" sx={{ gridColumn: 3, gridRow: 2, minWidth: 40, minHeight: 70 }} onClick={() => currentSlides && setSlideIndex((slideIndex + 1) % currentSlides.length)}>{'>'}</Button>
+                                <Button variant="contained" color="primary" sx={{ gridColumn: 2, gridRow: 3, minWidth: 70, minHeight: 40 }} onClick={() => navigateByPage(1)}>{'v'}</Button>
+                            </Box>
+                        </Box>
+                    </ScaledSlide>
                 </Box>
 
                 <Box component={motion.div} id="camera_screen" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{delay: 6, duration: 1.2, ease: "easeInOut"}}

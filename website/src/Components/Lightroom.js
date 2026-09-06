@@ -34,7 +34,7 @@ function Lightroom() {
         <div>
             <motion.img
                 id="Lightroom-background"
-                src={require("./../assets/Portfolio/Images/room.jpg")}
+                src={require("./../assets/Portfolio/Images/Gallery/room.jpg")}
                 alt="room"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: fadeOut ? 1 : 0 }}
@@ -61,7 +61,7 @@ function Lightroom() {
         >
             <div id='frosted-overlay'/>
             <motion.img
-                src={require("./../assets/Portfolio/Images/window-open-transparent.png")}
+                src={require("./../assets/Portfolio/Images/Lightroom/window-open-transparent.png")}
                 alt="window"
                 initial={{ scale: 1 }}       // start scaled down
                 animate={fadeOut ? { scale: 10 } : { scale: 1 }}       // scale up to normal size

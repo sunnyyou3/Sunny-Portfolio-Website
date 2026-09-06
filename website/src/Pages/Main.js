@@ -72,9 +72,8 @@ const Main = React.forwardRef((props, ref) => {
 
                 {/* Slide controls - universally available */}
                 <Box sx={{ position: 'absolute', bottom: 18, left: '50%', transform: 'translateX(-50%)', zIndex: 20, display: 'flex', gap: 12, alignItems: 'center' }}>
-                    <Button variant="contained" color="primary" disabled={!currentSlides || currentSlides.length <= 0} onClick={() => currentSlides && setSlideIndex((slideIndex - 1 + currentSlides.length) % currentSlides.length)}>Prev</Button>
-                    <Typography sx={{ color: 'white', fontFamily: 'monospace' }}>{currentSlides && currentSlides.length ? `Slide ${slideIndex + 1} / ${currentSlides.length}` : 'No slides'}</Typography>
-                    <Button variant="contained" color="primary" disabled={!currentSlides || currentSlides.length <= 0} onClick={() => currentSlides && setSlideIndex((slideIndex + 1) % currentSlides.length)}>Next</Button>
+                    <Button variant="contained" color="primary" disabled={!currentSlides || currentSlides.length <= 0} onClick={() => currentSlides && setSlideIndex((slideIndex - 1 + currentSlides.length) % currentSlides.length)}>{'<'}</Button>
+                    <Button variant="contained" color="primary" disabled={!currentSlides || currentSlides.length <= 0} onClick={() => currentSlides && setSlideIndex((slideIndex + 1) % currentSlides.length)}>{'>'}</Button>
                 </Box>
 
                 <Box component={motion.div} id="camera_screen" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{delay: 6, duration: 1.2, ease: "easeInOut"}}

@@ -105,9 +105,9 @@ function CareerSlide({ career, index }) {
 export const slides = [
 	<ScaledSlide key="career-intro">
 	<Box sx={{ ...slideSurface, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: 5, background: 'radial-gradient(circle at 85% 15%, rgba(169,214,183,0.3), transparent 35%), linear-gradient(135deg, #101217, #202832)' }}>
-		<Typography sx={{ color: '#a9d6b7', fontFamily: 'monospace', fontSize: 12, letterSpacing: 2 }}>CAREER HISTORY</Typography>
+		<Typography sx={{ color: '#a9d6b7', fontFamily: 'monospace', fontSize: 12, letterSpacing: 2 }}>Global Experience</Typography>
 		<Box sx={{ maxWidth: 560 }}>
-			<Typography variant="h2" sx={{ fontSize: '3.8rem', fontWeight: 800, lineHeight: 0.95 }}>Curiosity, then responsibility.</Typography>
+			<Typography variant="h2" sx={{ fontSize: '3.8rem', fontWeight: 800, lineHeight: 0.95 }}>CAREER HISTORY</Typography>
 			<Typography sx={{ mt: 2, maxWidth: 490, color: 'rgba(246,244,239,0.78)', fontSize: 17, lineHeight: 1.5 }}>Worked internationally across the United States and Japan, building software, mentoring developers, and growing through every new challenge.</Typography>
 			<Box sx={{ display: 'flex', gap: 1, mt: 3, flexWrap: 'wrap' }}>
 				<Chip label="United States" sx={{ color: '#111217', background: '#a9d6b7', fontWeight: 700 }} />

@@ -58,7 +58,7 @@ function ProjectSlide({ project }) {
                 <Box component={motion.img} key={heroImage} initial={{ opacity: 0.35, scale: 1.02 }} animate={{ opacity: 0.82, scale: 1 }} transition={{ duration: 0.35 }} src={heroImage} alt={`${project.title} preview`} sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                 <Box sx={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(8,9,12,0.92) 0%, rgba(8,9,12,0.35) 58%, rgba(8,9,12,0.08) 100%)' }} />
                 <Box sx={{ position: 'absolute', top: 24, left: 28, right: 16 }}>
-                    <Typography sx={{ color: '#f1a17d', fontFamily: 'monospace', fontSize: 12, letterSpacing: 2 }}>{project.number} / PROJECT</Typography>
+                    <Typography sx={{ color: '#f1a17d', fontFamily: 'monospace', fontSize: 12, letterSpacing: 2 }}>PROJECT / {project.number}</Typography>
                     <Typography variant="h4" sx={{ maxWidth: 420, mt: 1, fontWeight: 800, lineHeight: 1.05, fontSize: '2.35rem' }}>{project.title}</Typography>
                     <Typography sx={{ mt: 1, color: '#f1a17d', fontSize: 13 }}>{project.eyebrow}</Typography>
                 </Box>
@@ -97,11 +97,11 @@ export const slides = [
     <ScaledSlide key="projects-intro">
     <Box sx={{ ...slideSurface, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: 5, background: 'radial-gradient(circle at 85% 15%, rgba(241,161,125,0.34), transparent 35%), linear-gradient(135deg, #101217, #202932)' }}>
         <Box>
-            <Typography sx={{ color: '#f1a17d', fontFamily: 'monospace', fontSize: 12, letterSpacing: 2 }}>SELECTED PROJECTS</Typography>
-            <Typography variant="h2" sx={{ alignSelf: 'flex-start', textAlign: 'left', fontSize: '3.8rem', fontWeight: 800, lineHeight: 0.95 }}>Brain not working</Typography>
+            <Typography sx={{ color: '#f1a17d', fontFamily: 'monospace', fontSize: 12, letterSpacing: 2 }}> Self-Improvement </Typography>
         </Box>
         <Box sx={{ maxWidth: 480 }}>
-            <Typography sx={{ color: 'rgba(246,244,239,0.78)', fontSize: 17, lineHeight: 1.5 }}>Finding a project idea worth pursuing can be difficult. These projects began as small questions and grew through experimentation, problem-solving, and persistence.</Typography>
+            <Typography variant="h2" sx={{ fontSize: '3.8rem', fontWeight: 800, lineHeight: 0.95 }}>PROJECTS</Typography>
+            <Typography sx={{ mt: 2, maxWidth: 490, color: 'rgba(246,244,239,0.78)', fontSize: 17, lineHeight: 1.5 }}>Finding a project idea worth pursuing can be difficult. These projects began as small questions and grew through experimentation, problem-solving, and persistence.</Typography>
             <Box sx={{ display: 'flex', gap: 1, mt: 3 }}>
                 <Chip label="Photography" sx={{ color: '#111217', background: '#f1a17d', fontWeight: 700 }} />
                 <Chip label="VR + WEB" variant="outlined" sx={{ color: '#f6f4ef', borderColor: 'rgba(255,255,255,0.3)' }} />

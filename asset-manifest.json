@@ -1,33 +1,34 @@
 {
   "files": {
     "main.css": "/Sunny-Portfolio-Website/static/css/main.7ba63cb7.css",
-    "main.js": "/Sunny-Portfolio-Website/static/js/main.36bcad17.js",
+    "main.js": "/Sunny-Portfolio-Website/static/js/main.3d830ab3.js",
     "static/js/453.9f2eae4e.chunk.js": "/Sunny-Portfolio-Website/static/js/453.9f2eae4e.chunk.js",
+    "static/media/IMGP4425.jpg": "/Sunny-Portfolio-Website/static/media/IMGP4425.d1a74763dffa4e17a0ac.jpg",
     "static/media/intro.mp4": "/Sunny-Portfolio-Website/static/media/intro.94b12b5e42344e816abc.mp4",
+    "static/media/IMGP4476.jpg": "/Sunny-Portfolio-Website/static/media/IMGP4476.7994e2df9f88313e99f4.jpg",
+    "static/media/IMGP4462.jpg": "/Sunny-Portfolio-Website/static/media/IMGP4462.f678511e7e6abb39b708.jpg",
+    "static/media/IMGP4802.jpg": "/Sunny-Portfolio-Website/static/media/IMGP4802.ace33e1cced05411ed15.jpg",
+    "static/media/IMGP4482.jpg": "/Sunny-Portfolio-Website/static/media/IMGP4482.6e0ec01f03bf34ddd750.jpg",
+    "static/media/IMGP4730.jpg": "/Sunny-Portfolio-Website/static/media/IMGP4730.d2adbf037431f70477b8.jpg",
+    "static/media/IMGP4550.jpg": "/Sunny-Portfolio-Website/static/media/IMGP4550.e44da1e95e19e3de18ea.jpg",
     "static/media/SunnyFuji.jpg": "/Sunny-Portfolio-Website/static/media/SunnyFuji.8034355433f4277f5205.jpg",
-    "static/media/Nature_Image1.jpg": "/Sunny-Portfolio-Website/static/media/Nature_Image1.f7538992cc86a150e900.jpg",
+    "static/media/IMGP4804.jpg": "/Sunny-Portfolio-Website/static/media/IMGP4804.1f5ddd17e73b63fa3dae.jpg",
     "static/media/VR_Menu.gif": "/Sunny-Portfolio-Website/static/media/VR_Menu.cbb2d6e4f59ab2ebba50.gif",
     "static/media/VR_Setting.png": "/Sunny-Portfolio-Website/static/media/VR_Setting.21908c24c7590cae4b52.png",
+    "static/media/IMGP4635.jpg": "/Sunny-Portfolio-Website/static/media/IMGP4635.91072dec0f11c332fba0.jpg",
     "static/media/SelfIcon.jpg": "/Sunny-Portfolio-Website/static/media/SelfIcon.8ea1745ea7c0ae77ade7.jpg",
     "static/media/VR_Tutorial.png": "/Sunny-Portfolio-Website/static/media/VR_Tutorial.9c16c801ea6d124fa2bc.png",
-    "static/media/sunny.png": "/Sunny-Portfolio-Website/static/media/sunny.aa97a1e80cdbf9752c0d.png",
     "static/media/Buzz_HomeScreen.jpg": "/Sunny-Portfolio-Website/static/media/Buzz_HomeScreen.3e6d9ae51daadec12119.jpg",
-    "static/media/1.jpg": "/Sunny-Portfolio-Website/static/media/1.5c7dcdb1b726915d14ac.jpg",
-    "static/media/2.jpg": "/Sunny-Portfolio-Website/static/media/2.5c7dcdb1b726915d14ac.jpg",
-    "static/media/3.jpg": "/Sunny-Portfolio-Website/static/media/3.5c7dcdb1b726915d14ac.jpg",
-    "static/media/4.jpg": "/Sunny-Portfolio-Website/static/media/4.5c7dcdb1b726915d14ac.jpg",
-    "static/media/5.jpg": "/Sunny-Portfolio-Website/static/media/5.5c7dcdb1b726915d14ac.jpg",
     "static/media/Buzz_AdminConsole.png": "/Sunny-Portfolio-Website/static/media/Buzz_AdminConsole.faac05ec587b386a24f3.png",
-    "static/media/room.jpg": "/Sunny-Portfolio-Website/static/media/room.bc29f0ba5215479092bd.jpg",
     "static/media/VR_InGame.jpg": "/Sunny-Portfolio-Website/static/media/VR_InGame.a6965c9e3c6034303a25.jpg",
     "static/media/Buzz_LoginScreen.jpg": "/Sunny-Portfolio-Website/static/media/Buzz_LoginScreen.dc924b156603f1904042.jpg",
     "index.html": "/Sunny-Portfolio-Website/index.html",
     "main.7ba63cb7.css.map": "/Sunny-Portfolio-Website/static/css/main.7ba63cb7.css.map",
-    "main.36bcad17.js.map": "/Sunny-Portfolio-Website/static/js/main.36bcad17.js.map",
+    "main.3d830ab3.js.map": "/Sunny-Portfolio-Website/static/js/main.3d830ab3.js.map",
     "453.9f2eae4e.chunk.js.map": "/Sunny-Portfolio-Website/static/js/453.9f2eae4e.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.7ba63cb7.css",
-    "static/js/main.36bcad17.js"
+    "static/js/main.3d830ab3.js"
   ]
 }

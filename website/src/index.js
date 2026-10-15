@@ -1,39 +1,58 @@
 import React from "react";
 import ReactDOM from 'react-dom/client';
-import Main from './pages/Main'
 import './styles/index.css';
 import reportWebVitals from './reportWebVitals';
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader } from "./components/Loader";
+import DSLRPortfolio from "./components/DSLRPortfolio";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 function InitializeApp() {
-  const [loaded, setLoaded] = React.useState(false);
+  const [phase, setPhase] = React.useState('loader'); // 'loader' | 'fade-out' | 'fade-in' | 'done'
 
   React.useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoaded(true);
+    // Step 1: Show loader for 4.5 seconds
+    const timer1 = setTimeout(() => {
+      setPhase('fade-out');
     }, 4500);
-    return () => clearTimeout(timer);
+
+    // Step 2: Fade out loader, then fade in camera
+    const timer2 = setTimeout(() => {
+      setPhase('fade-in');
+    }, 6500); // 4500 + 2000 (loader exit animation)
+
+    // Step 3: Animation complete
+    const timer3 = setTimeout(() => {
+      setPhase('done');
+    }, 8500); // 6500 + 2000 (camera fade-in animation)
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+    };
   }, []);
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden", backgroundColor: "black" }}>
-      <AnimatePresence>
-        {!loaded ? (
+      <AnimatePresence mode="wait">
+        {(phase === 'loader' || phase === 'fade-out') && (
           <motion.div
+            key="loader"
             initial={{ opacity: 1 }}
+            animate={{ opacity: phase === 'fade-out' ? 0 : 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 2, ease: "easeInOut" }}
           >
             <Loader />
           </motion.div>
-        ) : (
+        )}
+        {(phase === 'fade-in' || phase === 'done') && (
           <motion.div
-            key="main-layer"
+            key="camera"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 2 }}
+            animate={{ opacity: phase === 'done' ? 1 : 0 }}
+            transition={{ duration: 2, ease: "easeInOut" }}
             style={{
               position: "absolute",
               top: 0,
@@ -43,7 +62,7 @@ function InitializeApp() {
               zIndex: 1,
             }}
           >
-            <Main />
+            <DSLRPortfolio />
           </motion.div>
         )}
       </AnimatePresence>

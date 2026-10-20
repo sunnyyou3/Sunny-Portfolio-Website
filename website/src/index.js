@@ -1,39 +1,44 @@
 import React from "react";
 import ReactDOM from 'react-dom/client';
-import Main from './pages/Main'
+import DSRLPortfolio from './pages/DSRLPortfolio';
 import './styles/index.css';
+import './styles/font.css';
 import reportWebVitals from './reportWebVitals';
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader } from "./components/Loader";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 function InitializeApp() {
-  const [loaded, setLoaded] = React.useState(false);
+  const [phase, setPhase] = React.useState('loader'); // 'loader' | 'portfolio'
 
   React.useEffect(() => {
+    // SUNNY loader shows for 3 seconds, then transitions to portfolio
     const timer = setTimeout(() => {
-      setLoaded(true);
-    }, 4500);
+      setPhase('portfolio');
+    }, 3000);
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden", backgroundColor: "black" }}>
-      <AnimatePresence>
-        {!loaded ? (
+      <AnimatePresence mode="wait">
+        {phase === 'loader' && (
           <motion.div
+            key="loader"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 2, ease: "easeInOut" }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
           >
             <Loader />
           </motion.div>
-        ) : (
+        )}
+        {phase === 'portfolio' && (
           <motion.div
-            key="main-layer"
+            key="portfolio"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 2 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
             style={{
               position: "absolute",
               top: 0,
@@ -43,7 +48,7 @@ function InitializeApp() {
               zIndex: 1,
             }}
           >
-            <Main />
+            <DSRLPortfolio />
           </motion.div>
         )}
       </AnimatePresence>

@@ -1,0 +1,179 @@
+/* DSLR Portfolio Styles */
+
+/* Camera body texture overlay */
+.camera-body-texture {
+    background-image: 
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 2px,
+            rgba(255,255,255,0.005) 2px,
+            rgba(255,255,255,0.005) 4px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(255,255,255,0.003) 2px,
+            rgba(255,255,255,0.003) 4px
+        );
+}
+
+/* LCD screen glow effect */
+.lcd-glow {
+    box-shadow: 
+        inset 0 0 30px rgba(0,100,200,0.05),
+        inset 0 0 1px rgba(100,180,255,0.1),
+        0 0 20px rgba(0,50,100,0.1);
+}
+
+/* Button press animation */
+.btn-press {
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn-press:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Viewfinder eyepiece reflection */
+.eyepiece-reflection {
+    background: radial-gradient(
+        ellipse at 30% 30%,
+        rgba(255,255,255,0.08) 0%,
+        transparent 50%
+    );
+}
+
+/* Command dial ridges */
+.dial-ridges {
+    background: repeating-conic-gradient(
+        from 0deg,
+        #222 0deg 3deg,
+        #1a1a1a 3deg 6deg
+    );
+}
+
+/* Status LED blink animation */
+@keyframes led-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.status-led-active {
+    animation: led-blink 2s infinite;
+}
+
+/* Screen turn-on animation */
+@keyframes screen-turn-on {
+    0% { 
+        filter: brightness(0.1);
+        transform: scaleY(0.01);
+    }
+    50% {
+        filter: brightness(1.5);
+    }
+    100% { 
+        filter: brightness(1);
+        transform: scaleY(1);
+    }
+}
+
+.screen-on {
+    animation: screen-turn-on 0.8s ease-out;
+}
+
+/* Scrollbar styling for LCD content */
+.lcd-scroll::-webkit-scrollbar {
+    width: 4px;
+}
+
+.lcd-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.lcd-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+}
+
+.lcd-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* Menu selection indicator pulse */
+@keyframes pulse-glow {
+    0%, 100% { 
+        box-shadow: 0 0 4px rgba(100,150,255,0.3);
+    }
+    50% { 
+        box-shadow: 0 0 10px rgba(100,150,255,0.6);
+    }
+}
+
+.menu-selected-pulse {
+    animation: pulse-glow 1.5s infinite;
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .camera-controls-desktop {
+        display: none !important;
+    }
+    
+    .camera-body {
+        width: 98vw !important;
+        height: 96vh !important;
+    }
+    
+    .lcd-screen {
+        width: 85% !important;
+        height: auto !important;
+        aspect-ratio: 3/2 !important;
+    }
+}
+
+/* Small screen adjustments */
+@media (max-width: 480px) {
+    .camera-label {
+        font-size: 6px !important;
+    }
+    
+    .camera-button-label {
+        font-size: 5px !important;
+    }
+}
+
+/* High DPI / Retina displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .lcd-screen {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* Print styles - hide camera, show content */
+@media print {
+    .camera-shell,
+    .camera-controls,
+    .camera-status-bar {
+        display: none !important;
+    }
+    
+    .lcd-content {
+        width: 100% !important;
+        height: auto !important;
+    }
+}

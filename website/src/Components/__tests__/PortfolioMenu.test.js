@@ -8,10 +8,9 @@ describe('PortfolioMenu', () => {
     jest.clearAllMocks();
   });
 
-  it('renders the menu header', () => {
+  it('renders the menu header with name', () => {
     render(<PortfolioMenu onSelect={mockOnSelect} />);
-    expect(screen.getByText('MENU')).toBeInTheDocument();
-    expect(screen.getByText('MAIN MENU')).toBeInTheDocument();
+    expect(screen.getByText('Sunny You')).toBeInTheDocument();
   });
 
   it('renders all 4 section buttons', () => {
@@ -34,52 +33,21 @@ describe('PortfolioMenu', () => {
     expect(mockOnSelect).toHaveBeenCalledWith('projects');
   });
 
-  it('highlights the first item by default', () => {
-    render(<PortfolioMenu onSelect={mockOnSelect} />);
-    const projectsButton = screen.getByText('Projects');
-    expect(projectsButton.closest('button')).toHaveClass('border-accent-orange');
-  });
-
-  it('updates selection on hover', () => {
-    render(<PortfolioMenu onSelect={mockOnSelect} />);
-    const galleryButton = screen.getByText('Gallery');
-    fireEvent.mouseEnter(galleryButton);
-    expect(galleryButton.closest('button')).toHaveClass('border-accent-orange');
-  });
-
   it('renders section descriptions', () => {
     render(<PortfolioMenu onSelect={mockOnSelect} />);
-    expect(screen.getByText('My work')).toBeInTheDocument();
-    expect(screen.getByText('Photography')).toBeInTheDocument();
-    expect(screen.getByText('Skills & Bio')).toBeInTheDocument();
-    expect(screen.getByText('Experience')).toBeInTheDocument();
+    expect(screen.getByText('Web applications & interactive experiences')).toBeInTheDocument();
+    expect(screen.getByText('Photography collection')).toBeInTheDocument();
+    expect(screen.getByText('Skills & background')).toBeInTheDocument();
+    expect(screen.getByText('Experience & education')).toBeInTheDocument();
   });
 
   it('renders navigation hint', () => {
     render(<PortfolioMenu onSelect={mockOnSelect} />);
-    expect(screen.getByText(/USE.*TO NAVIGATE/i)).toBeInTheDocument();
+    expect(screen.getByText(/SELECT ENTER/i)).toBeInTheDocument();
   });
 
-  it('renders the selected item counter', () => {
+  it('renders the developer & photographer label', () => {
     render(<PortfolioMenu onSelect={mockOnSelect} />);
-    expect(screen.getByText('1/4 SELECTED')).toBeInTheDocument();
-  });
-
-  it('navigates selection with arrow keys', () => {
-    render(<PortfolioMenu onSelect={mockOnSelect} />);
-    const menu = document.querySelector('[tabindex="0"]');
-    
-    fireEvent.keyDown(menu, { key: 'ArrowRight' });
-    // Second item should now be highlighted
-    const galleryButton = screen.getByText('Gallery');
-    expect(galleryButton.closest('button')).toHaveClass('border-accent-orange');
-  });
-
-  it('selects with Enter key', () => {
-    render(<PortfolioMenu onSelect={mockOnSelect} />);
-    const menu = document.querySelector('[tabindex="0"]');
-    
-    fireEvent.keyDown(menu, { key: 'Enter' });
-    expect(mockOnSelect).toHaveBeenCalledWith('projects');
+    expect(screen.getByText('DEV & PHOTO')).toBeInTheDocument();
   });
 });

@@ -54,6 +54,111 @@
     font-family: 'Space Grotesk', sans-serif;
   }
 
+  /* ===== DSLR Camera Screen Elements ===== */
+
+  /* Camera HUD bar — top status strip */
+  .camera-hud-top {
+    @apply flex items-center justify-between px-3 py-1.5 bg-black/60 border-b border-white/[0.06];
+  }
+
+  /* Camera HUD bar — bottom status strip */
+  .camera-hud-bottom {
+    @apply flex items-center justify-between px-3 py-1.5 bg-black/60 border-t border-white/[0.06];
+  }
+
+  /* Camera HUD text */
+  .hud-text {
+    @apply font-lcd text-[10px] md:text-xs leading-none tracking-wider;
+  }
+
+  .hud-text-accent {
+    @apply hud-text text-accent-orange;
+  }
+
+  .hud-text-green {
+    @apply hud-text text-emerald-400;
+  }
+
+  .hud-text-dim {
+    @apply hud-text text-white/35;
+  }
+
+  /* Focus point indicator */
+  .focus-point {
+    @apply absolute w-5 h-5 md:w-6 md:h-6 border border-accent-orange/50;
+  }
+
+  .focus-point::before,
+  .focus-point::after {
+    content: '';
+    @apply absolute bg-accent-orange/30;
+  }
+
+  .focus-point::before {
+    left: 50%; top: 0;
+    width: 1px; height: 100%;
+    transform: translateX(-50%);
+  }
+
+  .focus-point::after {
+    top: 50%; left: 0;
+    height: 1px; width: 100%;
+    transform: translateY(-50%);
+  }
+
+  /* Grid overlay (camera focus grid) */
+  .camera-grid {
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 33.33% 33.33%;
+  }
+
+  /* Recording indicator dot */
+  .rec-dot {
+    @apply w-2 h-2 rounded-full bg-red-500 animate-pulse;
+  }
+
+  /* Film strip decoration */
+  .film-strip {
+    @apply flex gap-px;
+  }
+
+  .film-strip::before,
+  .film-strip::after {
+    content: '';
+    @apply flex-shrink-0 w-2 h-full bg-white/10;
+    mask-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 3px,
+      rgba(255,255,255,0.3) 3px,
+      rgba(255,255,255,0.3) 5px
+    );
+  }
+
+  /* Menu item hover line */
+  .menu-item-line {
+    @apply absolute left-0 top-1/2 -translate-y-1/2 w-0 h-[1px] bg-accent-orange transition-all duration-300;
+  }
+
+  .menu-item:hover .menu-item-line {
+    @apply w-3;
+  }
+
+  /* Scanline overlay for camera screen feel */
+  .scanlines::after {
+    content: '';
+    @apply absolute inset-0 pointer-events-none;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.08) 2px,
+      rgba(0, 0, 0, 0.08) 4px
+    );
+  }
+
   .dselr-menu-item {
     @apply flex items-center gap-3 px-4 py-2 rounded cursor-pointer transition-all duration-200;
   }

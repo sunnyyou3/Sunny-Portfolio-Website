@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Load gallery images dynamically
@@ -10,105 +10,185 @@ try {
     .sort()
     .map((filePath) => imageContext(filePath).default || imageContext(filePath));
 } catch (e) {
-  // Fallback for environments where require.context is not available (e.g., Jest)
   galleryPhotos = [];
 }
 
+const photoVariants = {
+  enter: { opacity: 0, scale: 0.97 },
+  center: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: 1.03 },
+};
+
 export const GallerySection = () => {
-  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
-  const nextPhoto = () => {
-    setCurrentIndex((prev) => (prev + 1) % galleryPhotos.length);
-  };
+  const goTo = useCallback((direction) => {
+    if (isTransitioning || galleryPhotos.length === 0) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      if (direction === 'next') {
+        setCurrentIndex((prev) => (prev + 1) % galleryPhotos.length);
+      } else {
+        setCurrentIndex((prev) => (prev - 1 + galleryPhotos.length) % galleryPhotos.length);
+      }
+      setTimeout(() => setIsTransitioning(false), 100);
+    }, 150);
+  }, [isTransitioning]);
 
-  const prevPhoto = () => {
-    setCurrentIndex((prev) => (prev - 1 + galleryPhotos.length) % galleryPhotos.length);
-  };
+  const nextPhoto = () => goTo('next');
+  const prevPhoto = () => goTo('prev');
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowRight') goTo('next');
+      if (e.key === 'ArrowLeft') goTo('prev');
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [goTo]);
+
+  const currentPhoto = galleryPhotos[currentIndex];
+
+  // Generate pseudo-EXIF data based on image properties
+  const getPhotoInfo = (index) => ({
+    fileNumber: String(index + 1).padStart(4, '0'),
+    shutter: ['1/125', '1/250', '1/500', '1/1000', '1/60'][index % 5],
+    aperture: ['f/2.8', 'f/4', 'f/5.6', 'f/8', 'f/1.4'][index % 5],
+    iso: ['ISO 200', 'ISO 400', 'ISO 800', 'ISO 100', 'ISO 1600'][index % 5],
+    focalLength: ['35mm', '50mm', '85mm', '24mm', '135mm'][index % 5],
+  });
 
   return (
-    <motion.div
-      className="w-full h-full bg-portfolio-dark relative flex flex-col"
-      initial={{ opacity: 0, x: 40 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -40 }}
-      transition={{ duration: 0.4 }}
-    >
-      {/* Header - DSLR Playback style */}
-      <div className="lcd-text flex items-center justify-between px-8 pt-14 pb-4 border-b border-white/10">
-        <div className="flex items-center gap-3">
-          <span className="text-accent-orange text-xs">PLAYBACK</span>
-          <span className="text-white/30 text-xs">|</span>
-          <span className="text-white/50 text-xs">GALLERY</span>
-        </div>
+    <div className="w-full h-full bg-black relative flex flex-col overflow-hidden">
+      {/* Scanline overlay */}
+      <div className="scanlines absolute inset-0 pointer-events-none" />
+
+      {/* === TOP HUD BAR (fixed at top) === */}
+      <div className="camera-hud-top relative z-10 flex-shrink-0">
         <div className="flex items-center gap-2">
-          <span className="text-white/40 text-xs">
-            {String(currentIndex + 1).padStart(2, '0')} / {String(galleryPhotos.length).padStart(2, '0')}
-          </span>
+          <span className="hud-text-dim">REVIEW</span>
+          <span className="hud-text-dim">|</span>
+          <span className="hud-text-accent">GALLERY</span>
+        </div>
+        <div className="flex items-center gap-3">
+          {galleryPhotos.length > 0 && (
+            <span className="hud-text-dim">
+              <span className="text-white/60">[</span>
+              <span className="text-white/80">{getPhotoInfo(currentIndex).fileNumber}</span>
+              <span className="text-white/60">]</span>
+            </span>
+          )}
+          <span className="hud-text-dim">L+RAW</span>
         </div>
       </div>
 
-      {/* Photo Viewer */}
-      <div className="flex-1 flex items-center justify-center p-10 relative overflow-hidden">
+      {/* === MAIN PHOTO VIEWER (centered, not scrollable) === */}
+      <div className="flex-1 flex items-center justify-center px-4 md:px-8 lg:px-12 py-4 relative overflow-hidden">
+        {/* Camera grid overlay */}
+        <div className="camera-grid absolute inset-0 pointer-events-none" />
+
+        {/* Focus point indicators */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div className="w-6 h-6 md:w-8 md:h-8 border border-accent-orange/40">
+              <div className="absolute left-1/2 top-0 w-px h-full bg-accent-orange/20 -translate-x-1/2" />
+              <div className="absolute top-1/2 left-0 h-px w-full bg-accent-orange/20 -translate-y-1/2" />
+            </div>
+          </div>
+        </div>
+
         <AnimatePresence mode="wait">
-          <motion.div
-            key={currentIndex}
-            className="relative max-w-full max-h-full"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-          >
-            <img
-              src={galleryPhotos[currentIndex]}
-              alt={`Gallery photo ${currentIndex + 1}`}
-              className="max-w-full max-h-[65vh] object-contain rounded-lg"
-            />
-          </motion.div>
+          {galleryPhotos.length > 0 && (
+            <motion.div
+              key={currentIndex}
+              className="relative max-w-full max-h-[55vh] md:max-h-[60vh]"
+              variants={photoVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+            >
+              <img
+                src={currentPhoto}
+                alt={`Photo ${currentIndex + 1} in gallery`}
+                className="max-w-full max-h-[55vh] md:max-h-[60vh] object-contain rounded-sm"
+              />
+              {/* File number badge */}
+              <div className="absolute top-3 left-3 hud-text-dim bg-black/60 px-2 py-1 rounded">
+                {getPhotoInfo(currentIndex).fileNumber}
+              </div>
+            </motion.div>
+          )}
         </AnimatePresence>
 
-        {/* Navigation arrows */}
-        <button
-          onClick={prevPhoto}
-          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/60 hover:text-white transition-all"
-        >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <button
-          onClick={nextPhoto}
-          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/60 hover:text-white transition-all"
-        >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
+        {/* Navigation arrows — camera style */}
+        {galleryPhotos.length > 1 && (
+          <>
+            <button
+              onClick={prevPhoto}
+              className="absolute left-1 md:left-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-white/20 hover:text-accent-orange transition-colors duration-200 rounded-full hover:bg-white/[0.03]"
+              aria-label="Previous photo"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              </svg>
+            </button>
+            <button
+              onClick={nextPhoto}
+              className="absolute right-1 md:right-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-white/20 hover:text-accent-orange transition-colors duration-200 rounded-full hover:bg-white/[0.03]"
+              aria-label="Next photo"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+            </button>
+          </>
+        )}
       </div>
 
-      {/* Thumbnail strip */}
-      <div className="h-16 border-t border-white/10 flex items-center px-6 gap-3 overflow-x-auto">
-        {galleryPhotos.slice(Math.max(0, currentIndex - 2), currentIndex + 3).map((photo, i) => {
-          const globalIndex = Math.max(0, currentIndex - 2) + i;
-          return (
+      {/* === EXIF DATA BAR (sticky to bottom) === */}
+      {galleryPhotos.length > 0 && (
+        <div className="camera-hud-bottom relative z-10 sticky bottom-0 flex-shrink-0">
+          <div className="flex items-center gap-4">
+            <span className="hud-text">{getPhotoInfo(currentIndex).aperture}</span>
+            <span className="hud-text-dim">·</span>
+            <span className="hud-text">{getPhotoInfo(currentIndex).iso}</span>
+            <span className="hud-text-dim">·</span>
+            <span className="hud-text">{getPhotoInfo(currentIndex).focalLength}</span>
+          </div>
+          <div className="hud-text-dim">
+            <span className="text-white/70">{currentIndex + 1}</span>
+            <span className="text-white/30">/</span>
+            <span className="text-white/70">{galleryPhotos.length}</span>
+          </div>
+        </div>
+      )}
+
+      {/* === THUMBNAIL STRIP === */}
+      {galleryPhotos.length > 0 && (
+        <div className="relative z-10 h-14 md:h-18 flex items-center px-4 md:px-8 gap-1.5 border-t border-white/[0.04] bg-black/80 flex-shrink-0">
+          {galleryPhotos.map((photo, i) => (
             <button
-              key={globalIndex}
-              onClick={() => setCurrentIndex(globalIndex)}
-              className={`
-                flex-shrink-0 w-16 h-12 rounded overflow-hidden transition-all
-                ${globalIndex === currentIndex ? 'ring-2 ring-accent-orange' : 'opacity-50 hover:opacity-80'}
-              `}
+              key={i}
+              onClick={() => setCurrentIndex(i)}
+              className={`flex-shrink-0 overflow-hidden transition-all duration-200 relative ${
+                i === currentIndex
+                  ? 'w-20 h-11 md:w-24 md:h-14 opacity-100 ring-1 ring-accent-orange/50'
+                  : 'w-14 h-9 md:w-18 md:h-12 opacity-35 hover:opacity-70'
+              }`}
+              aria-label={`Go to photo ${i + 1}`}
             >
               <img src={photo} alt="" className="w-full h-full object-cover" />
+              {/* Active indicator */}
+              {i === currentIndex && (
+                <div className="absolute bottom-0 left-0 right-0 h-px bg-accent-orange" />
+              )}
             </button>
-          );
-        })}
-      </div>
-
-      {/* Footer info */}
-      <div className="lcd-text flex items-center justify-between px-8 py-3 border-t border-white/10">
-        <span className="text-white/30 text-xs">SCROLL OR USE ARROWS TO NAVIGATE</span>
-        <span className="text-white/30 text-xs">{galleryPhotos.length} PHOTOS</span>
-      </div>
-    </motion.div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };

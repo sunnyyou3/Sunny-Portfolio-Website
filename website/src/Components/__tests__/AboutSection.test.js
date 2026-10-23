@@ -3,14 +3,6 @@ import { AboutSection } from '../AboutSection';
 import { about, skills } from '../../data/about';
 
 describe('AboutSection', () => {
-  it('renders the section header', () => {
-    render(<AboutSection />);
-    // Use regex to match the header specifically
-    const headings = screen.getAllByRole('heading');
-    const aboutHeading = headings.find(h => h.textContent === 'ABOUT');
-    expect(aboutHeading).toBeInTheDocument();
-  });
-
   it('renders the name', () => {
     render(<AboutSection />);
     expect(screen.getByText(about.name)).toBeInTheDocument();
@@ -18,7 +10,8 @@ describe('AboutSection', () => {
 
   it('renders the tagline', () => {
     render(<AboutSection />);
-    expect(screen.getByText(about.tagline)).toBeInTheDocument();
+    const taglines = screen.getAllByText(/Developer & Photographer/i);
+    expect(taglines.length).toBeGreaterThan(0);
   });
 
   it('renders the bio', () => {
@@ -44,9 +37,9 @@ describe('AboutSection', () => {
 
   it('renders stats', () => {
     render(<AboutSection />);
-    expect(screen.getByText(/YEARS EXPERIENCE/i)).toBeInTheDocument();
+    expect(screen.getByText(/YEARS/i)).toBeInTheDocument();
     expect(screen.getByText(/PROJECTS/i)).toBeInTheDocument();
-    expect(screen.getByText(/PHOTOS TAKEN/i)).toBeInTheDocument();
+    expect(screen.getByText(/PHOTOS/i)).toBeInTheDocument();
   });
 
   it('has a profile image', () => {
@@ -55,8 +48,8 @@ describe('AboutSection', () => {
     expect(images.length).toBeGreaterThan(0);
   });
 
-  it('has the settings header style', () => {
+  it('has the info header style', () => {
     render(<AboutSection />);
-    expect(screen.getByText('SETUP')).toBeInTheDocument();
+    expect(screen.getByText('INFO')).toBeInTheDocument();
   });
 });

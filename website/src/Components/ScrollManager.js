@@ -168,11 +168,11 @@ export const ScrollManager = () => {
             >
               {/* Portfolio content inside LCD */}
               <div className="w-full h-full relative">
-                {/* Back button - visible when a section is selected, top-left */}
+                {/* Back button - visible when a section is selected, below top HUD bar */}
                 {portfolioSection && (
                   <button
                     onClick={handleBackToMenu}
-                    className="absolute top-6 left-6 z-10 lcd-text text-xs text-white/40 hover:text-accent-orange transition-colors duration-200 flex items-center gap-2"
+                    className="absolute top-[33px] left-6 z-[100] lcd-text text-xs text-white/40 hover:text-accent-orange transition-colors duration-200 flex items-center gap-2"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />

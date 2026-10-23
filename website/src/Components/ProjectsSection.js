@@ -7,14 +7,14 @@ export const ProjectsSection = () => {
 
   return (
     <motion.div
-      className="w-full h-full bg-portfolio-dark p-8 overflow-y-auto"
+      className="w-full h-full bg-portfolio-dark p-10 overflow-y-auto"
       initial={{ opacity: 0, x: 40 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -40 }}
       transition={{ duration: 0.4 }}
     >
       {/* Header */}
-      <div className="lcd-text mb-8">
+      <div className="lcd-text mb-10 pt-14">
         <div className="flex items-center gap-3 mb-2">
           <span className="text-accent-orange text-xs">FILE</span>
           <span className="text-white/30 text-xs">|</span>
@@ -25,7 +25,7 @@ export const ProjectsSection = () => {
       </div>
 
       {/* Project Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
         {projects.map((project, index) => (
           <motion.button
             key={project.id}

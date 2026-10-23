@@ -34,7 +34,7 @@ export const GallerySection = () => {
       transition={{ duration: 0.4 }}
     >
       {/* Header - DSLR Playback style */}
-      <div className="lcd-text flex items-center justify-between px-6 py-3 border-b border-white/10">
+      <div className="lcd-text flex items-center justify-between px-8 pt-14 pb-4 border-b border-white/10">
         <div className="flex items-center gap-3">
           <span className="text-accent-orange text-xs">PLAYBACK</span>
           <span className="text-white/30 text-xs">|</span>
@@ -48,7 +48,7 @@ export const GallerySection = () => {
       </div>
 
       {/* Photo Viewer */}
-      <div className="flex-1 flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="flex-1 flex items-center justify-center p-10 relative overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIndex}
@@ -61,7 +61,7 @@ export const GallerySection = () => {
             <img
               src={galleryPhotos[currentIndex]}
               alt={`Gallery photo ${currentIndex + 1}`}
-              className="max-w-full max-h-[75vh] object-contain rounded-lg"
+              className="max-w-full max-h-[65vh] object-contain rounded-lg"
             />
           </motion.div>
         </AnimatePresence>
@@ -86,7 +86,7 @@ export const GallerySection = () => {
       </div>
 
       {/* Thumbnail strip */}
-      <div className="h-20 border-t border-white/10 flex items-center px-4 gap-2 overflow-x-auto">
+      <div className="h-16 border-t border-white/10 flex items-center px-6 gap-3 overflow-x-auto">
         {galleryPhotos.slice(Math.max(0, currentIndex - 2), currentIndex + 3).map((photo, i) => {
           const globalIndex = Math.max(0, currentIndex - 2) + i;
           return (
@@ -105,7 +105,7 @@ export const GallerySection = () => {
       </div>
 
       {/* Footer info */}
-      <div className="lcd-text flex items-center justify-between px-6 py-2 border-t border-white/10">
+      <div className="lcd-text flex items-center justify-between px-8 py-3 border-t border-white/10">
         <span className="text-white/30 text-xs">SCROLL OR USE ARROWS TO NAVIGATE</span>
         <span className="text-white/30 text-xs">{galleryPhotos.length} PHOTOS</span>
       </div>

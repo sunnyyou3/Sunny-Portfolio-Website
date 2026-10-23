@@ -5,14 +5,14 @@ import { skills, about } from '../data/about';
 export const AboutSection = () => {
   return (
     <motion.div
-      className="w-full h-full bg-portfolio-dark p-8 overflow-y-auto"
+      className="w-full h-full bg-portfolio-dark p-10 overflow-y-auto"
       initial={{ opacity: 0, x: 40 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -40 }}
       transition={{ duration: 0.4 }}
     >
       {/* Header */}
-      <div className="lcd-text mb-8">
+      <div className="lcd-text mb-10 pt-14">
         <div className="flex items-center gap-3 mb-2">
           <span className="text-accent-orange text-xs">SETUP</span>
           <span className="text-white/30 text-xs">|</span>
@@ -21,10 +21,10 @@ export const AboutSection = () => {
         <h2 className="text-2xl font-bold text-white">ABOUT</h2>
       </div>
 
-      <div className="max-w-4xl">
+      <div className="max-w-5xl">
         {/* Bio */}
         <motion.div
-          className="mb-10"
+          className="mb-12"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -42,7 +42,7 @@ export const AboutSection = () => {
         </motion.div>
 
         {/* Skills Grid - DSLR Icon Menu style */}
-        <div className="mb-8">
+        <div className="mb-10">
           <h4 className="lcd-text text-white/40 text-xs mb-4">SKILLS</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {skills.map((skillGroup, groupIndex) => (

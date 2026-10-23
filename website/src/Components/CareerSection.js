@@ -5,14 +5,14 @@ import { career } from '../data/career';
 export const CareerSection = () => {
   return (
     <motion.div
-      className="w-full h-full bg-portfolio-dark p-8 overflow-y-auto"
+      className="w-full h-full bg-portfolio-dark p-10 overflow-y-auto"
       initial={{ opacity: 0, x: 40 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -40 }}
       transition={{ duration: 0.4 }}
     >
       {/* Header */}
-      <div className="lcd-text mb-8">
+      <div className="lcd-text mb-10 pt-14">
         <div className="flex items-center gap-3 mb-2">
           <span className="text-accent-orange text-xs">FILE</span>
           <span className="text-white/30 text-xs">|</span>
@@ -22,7 +22,7 @@ export const CareerSection = () => {
       </div>
 
       {/* Timeline */}
-      <div className="max-w-3xl relative">
+      <div className="max-w-4xl relative">
         {/* Vertical line */}
         <div className="absolute left-4 top-0 bottom-0 w-px bg-white/10" />
 
@@ -69,7 +69,7 @@ export const CareerSection = () => {
       </div>
 
       {/* Education / Additional */}
-      <div className="max-w-3xl mt-8 pt-8 border-t border-white/10">
+      <div className="max-w-4xl mt-10 pt-10 border-t border-white/10">
         <h4 className="lcd-text text-white/40 text-xs mb-4">EDUCATION</h4>
         <motion.div
           className="relative pl-12"

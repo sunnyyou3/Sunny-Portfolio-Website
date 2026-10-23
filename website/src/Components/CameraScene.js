@@ -1,30 +1,7 @@
-import React, { useRef, useMemo, useEffect } from 'react';
-import * as THREE from 'three';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Environment, OrbitControls } from '@react-three/drei';
+import React from 'react';
+import { Canvas } from '@react-three/fiber';
+import { Environment } from '@react-three/drei';
 import { CameraModel } from './CameraModel';
-
-/**
- * AnimatedCamera - Controls the camera assembly and rotation animation
- */
-function AnimatedCamera({ assemblyProgress, rotationY, cameraPosition }) {
-  const groupRef = useRef();
-  
-  useFrame(() => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y = rotationY;
-    }
-  });
-
-  return (
-    <group ref={groupRef}>
-      <CameraModel 
-        assemblyProgress={assemblyProgress}
-        rotationY={0}
-      />
-    </group>
-  );
-}
 
 /**
  * CameraScene - The 3D scene containing the camera
@@ -86,11 +63,10 @@ export const CameraScene = ({
           blur={0.8}
         />
 
-        {/* The camera */}
-        <AnimatedCamera
+        {/* The camera with assembly animation */}
+        <CameraModel 
           assemblyProgress={assemblyProgress}
           rotationY={rotationY}
-          cameraPosition={cameraPos}
         />
 
         {/* Subtle ground reflection */}

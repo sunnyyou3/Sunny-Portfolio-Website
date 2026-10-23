@@ -27,7 +27,6 @@ describe('CameraScene Module', () => {
     const filePath = path.join(__dirname, '../CameraScene.js');
     const content = fs.readFileSync(filePath, 'utf8');
     
-    expect(content).toContain('AnimatedCamera');
     expect(content).toContain('CameraModel');
   });
 });

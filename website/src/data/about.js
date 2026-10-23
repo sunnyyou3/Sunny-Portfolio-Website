@@ -9,5 +9,5 @@ export const about = {
   name: 'Sunny You',
   tagline: 'Developer & Photographer',
   bio: 'I build digital experiences and capture moments through the lens. Passionate about creating beautiful, interactive web applications and telling stories through photography.',
-  profileImage: require('../assets/Portfolio/Images/Profile/SelfIcon.jpg'),
+  profileImage: require('../assets/Portfolio/Images/Profile/IMGP4462.jpg'),
 };

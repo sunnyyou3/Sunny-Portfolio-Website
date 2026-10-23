@@ -65,7 +65,7 @@ export const ScrollManager = () => {
     const rotationProgress = Math.max(0, Math.min(1,
       (scrollProgress - rotationStart) / (rotationEnd - rotationStart)
     ));
-    const rotationY = rotationProgress * Math.PI / 2; // 0 to 90 degrees
+    const rotationY = rotationProgress * Math.PI; // 0 to 180 degrees
     
     // LCD Expansion: 0.70-0.80 (400-500vh mapped to 0.70-0.80)
     const lcdExpansionStart = 0.70;
@@ -98,8 +98,8 @@ export const ScrollManager = () => {
     setPortfolioSection(null);
   };
 
-  // LCD scale: starts at 0.3 (small on camera) and grows to 1 (full screen)
-  const lcdScale = 0.3 + zone.lcdExpansionProgress * 0.7;
+  // LCD scale: starts at 0.3 (small on camera) and grows to 1.3 (larger than full screen)
+  const lcdScale = 0.3 + zone.lcdExpansionProgress * 1.0;
   // eslint-disable-next-line no-unused-vars
   const lcdOpacity = zone.lcdExpansionProgress;
   
@@ -146,87 +146,74 @@ export const ScrollManager = () => {
               </motion.div>
             )}
           </AnimatePresence>
-
-          {/* LCD Screen overlay (grows as user scrolls, hides when fully expanded) */}
-          <AnimatePresence>
-            {zone.lcdExpansionProgress > 0 && zone.lcdExpansionProgress < 1 && (
-              <motion.div
-                className="absolute inset-0 flex items-center justify-center"
-                style={{
-                  opacity: zone.lcdOpacity,
-                }}
-              >
-                <motion.div
-                  style={{
-                    scale: lcdScale,
-                    borderRadius: lcdScale > 0.8 ? 0 : 12,
-                  }}
-                  className="w-[80vw] h-[60vw] md:w-[50vw] md:h-[37.5vw] max-w-[900px] max-h-[675px] bg-portfolio-dark border border-white/10 overflow-hidden"
-                >
-                  {/* Portfolio content inside LCD */}
-                  <AnimatePresence mode="wait">
-                    {zone.portfolioVisible > 0 ? (
-                      portfolioSection ? (
-                        <motion.div
-                          key={portfolioSection}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.3 }}
-                          className="w-full h-full"
-                        >
-                          {portfolioSection === 'projects' && <ProjectsSection />}
-                          {portfolioSection === 'gallery' && <GallerySection />}
-                          {portfolioSection === 'about' && <AboutSection />}
-                          {portfolioSection === 'career' && <CareerSection />}
-                        </motion.div>
-                      ) : (
-                        <motion.div
-                          key="menu"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.3 }}
-                          className="w-full h-full"
-                        >
-                          <PortfolioMenu
-                            onSelect={handleSelectSection}
-                            onBack={handleBackToMenu}
-                          />
-                        </motion.div>
-                      )
-                    ) : null}
-                  </AnimatePresence>
-                </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
       </div>
 
-      {/* === ZONE 6: PORTFOLIO (80%+ of scroll) === */}
-      {/* Only show when LCD overlay is no longer visible (avoids duplicate menu) */}
-      <div className="relative" style={{ height: '100vh' }}>
-        <div className="sticky top-0 w-full h-screen bg-portfolio-dark overflow-hidden">
-          <AnimatePresence>
-            {zone.portfolioVisible > 0 && zone.lcdExpansionProgress >= 1 && (
-              <motion.div
-                style={{ opacity: zone.portfolioVisible }}
-                className="w-full h-full"
-              >
-                {portfolioSection ? (
-                  portfolioSection === 'projects' && <ProjectsSection />
-                ) : (
-                  <PortfolioMenu
-                    onSelect={handleSelectSection}
-                    onBack={handleBackToMenu}
-                  />
+      {/* === FIXED LCD OVERLAY (visible during expansion and portfolio) === */}
+      {/* Fixed overlay stays on screen regardless of scroll position, no duplicate menu */}
+      <AnimatePresence>
+        {zone.lcdExpansionProgress > 0 && (
+          <motion.div
+            className="fixed inset-0 flex items-center justify-center z-50"
+            style={{
+              opacity: zone.lcdOpacity,
+            }}
+          >
+            <motion.div
+              style={{
+                scale: lcdScale,
+                borderRadius: lcdScale > 0.8 ? 0 : 12,
+              }}
+              className="w-[80vw] h-[60vw] md:w-[50vw] md:h-[37.5vw] max-w-[1250px] max-h-[938px] bg-portfolio-dark border border-white/10 overflow-y-auto"
+            >
+              {/* Portfolio content inside LCD */}
+              <div className="w-full h-full relative">
+                {/* Back button - visible when a section is selected, top-left */}
+                {portfolioSection && (
+                  <button
+                    onClick={handleBackToMenu}
+                    className="absolute top-6 left-6 z-10 lcd-text text-xs text-white/40 hover:text-accent-orange transition-colors duration-200 flex items-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                    BACK
+                  </button>
                 )}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
+
+                {/* Menu and sections are mutually exclusive — no AnimatePresence
+                    to avoid stale components lingering in the DOM */}
+                {portfolioSection ? (
+                  <motion.div
+                    key={portfolioSection}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                    className="w-full h-full"
+                  >
+                    {portfolioSection === 'projects' && <ProjectsSection />}
+                    {portfolioSection === 'gallery' && <GallerySection />}
+                    {portfolioSection === 'about' && <AboutSection />}
+                    {portfolioSection === 'career' && <CareerSection />}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="menu"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                    className="w-full h-full"
+                  >
+                    <PortfolioMenu
+                      onSelect={handleSelectSection}
+                    />
+                  </motion.div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

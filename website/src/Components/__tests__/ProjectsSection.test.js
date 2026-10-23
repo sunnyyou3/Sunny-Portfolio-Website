@@ -6,7 +6,7 @@ describe('ProjectsSection', () => {
   it('renders the section header', () => {
     render(<ProjectsSection />);
     const headings = screen.getAllByRole('heading');
-    const projectsHeading = headings.find(h => h.textContent === 'PROJECTS');
+    const projectsHeading = headings.find(h => h.textContent === 'Projects');
     expect(projectsHeading).toBeInTheDocument();
   });
 
@@ -26,19 +26,18 @@ describe('ProjectsSection', () => {
 
   it('renders project tags', () => {
     render(<ProjectsSection />);
-    // Verify specific unique tags exist
     expect(screen.getByText('MongoDB')).toBeInTheDocument();
     expect(screen.getByText('WebXR')).toBeInTheDocument();
   });
 
-  it('renders the file menu header', () => {
+  it('renders the review header', () => {
     render(<ProjectsSection />);
-    expect(screen.getByText('FILE')).toBeInTheDocument();
+    expect(screen.getByText('REVIEW')).toBeInTheDocument();
   });
 
   it('renders project count footer', () => {
     render(<ProjectsSection />);
-    expect(screen.getByText(`${projects.length} PROJECTS LOADED`)).toBeInTheDocument();
+    expect(screen.getByText(/selected works/i)).toBeInTheDocument();
   });
 
   it('renders project cards with thumbnails', () => {

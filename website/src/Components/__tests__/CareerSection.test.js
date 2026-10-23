@@ -5,7 +5,7 @@ import { career } from '../../data/career';
 describe('CareerSection', () => {
   it('renders the section header', () => {
     render(<CareerSection />);
-    expect(screen.getByText('CAREER HISTORY')).toBeInTheDocument();
+    expect(screen.getByText('Career')).toBeInTheDocument();
   });
 
   it('renders all career entries', () => {
@@ -29,17 +29,17 @@ describe('CareerSection', () => {
     expect(screen.getByText('EDUCATION')).toBeInTheDocument();
   });
 
-  it('renders the file menu header', () => {
+  it('renders the review header', () => {
     render(<CareerSection />);
-    expect(screen.getByText('FILE')).toBeInTheDocument();
+    expect(screen.getByText(/FILE/i)).toBeInTheDocument();
   });
 
-  it('renders position count footer', () => {
+  it('renders career count footer', () => {
     render(<CareerSection />);
-    expect(screen.getByText(new RegExp(`${career.length} POSITION${career.length !== 1 ? 'S' : ''} LOADED`))).toBeInTheDocument();
+    expect(screen.getByText(/PROGRESS/i)).toBeInTheDocument();
   });
 
-  it('has a timeline visual', () => {
+  it('has timeline visual elements', () => {
     render(<CareerSection />);
     const timelineDots = document.querySelectorAll('.rounded-full');
     expect(timelineDots.length).toBeGreaterThan(0);

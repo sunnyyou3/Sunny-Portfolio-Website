@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from 'react-dom/client';
-import Main from './pages/Main'
-import './styles/index.css';
-import reportWebVitals from './reportWebVitals';
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader } from "./components/Loader";
+import { ScrollManager } from "./components/ScrollManager";
+import "./styles/index.css";
+import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 function InitializeApp() {
@@ -18,7 +18,7 @@ function InitializeApp() {
   }, []);
 
   return (
-    <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden", backgroundColor: "black" }}>
+    <div style={{ position: "relative", width: "100vw", height: "100vh", backgroundColor: "black" }}>
       <AnimatePresence>
         {!loaded ? (
           <motion.div
@@ -43,7 +43,7 @@ function InitializeApp() {
               zIndex: 1,
             }}
           >
-            <Main />
+            <ScrollManager />
           </motion.div>
         )}
       </AnimatePresence>

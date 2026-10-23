@@ -1,0 +1,257 @@
+/*
+ * base.css - Neutral foundation for the Sunny Portfolio redesign.
+ * Colour tokens, type tokens, grid, motion helpers.
+ * This file has no look of its own; everything downstream references tokens only.
+ */
+
+/* --- Colour tokens (one ground, one ink, one accent) --- */
+:root {
+  /* Ground: light background for photography */
+  --color-ground: #fafafa;
+  /* Ink: primary text colour */
+  --color-ink: #212121;
+  /* Accent: subtle teal referencing macro photography cool tones */
+  --color-accent: #4db6ac;
+
+  /* Derived neutrals (steps between surfaces) */
+  --color-neutral-light: #f5f5f0;
+  --color-neutral-muted: #777777;
+  --color-neutral-subtle: rgba(0, 0, 0, 0.04);
+}
+
+/* --- Type tokens --- */
+:root {
+  /* Display type (headlines): serif, large, tracked, leading */
+  --font-display: "Merriweather", "Georgia", serif;
+  --font-display-tracking: -0.03em;
+  --font-display-leading: 1.1;
+
+  /* Text type (body): clean sans-serif */
+  --font-body: "Inter", "system-ui", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-body-size: 16px;
+  --font-body-leading: 1.5;
+  --font-body-max-line: 75ch;
+
+  /* Caption/small text */
+  --font-caption: 0.75rem;
+}
+
+/* --- Base reset and structure --- */
+html {
+  box-sizing: border-box;
+}
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--font-body-size);
+  line-height: var(--font-body-leading);
+  color: var(--color-ink);
+  background: var(--color-ground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Grid and spacing --- */
+.main {
+  /* One grid, one pair of tight margins (16-32px), used everywhere */
+  /* Large things run to the edges; text blocks share left edges */
+  margin-left: auto;
+  margin-right: auto;
+  /* Equal outer margins - 24px is a good default */
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+/* Section rhythm - gap between sections: 120-240px on desktop */
+section {
+  /* Ensure sections have some minimum height for the gap to work */
+  margin-top: 240px; /* desktop default */
+  margin-bottom: 240px;
+}
+
+/* Reduce on smaller screens */
+@media (max-width: 1024px) {
+  section {
+    margin-top: 160px;
+    margin-bottom: 160px;
+  }
+}
+
+/* --- House rule: equal outer margins, no section huddled on one side --- */
+/* The main content area should not have more content on one side */
+.main > *:first-child {
+  margin-top: 0;
+}
+
+/* --- House rule: no blank stretches taller than about half a screen --- */
+/* Each section should have content; a deliberate rest is a placed picture or field of colour, once per page */
+.main > .rest {
+  /* A deliberate rest - a placed picture or field of colour */
+  /* This class should only be used once per page */
+  min-height: 300px;
+  background: var(--color-neutral-light);
+}
+
+/* --- House rule: statements are paragraphs, not larger --- */
+/* An intro sentence or a quotation set large is marked up as <p> or <blockquote>, stays at statement size (36px or less on desktop, 24px on a phone) and runs to about 25 words, three lines. */
+.statement {
+  font-size: 1rem; /* 16px default, 36px max on desktop would be 2.25rem but we use 1rem as base */
+  line-height: 1.6;
+  max-width: 25ch; /* about 45-75 chars per line at 16px */
+  color: var(--color-ink);
+}
+
+/* --- Typographic basics --- */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: var(--font-display-leading);
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  /* Tracking for display type */
+  letter-spacing: var(--font-display-tracking);
+  /* House rule: two lines or fewer at every width - we trust the designer to keep headlines concise */
+}
+
+/* Headlines should be centre-aligned by default, but left-aligned by default for body text */
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+/* --- Buttons (flat, one fill colour, square or fully round) --- */
+/* House rule: flat, one fill colour, either square-cornered or fully round, decided once */
+/* Top sites: 52% square, 23% pill; the 9-16px "soft" radius is the weak-site default */
+/* Most strong heroes have no button at all, or one. */
+.btn {
+  display: inline-block;
+  padding: 0.5em 1em;
+  font-size: 1rem;
+  font-family: var(--font-body);
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  /* House rule: flat, no gradient, no shadow */
+  background: var(--color-accent);
+  color: #fff;
+  border: none;
+  border-radius: 0; /* fully round, or 0 for square */
+  cursor: pointer;
+  /* House rule: no tiny uppercase letter-spaced labels */
+  text-transform: none;
+  /* Focus state */
+  &:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 4px;
+  }
+}
+
+/* --- Navigation: wordmark, three to five plain links, one action --- */
+/* No bar chrome. */
+/* House rule: navigation: wordmark, three to five plain links, one action. No bar chrome. */
+.nav {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav a {
+  color: var(--color-ink);
+  text-decoration: none;
+  font-size: 0.875rem;
+  /* House rule: no pill badges, no index numbering */
+  &:hover {
+    color: var(--color-accent);
+  }
+}
+
+/* --- Footer: a designed close, not a sitemap --- */
+/* House rule: the footer is a designed close, not a sitemap: on most strong sites the name returns at full width. */
+/* House rule: on most strong sites the name returns at full width. */
+.footer {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-neutral-muted);
+  border-top: 1px solid var(--color-neutral-subtle);
+  margin-top: -1px; /* pull up to close the gap */
+}
+
+/* --- Imagery basics --- */
+/* House rule: one dominant image beats six small ones. On the top-scored sites the hero media covers at least half the first screen 68% of the time. */
+/* House rule: no image is better than a placeholder, an icon, or an abstract shape. A real picture of its world, found and credited, is better still. */
+/* House rule: every found picture is downloaded into the project, credited on the page and listed in the report. None is presented as the client's own. */
+/* House rule: nothing ever lies on top of a headline or a statement (the inspector fails it). */
+
+/* --- Focus states (visible focus, required) --- */
+/* House rule: real links and buttons, visible focus, alt text, a phone layout that is its own composition. */
+*:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+/* --- Motion helpers (prefers-reduced-motion) --- */
+/* Step 9: All moves have a prefers-reduced-motion fallback that keeps the content and drops the travel. */
+/* A move that changes the colour or the layout of whole screens (colour by chapter, a pinned story) is part of the composition. */
+/* Only transform and opacity only for animation. */
+@media (prefers-reduced-motion: reduce) {
+  /* Drop all animation travel, keep content visible */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+  }
+}
+
+/* --- Helper: focus-visible styles (from house rules) --- */
+/* Three places keep their own conventions and are left alone by the inspector: real code in <pre>/<code> (monospace is correct there), real tables and form fields (they may have lines), and a real interface fragment whose root carries the attribute data-ui */
+
+/* ==========================================
+   VIEWPORT FIX - REQUIRED for Three.js React
+   ==========================================
+   Causes of total black screen after loader (no console errors):
+   1. Missing viewport dimensions on canvas container (MOST COMMON)
+   2. html/body/#root not set to 100% height
+   3. Canvas container not filling viewport
+   ========================================== */
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Inter', 'system-ui', sans-serif;
+}
+
+/* Ensure canvas container has full viewport height */
+body > div,
+#root > div {
+  height: 100vh !important;
+}
+
+/* Make canvas fill its container */
+#react-root canvas,
+#root canvas,
+.canvas-container canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Optional: if you have a layout wrapper */
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}

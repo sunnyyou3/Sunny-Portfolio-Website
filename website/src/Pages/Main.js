@@ -1,181 +1,206 @@
-import React, {useState} from 'react';
-import Header from '../components/Header';
-import { Box, Typography, Button } from '@mui/material';
-import { motion, AnimatePresence } from "framer-motion";
-import '../styles/font.css';
-import '../styles/index.css';
-import IntroVideo from './../assets/video/intro.mp4';
-import ScaledSlide from '../components/ScaledSlide';
-import { slides as projectSlides } from '../pages/Project';
-import { slides as aboutSlides } from '../pages/About';
-import { slides as careerSlides } from '../pages/CareerHistory';
-import { slides as gallerySlides } from '../pages/Gallery';
+import React, { useEffect, useState } from 'react';
+import { Box, Chip } from '@mui/material';
+import useCameraThemeHook from '../components/CameraAssembly/useCameraThemeHooks';
+import { Camera3DScene } from '../components/camera/Camera3DScene';
 
-// Using forwardRef to prevent error when using motion's createMotion method
-const pages = ['Projects', 'Career History', 'Gallery', 'About'];
+const sections = [
+  { id: 'gallery', label: 'Gallery', content: 'Photo Gallery Section' },
+  { id: 'projects', label: 'Projects', content: 'Projects Section' },
+  {
+    id: 'experience',
+    label: 'Experience',
+    content: 'Experience Section',
+  },
+  { id: 'home', label: 'Home', content: 'Home Section' },
+];
 
-function MobileLanding({ pages, pageSlides, currentPage, navigateToPage }) {
-    const mobilePages = pages.filter((page) => pageSlides[page]);
-    const currentSlides = pageSlides[currentPage] || [];
+export default function Main() {
+  const {
+    assembled,
+    lcdTab,
+    isSpinning,
+    setLcdTab,
+    startSpin,
+    stopSpin,
+    resetSession,
+  } = useCameraThemeHook();
 
-    return (
-        <Box sx={{ display: { xs: 'flex', md: 'none' }, height: '100vh', width: '100%', overflowY: 'auto', flexDirection: 'column', background: '#08090b', color: '#f6f4ef', pb: 5 }}>
-            <Box sx={{ position: 'sticky', top: 0, zIndex: 30, px: 2, py: 2, background: 'rgba(8,9,11,0.94)', backdropFilter: 'blur(14px)', borderBottom: '1px solid rgba(255,255,255,0.14)' }}>
-                <Typography sx={{ color: '#e8b6a2', fontFamily: 'monospace', fontSize: 11, letterSpacing: 2 }}>SUNNY YOU / PORTFOLIO</Typography>
-                <Typography sx={{ mt: 0.5, fontSize: 24, fontWeight: 800 }}>{currentPage}</Typography>
-                <Box sx={{ display: 'flex', gap: 1, overflowX: 'auto', mt: 1.5, pb: 0.5 }}>
-                    {mobilePages.map((page) => (
-                        <Button key={page} size="small" onClick={() => navigateToPage(page)} variant={page === currentPage ? 'contained' : 'outlined'} sx={{ flexShrink: 0, color: page === currentPage ? '#111217' : '#f6f4ef', background: page === currentPage ? '#e8b6a2' : 'transparent', borderColor: 'rgba(255,255,255,0.35)', whiteSpace: 'nowrap' }}>
-                            {page}
-                        </Button>
-                    ))}
-                </Box>
-            </Box>
+  const [activeSection, setActiveSection] = useState(
+    lcdTab || 'gallery'
+  );
+  const [isScrolled, setIsScrolled] = useState(false);
 
-            <Box component="main" sx={{ display: 'flex', flexDirection: 'column', gap: 2, px: 1.5, pt: 2 }}>
-                {currentSlides.map((slide, index) => (
-                    <Box key={`${currentPage}-mobile-${index}`} sx={{ width: '100%', aspectRatio: '5 / 4', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.14)', background: '#111217' }}>
-                        {slide}
-                    </Box>
-                ))}
-            </Box>
-        </Box>
-    );
-}
+  // Keep the active section and LCD tab synchronized.
+  const handleTabChange = (tab) => {
+    const validTabs = sections.map((section) => section.id);
 
-const Main = React.forwardRef((props, ref) => {
-    const [ currentPage, setCurrentPage ] = useState('About');
-    const [ slideIndex, setSlideIndex ] = useState(0);
-    const [ showInteractionHint, setShowInteractionHint ] = useState(true);
+    if (!validTabs.includes(tab)) return;
 
-    // map of pages that provide slides
-    const pageSlides = {
-        'Projects': projectSlides,
-        'About': aboutSlides,
-        'Career History': careerSlides,
-        'Gallery': gallerySlides,
+    setLcdTab(tab);
+    setActiveSection(tab);
+  };
+
+  // Track scrolling and update the overlay visibility.
+  useEffect(() => {
+    let scrollTimeout;
+
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+
+      // Stop the spin after scrolling settles.
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        stopSpin();
+      }, 180);
     };
 
-    const currentSlides = pageSlides[currentPage] || null;
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
-    const navigateToPage = (page) => {
-        console.log(`Navigating to ${page}`);
-        // reset slide index when switching pages that have slides
-        if (pageSlides[page]) setSlideIndex(0);
-        setCurrentPage(page);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimeout);
+    };
+  }, [stopSpin]);
+
+  // Start spinning when the camera is assembled and scrolling begins.
+  useEffect(() => {
+    if (!assembled) return undefined;
+
+    let scrollTimeout;
+
+    const handleScroll = () => {
+      if (!isSpinning) {
+        startSpin();
+      }
+
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        stopSpin();
+      }, 180);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimeout);
+    };
+  }, [assembled, isSpinning, startSpin, stopSpin]);
+
+  // Reset the session only when ?debug is present.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.has('debug')) {
+      resetSession();
     }
+  }, [resetSession]);
 
-    const navigateByPage = (direction) => {
-        const currentPageIndex = pages.indexOf(currentPage);
-        const nextPageIndex = (currentPageIndex + direction + pages.length) % pages.length;
-        navigateToPage(pages[nextPageIndex]);
-    };
+  const chipStyles = (tab, selectedColor) => ({
+    backgroundColor:
+      lcdTab === tab ? selectedColor : 'rgba(255,255,255,0.16)',
+    color:
+      lcdTab === tab ? '#111217' : 'rgba(246,244,239,0.85)',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'background-color 0.25s ease, color 0.25s ease',
+    '&:hover': {
+      backgroundColor:
+        lcdTab === tab ? selectedColor : 'rgba(255,255,255,0.28)',
+    },
+  });
 
-    return(
-           <>
-           <MobileLanding pages={pages} pageSlides={pageSlides} currentPage={currentPage} navigateToPage={navigateToPage} />
-        <Box sx={{ display: { xs: 'none', md: 'flex' } }} style={{
-            width: '100vw', 
-            height: '100vh', 
-            backgroundColor: 'black', 
-            overflow: 'hidden', 
-            position: 'relative',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-        }}>
-            <Header navItems={ pages } callback= {navigateToPage} />
-            <Box style={{ 
-                position: 'relative', 
-                width: 'calc(100vw - 80px)', 
-                height: 'calc((100vw - 80px) * (9 / 16))',
-                maxHeight: 'calc(100vh - 80px)',
-                maxWidth: 'calc((100vh - 80px) * (16 / 9))',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center'
-            }}>
-                <video 
-                    src={IntroVideo}
-                    muted
-                    autoPlay
-                    style={{ 
-                        width: "100%", 
-                        height: "100%", 
-                        objectFit: 'cover', 
-                        zIndex: 1
-                    }}
-                >
-                    Your browser does not support the video tag.
-                </video>
+  return (
+    <Box
+      sx={{
+        width: '100%',
+        height: '100vh',
+        minHeight: '100vh',
+        position: 'relative',
+        overflow: 'hidden',
+        backgroundColor: '#050508',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+      }}
+    >
+      {/* 3D camera scene */}
+      <Box
+        sx={{
+          width: '100%',
+          height: '100%',
+          position: 'absolute',
+          inset: 0,
+          zIndex: 0,
+        }}
+      >
+        <Camera3DScene
+          activeView={activeSection}
+          lcdContent={true}
+          onViewChange={handleTabChange}
+          sections={sections}
+        />
+      </Box>
 
-                {/* Slide controls - universally available */}
-                <Box component={motion.div} id="interaction_overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{delay: 6, duration: 1.2, ease: "easeInOut"}} onClick={() => showInteractionHint && setShowInteractionHint(false)} sx={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', zIndex: 100, pointerEvents: showInteractionHint ? 'auto' : 'none', backgroundColor: showInteractionHint ? 'rgba(0, 0, 0, 0.82)' : 'transparent' }}>
-                    <AnimatePresence>
-                        {showInteractionHint && (
-                            <Box sx={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', cursor: 'pointer', pointerEvents: 'auto' }}>
-                                <Typography sx={{ maxWidth: 260, px: 2, color: 'white', fontSize: 15, lineHeight: 1.4, textAlign: 'center', textShadow: '0 1px 4px rgba(0,0,0,0.9)' }}>
-                                    Use {'<'} and {'>'} to change slides. Use ^ and v to change pages.
-                                </Typography>
-                            </Box>
-                        )}
-                    </AnimatePresence>
-                </Box>
+      {/* Navigation controls */}
+      <Box
+        sx={{
+          pointerEvents: 'auto',
+          opacity: isScrolled ? 1 : 0.85,
+          transition: 'opacity 0.5s ease',
+          position: 'absolute',
+          bottom: 20,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          gap: 1.5,
+          zIndex: 10,
+          width: 'max-content',
+          maxWidth: '95%',
+        }}
+      >
+        <Chip
+          label="GALLERY"
+          onClick={() => handleTabChange('gallery')}
+          sx={chipStyles('gallery', '#e4c28f')}
+        />
 
-                {showInteractionHint && (
-                    <Box sx={{ position: 'absolute', inset: 0, zIndex: 105, pointerEvents: 'none' }}>
-                        <ScaledSlide>
-                            <Box sx={{ position: 'relative', width: 760, height: 608 }}>
-                                <Box component={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 6.8, duration: 0.6 }} sx={{ position: 'absolute', bottom: 160, left: '92.5%', transform: 'translateX(-50%)', display: 'grid', gridTemplateColumns: '40px 70px 40px', gridTemplateRows: '40px 70px 40px', gap: 2 }}>
-                                    <Button variant="contained" color="primary" disabled sx={{ gridColumn: 2, gridRow: 1, minWidth: 70, minHeight: 40, opacity: 1, '&.Mui-disabled': { color: 'white', backgroundColor: 'rgba(25,118,210,0.72)', border: '2px solid rgba(255,255,255,0.95)', boxShadow: '0 0 0 3px rgba(255,255,255,0.85), 0 0 22px rgba(90,180,255,0.95)' } }}>{'^'}</Button>
-                                    <Button variant="contained" color="primary" disabled sx={{ gridColumn: 1, gridRow: 2, minWidth: 40, minHeight: 70, opacity: 1, '&.Mui-disabled': { color: 'white', backgroundColor: 'rgba(25,118,210,0.72)', border: '2px solid rgba(255,255,255,0.95)', boxShadow: '0 0 0 3px rgba(255,255,255,0.85), 0 0 22px rgba(90,180,255,0.95)' } }}>{'<'}</Button>
-                                    <Button variant="contained" color="primary" disabled sx={{ gridColumn: 3, gridRow: 2, minWidth: 40, minHeight: 70, opacity: 1, '&.Mui-disabled': { color: 'white', backgroundColor: 'rgba(25,118,210,0.72)', border: '2px solid rgba(255,255,255,0.95)', boxShadow: '0 0 0 3px rgba(255,255,255,0.85), 0 0 22px rgba(90,180,255,0.95)' } }}>{'>'}</Button>
-                                    <Button variant="contained" color="primary" disabled sx={{ gridColumn: 2, gridRow: 3, minWidth: 70, minHeight: 40, opacity: 1, '&.Mui-disabled': { color: 'white', backgroundColor: 'rgba(25,118,210,0.72)', border: '2px solid rgba(255,255,255,0.95)', boxShadow: '0 0 0 3px rgba(255,255,255,0.85), 0 0 22px rgba(90,180,255,0.95)' } }}>{'v'}</Button>
-                                </Box>
-                            </Box>
-                        </ScaledSlide>
-                    </Box>
-                )}
+        <Chip
+          label="PROJECTS"
+          onClick={() => handleTabChange('projects')}
+          sx={chipStyles('projects', '#a9d6b7')}
+        />
 
-                <Box sx={{ position: 'absolute', inset: 0, zIndex: showInteractionHint ? 90 : 110, pointerEvents: 'none' }}>
-                    <ScaledSlide>
-                        <Box sx={{ position: 'relative', width: 760, height: 608 }}>
-                            <Box component={motion.div} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 6, duration: 0.8 }} sx={{ position: 'absolute', bottom: 160, left: '92.5%', transform: 'translateX(-50%)', display: 'grid', gridTemplateColumns: '40px 70px 40px', gridTemplateRows: '40px 70px 40px', gap: 2, pointerEvents: 'auto' }}>
-                                <Button variant="contained" color="primary" sx={{ gridColumn: 2, gridRow: 1, minWidth: 70, minHeight: 40 }} onClick={() => navigateByPage(-1)}>{'^'}</Button>
-                                <Button variant="contained" color="primary" sx={{ gridColumn: 1, gridRow: 2, minWidth: 40, minHeight: 70 }} onClick={() => currentSlides && setSlideIndex((slideIndex - 1 + currentSlides.length) % currentSlides.length)}>{'<'}</Button>
-                                <Button variant="contained" color="primary" sx={{ gridColumn: 3, gridRow: 2, minWidth: 40, minHeight: 70 }} onClick={() => currentSlides && setSlideIndex((slideIndex + 1) % currentSlides.length)}>{'>'}</Button>
-                                <Button variant="contained" color="primary" sx={{ gridColumn: 2, gridRow: 3, minWidth: 70, minHeight: 40 }} onClick={() => navigateByPage(1)}>{'v'}</Button>
-                            </Box>
-                        </Box>
-                    </ScaledSlide>
-                </Box>
+        <Chip
+          label="EXPERIENCE"
+          onClick={() => handleTabChange('experience')}
+          sx={chipStyles('experience', '#11d4e6')}
+        />
 
-                <Box component={motion.div} id="camera_screen" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{delay: 6, duration: 1.2, ease: "easeInOut"}}
-                    style={{ 
-                        backgroundColor: 'rgba(0, 0, 0, 0.7)', 
-                        width: '49%',
-                        height: '70%',
-                        position: 'absolute',
-                        top: '22%',
-                        left: '11%',
-                        zIndex: 10,
-                        border: '2px solid white',
-                        overflow: 'hidden'
-                    }}
-                >
-                    {currentSlides ? (
-                        <AnimatePresence initial={false} mode="wait">
-                            <motion.div key={`${currentPage}-${slideIndex}`} initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} transition={{ duration: 0.45 }} style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', boxSizing: 'border-box' }}>
-                                {currentSlides[slideIndex]}
-                            </motion.div>
-                        </AnimatePresence>
-                    ) : null}
+        <Chip
+          label="HOME"
+          onClick={() => handleTabChange('home')}
+          sx={chipStyles('home', '#d2b5ff')}
+        />
 
-                </Box>
-            </Box>
-        </Box>
-        </>
-    )
-});
-
-export default Main;
+        <Chip
+          label="SHUTTER"
+          onClick={() => {
+            // Connect this to the actual shutter handler when available.
+            console.log('Shutter button clicked!');
+          }}
+          sx={{
+            ...chipStyles('gallery', '#f6f4ef'),
+            backgroundColor: 'rgba(255,255,255,0.16)',
+            color: '#f6f4ef',
+            '&:hover': {
+              backgroundColor: 'rgba(255,255,255,0.3)',
+            },
+          }}
+        />
+      </Box>
+    </Box>
+  );
+}

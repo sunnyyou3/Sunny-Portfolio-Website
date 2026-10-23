@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camera Theme Test - Black Screen Isolation</title>
+  <style>
+    /* CRITICAL: Full viewport setup - this is the most common cause of black screens */
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: 'Inter', 'system-ui', sans-serif;
+      background: #1a1a1e;
+    }
+    
+    #root {
+      width: 100%;
+      height: 100vh;
+    }
+    
+    /* Canvas must fill its container */
+    #react-root canvas,
+    .canvas-container canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    
+    /* Demo content area */
+    .demo-content {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      color: #f6f4ef;
+      background: rgba(0,0,0,0.7);
+      padding: 20px;
+      border-radius: 8px;
+      z-index: 100;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  
+  <!-- Demo info -->
+  <div class="demo-content">
+    <h3>Camera Theme Test</h3>
+    <p>If you see this text and the Three.js canvas below, the CSS viewport fix works.</p>
+    <p>Expected: You should see a dark camera model (not black screen)</p>
+    <p>If you see only black above this text, the canvas height/width needs fixing.</p>
+  </div>
+  
+  <!-- NOTE: This script references the project's built files.
+       In a real setup, you'd use your Vite/React build output.
+       For this test, we'll use CDN versions for demo purposes. -->
+  
+  <script type="module">
+    // Demo: Simple Three.js scene to test if canvas renders
+    // In production, this would import your Camera3DScene component
+    
+    console.log('Test page loaded');
+    
+    // minimal Three.js demo to verify canvas works
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x1a1a1e);
+    
+    const camera = new THREE.PerspectiveCamera(45, 2, 0.1, 100);
+    camera.position.set(0, 0, 4.5);
+    
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.1;
+    document.body.appendChild(renderer.domElement);
+    
+    // Simple lights
+    const light1 = new THREE.DirectionalLight(0xffffff, 2.5);
+    light1.position.set(3, 4, 3);
+    scene.add(light1);
+    
+    const light2 = new THREE.DirectionalLight(0xffeedd, 1.2);
+    light2.position.set(-2, 2, 2);
+    scene.add(light2);
+    
+    const ambient = new THREE.AmbientLight(0x222233, 0.3);
+    scene.add(ambient);
+    
+    // Simple cube to verify rendering
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const material = new THREE.MeshStandardMaterial({ color: 0x252528 });
+    const cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+    
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.autoRotate = false;
+    
+    function animate() {
+      cube.rotation.y += 0.01;
+      cube.rotation.x += 0.005;
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+    animate();
+    
+    // Test: if this runs without errors, the canvas/Three.js works
+    console.log('Three.js demo rendered successfully');
+    document.querySelector('.demo-content p:last-child').textContent = 
+      'Three.js works! If the cube above is visible (not black), the canvas setup is correct.';
+  </script>
+</body>
+</html>

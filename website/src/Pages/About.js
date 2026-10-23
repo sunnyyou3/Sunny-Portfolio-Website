@@ -1,90 +1,111 @@
 import React from 'react';
-import { Box, Chip, Typography } from '@mui/material';
+import { Box, Typography, Chip } from '@mui/material';
 import ScaledSlide from '../components/ScaledSlide';
-import portrait from '../assets/Portfolio/Images/Profile/IMGP4462.jpg';
 
-const skills = ['React', 'Java', 'JavaScript', 'Databases', 'SQL', 'Full Stack'];
+// Image context for about-related images (if any)
+const imageContext = require.context('../assets/Portfolio/Images/About', false, /\.(png|jpe?g|webp|gif)$/i);
+const aboutImages = imageContext
+    .keys()
+    .sort()
+    .map((filePath) => {
+        const image = imageContext(filePath);
+        return image.default || image;
+    });
 
-const slideSurface = {
+const aboutSurface = {
     width: 760,
     height: 608,
     boxSizing: 'border-box',
     overflow: 'hidden',
+    background: '#08090b',
     color: '#f6f4ef',
-    background: 'linear-gradient(135deg, #111217 0%, #202832 58%, #3c3030 100%)',
 };
 
-const sectionLabel = {
-    color: '#e8b6a2',
-    fontFamily: 'monospace',
-    fontSize: 12,
-    letterSpacing: 2,
-};
-
-function ProfileSlide() {
-    return (
-        <ScaledSlide>
-        <Box sx={{ ...slideSurface, display: 'grid', gridTemplateColumns: '0.8fr 1.2fr' }}>
-            <Box sx={{ minHeight: '100%', position: 'relative', overflow: 'hidden' }}>
-                <Box component="img" src={portrait} alt="Sunny You" sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', filter: 'saturate(0.8)' }} />
-                <Box sx={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(17,18,23,0.05), rgba(17,18,23,0.8))' }} />
-                <Typography sx={{ position: 'absolute', bottom: 28, left: 28, ...sectionLabel }}>01 / PROFILE</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', p: 4 }}>
-                <Typography sx={sectionLabel}>ABOUT SUNNY YOU</Typography>
-                <Typography variant="h3" sx={{ mt: 1.5, fontWeight: 800, lineHeight: 1, fontSize: '3.45rem' }}>I build with curiosity.</Typography>
-                <Typography sx={{ maxWidth: 480, mt: 2.5, color: 'rgba(246,244,239,0.78)', fontSize: 16, lineHeight: 1.65 }}>I am a Photographer and Software Developer focused on solving difficult problems, learning continuously, and creating tools that are useful to the people who rely on them.</Typography>
-                <Typography sx={{ maxWidth: 480, mt: 1.5, color: 'rgba(246,244,239,0.62)', fontSize: 15, lineHeight: 1.6 }}>My work has taken me from the United States to Japan, across applications, databases, education, and everything in between.</Typography>
+/** Introduction / Who section */
+const whoSlide = (
+    <ScaledSlide key="about-who">
+        <Box sx={{ ...aboutSurface, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: 5, background: 'radial-gradient(circle at 85% 15%, rgba(228,194,193,0.3), transparent 35%), linear-gradient(135deg, #101217, #252521)' }}>
+            <Typography sx={{ color: '#e4c28f', fontFamily: 'monospace', fontSize: 12, letterSpacing: 2 }}>WHO AM I</Typography>
+            <Box sx={{ maxWidth: 560 }}>
+                <Typography variant="h2" sx={{ fontSize: '3.8rem', fontWeight: 800, lineHeight: 0.95 }}>SUNNY YOU</Typography>
+                <Typography sx={{ mt: 2, maxWidth: 490, color: 'rgba(246,244,239,0.78)', fontSize: 17, lineHeight: 1.5} >
+                    I am a Photographer and Software Developer focused on solving difficult problems, learning continuously, and creating tools that are useful to the people who rely on them.
+                </Typography>
             </Box>
         </Box>
-        </ScaledSlide>
-    );
-}
+    </ScaledSlide>
+);
 
-function SkillsSlide() {
-    return (
-        <ScaledSlide>
-        <Box sx={{ ...slideSurface, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: 4, background: 'linear-gradient(135deg, #15171e, #27322f)' }}>
-            <Box>
-                <Typography sx={sectionLabel}>02 / TOOLKIT</Typography>
-                <Typography variant="h3" sx={{ maxWidth: 520, mt: 1.5, fontWeight: 800, lineHeight: 1, fontSize: '3.6rem' }}>Many tools, one goal.</Typography>
-                <Typography sx={{ maxWidth: 500, mt: 2, color: 'rgba(246,244,239,0.75)', fontSize: 16, lineHeight: 1.6 }}>I enjoy moving between the interface, the service behind it, and the data that makes the whole system work.</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, maxWidth: 560 }}>
-                {skills.map((skill) => <Chip key={skill} label={skill} sx={{ color: '#f6f4ef', border: '1px solid rgba(232,182,162,0.58)', background: 'rgba(255,255,255,0.04)', fontSize: 14 }} />)}
-            </Box>
-            </Box>
-            </ScaledSlide>
-    );
-}
-
-function ConnectSlide() {
-    return (
-        <ScaledSlide>
-        <Box sx={{ ...slideSurface, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: 4, background: 'linear-gradient(135deg, #3c3030, #17191f 68%)' }}>
-            <Box>
-                <Typography sx={sectionLabel}>03 / CONNECT</Typography>
-                <Typography variant="h3" sx={{ maxWidth: 580, mt: 1.5, fontWeight: 800, lineHeight: 1, fontSize: '3.5rem' }}>Good work starts with a conversation.</Typography>
-            </Box>
-            <Box>
-                <Typography sx={{ maxWidth: 500, color: 'rgba(246,244,239,0.75)', fontSize: 16, lineHeight: 1.6 }}>Whether it is a new idea, a tricky technical problem, or an opportunity to learn together, I would be glad to hear from you.</Typography>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2.5 }}>
-                    <Chip label="GitHub" component="a" href="https://github.com/sunnyyou3" clickable sx={{ color: '#111217', background: '#e8b6a2', fontWeight: 700 }} />
-                    <Chip label="LinkedIn" component="a" href="https://linkedin.com/in/sunnyyou3" clickable variant="outlined" sx={{ color: '#f6f4ef', borderColor: 'rgba(255,255,255,0.35)' }} />
-                    <Chip label="Email" component="a" href="mailto:yousunny3@gmail.com" clickable variant="outlined" sx={{ color: '#f6f4ef', borderColor: 'rgba(255,255,255,0.35)' }} />
+/** Projects / work section */
+const projectsSlide = (
+    <ScaledSlide key="about-projects">
+        <Box sx={{ ...aboutSurface, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: 5, background: 'radial-gradient(circle at 85% 15%, rgba(228,194,193,0.3), transparent 35%), linear-gradient(135deg, #101217, #252521)' }}>
+            <Typography sx={{ color: '#a9d6b7', fontFamily: 'monospace', fontSize: 12, letterSpacing: 2 }}>PROJECTS</Typography>
+            <Box sx={{ maxWidth: 560 }}>
+                <Typography sx={{ mt: 2, color: 'rgba(246,244,239,0.8)', fontSize: 17, lineHeight: 1.5} >
+                    I build with curiosity. I am a Software Engineer focused on solving difficult problems, learning continuously, and creating tools that are useful to the people who rely on them.
+                </Typography>
+                <Box sx={{ mt: 3, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                    <Chip label="VR/Unity" sx={{ color: '#111217', background: '#a9d6b7', fontWeight: 700 }} />
+                    <Chip label="React" sx={{ color: '#111217', background: '#a9d6b7', fontWeight: 700 }} />
+                    <Chip label="Node" sx={{ color: '#111217', background: '#a9d6b7', fontWeight: 700 }} />
                 </Box>
             </Box>
         </Box>
-        </ScaledSlide>
-    );
-}
+    </ScaledSlide>
+);
 
-export const slides = [
-    <ProfileSlide key="about-profile" />,
-    <SkillsSlide key="about-skills" />,
-    <ConnectSlide key="about-connect" />,
+/** Contact / get in touch section */
+const contactSlide = (
+    <ScaledSlide key="about-contact">
+        <Box sx={{ ...aboutSurface, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: 5, background: 'radial-gradient(circle at 85% 15%, rgba(228,194,193,0.3), transparent 35%), linear-gradient(135deg, #101217, #252521)' }}>
+            <Typography sx={{ color: '#e8b6a2', fontFamily: 'monospace', fontSize: 12, letterSpacing: 2 }}>GET IN TOUCH</Typography>
+            <Box sx={{ maxWidth: 560 }}>
+                <Typography sx={{ mt: 2, color: 'rgba(246,244,239,0.75)', fontSize: 17, lineHeight: 1.5} >
+                    Whether it is a new idea, a tricky technical problem, or an opportunity to learn together, I would be glad to hear from you.
+                </Typography>
+                <div sx={{ mt: 24, display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <a
+                        href="https://github.com/sunnyyou3"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{
+                            color: '#111217',
+                            background: '#e8b6a2',
+                            padding: '8px 16px',
+                            borderRadius: '4px',
+                            textDecoration: 'none',
+                            fontWeight: 700,
+                            fontSize: '12px',
+                        }}
+                    >
+                        GitHub
+                    </a>
+                    <a
+                        href="mailto:yousunny3@gmail.com"
+                        sx={{
+                            color: '#f6f4ef',
+                            border: '1px solid rgba(255,255,255,0.35)',
+                            padding: '8px 16px',
+                            borderRadius: '4px',
+                            textDecoration: 'none',
+                            fontSize: '12px',
+                        }}
+                    >
+                        Email
+                    </a>
+                </div>
+            </Box>
+        </Box>
+    </ScaledSlide>
+);
+
+const aboutSlides = [
+    whoSlide,
+    projectsSlide,
+    contactSlide,
 ];
 
 export default function About() {
-    return slides[0];
-}
+    return <Box>{aboutSlides.map((slide) => slide)}</Box>;
+};

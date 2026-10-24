@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { about } from '../data/about';
+import MetroHero from './ui/MetroHero';
 
 const STORAGE_KEY = 'hero-theme-preference';
 
@@ -125,14 +126,33 @@ export const Hero = () => {
     });
   }, []);
 
+  const [videoProgress, setVideoProgress] = useState(0);
+
   const t = themeTokens[theme];
+
+  // Fade-out factor: 1 when videoProgress <= 0.85, linearly drops to 0 at 1.0
+  const contentOpacity = videoProgress > 0.85 ? Math.max(0, 1 - (videoProgress - 0.85) / 0.15) : 1;
 
   return (
     <section
-      className="hero-section min-h-screen w-full flex items-center overflow-hidden relative transition-colors duration-700"
-      style={{ backgroundColor: t.bg }}
+      className="hero-section h-screen w-full flex items-center overflow-hidden relative transition-colors duration-700"
+      style={{ backgroundColor: 'transparent' }}
       aria-label="Introduction"
     >
+      {/* Video background — locks scroll while video scrubs, releases when done */}
+      <MetroHero
+        title=""
+        tagline=""
+        scrollHint=""
+        signature={false}
+        lockUntilEnd={true}
+        onProgress={setVideoProgress}
+        className="absolute inset-0 z-0"
+        style={{ position: "absolute", height: "100%" }}
+      />
+
+      {/* All existing content — wrapped in relative z-10, full height for centering */}
+      <div className="relative z-10 h-full flex items-center justify-center">
       {/* Theme toggle — top right */}
       <motion.button
         onClick={toggleTheme}
@@ -159,11 +179,11 @@ export const Hero = () => {
         </AnimatePresence>
       </motion.button>
 
-      {/* Ambient background grain + radial gradients */}
+      {/* Ambient background grain + radial gradients — kept subtle over video */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div
           className="absolute inset-0"
-          style={{ opacity: t.noiseOpacity, color: t.grainColor }}
+          style={{ opacity: t.noiseOpacity * 0.5, color: t.grainColor }}
         >
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
             <filter id="hero-noise">
@@ -172,18 +192,6 @@ export const Hero = () => {
             <rect width="100%" height="100%" filter="url(#hero-noise)" />
           </svg>
         </div>
-        <div
-          className="absolute top-1/4 -right-1/4 w-[600px] h-[600px] rounded-full blur-[120px]"
-          style={{ background: `radial-gradient(circle, ${t.ambientGlow1} 0%, transparent 70%)` }}
-        />
-        <div
-          className="absolute bottom-1/4 -left-1/4 w-[500px] h-[500px] rounded-full blur-[100px]"
-          style={{ background: `radial-gradient(circle, ${t.ambientGlow2} 0%, transparent 70%)` }}
-        />
-        <div
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full blur-[140px]"
-          style={{ background: `radial-gradient(circle, ${t.ambientGlow3} 0%, transparent 70%)` }}
-        />
       </div>
 
       {/* Decorative corner accents */}
@@ -206,7 +214,7 @@ export const Hero = () => {
         aria-hidden="true"
       />
 
-      <div className="w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-14 xl:px-20 py-16 md:py-0 flex flex-col-reverse md:flex-row items-center gap-10 md:gap-16 lg:gap-20 relative z-10">
+      <div className="w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-14 xl:px-20 flex flex-col-reverse md:flex-row items-center justify-center gap-10 md:gap-16 lg:gap-20 relative z-10">
 
         {/* --- Text column --- */}
         <motion.div
@@ -214,6 +222,7 @@ export const Hero = () => {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
+          style={{ opacity: contentOpacity }}
         >
 
           {/* Status badge */}
@@ -316,6 +325,7 @@ export const Hero = () => {
           initial="hidden"
           animate="visible"
           variants={imageVariants}
+          style={{ opacity: contentOpacity }}
         >
           {/* Image wrapper */}
           <div className="relative group">
@@ -350,6 +360,7 @@ export const Hero = () => {
           </div>
         </motion.div>
 
+      </div>
       </div>
     </section>
   );

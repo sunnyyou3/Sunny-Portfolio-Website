@@ -112,7 +112,7 @@ export const GallerySection = () => {
             >
               <img
                 src={currentPhoto}
-                alt={`Photo ${currentIndex + 1} in gallery`}
+                alt={`Slide ${currentIndex + 1}`}
                 className="max-w-full max-h-[55vh] md:max-h-[60vh] object-contain rounded-sm"
               />
               {/* File number badge */}

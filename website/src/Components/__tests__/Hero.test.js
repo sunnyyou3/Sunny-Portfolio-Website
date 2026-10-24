@@ -24,10 +24,11 @@ describe('Hero', () => {
     expect(images.length).toBeGreaterThan(0);
   });
 
-  it('has white background', () => {
+  it('has transparent background (video hero)', () => {
     render(<Hero />);
     const heroSection = document.querySelector('.hero-section');
-    expect(heroSection).toHaveClass('bg-white');
+    expect(heroSection).toBeInTheDocument();
+    expect(heroSection.style.backgroundColor).toBe('transparent');
   });
 
   it('renders a scroll prompt', () => {

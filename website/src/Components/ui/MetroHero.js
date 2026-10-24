@@ -178,8 +178,9 @@ export default function MetroHero({
       currentProgress += (targetProgress - currentProgress) * 0.18
 
       // Notify parent of progress changes (throttled)
-      if (onProgress && lastProgressRef.current !== null) {
-        const diff = Math.abs(currentProgress - lastProgressRef.current)
+      if (onProgress) {
+        const last = lastProgressRef.current ?? -1
+        const diff = Math.abs(currentProgress - last)
         if (diff > 0.01) {
           onProgress(currentProgress)
           lastProgressRef.current = currentProgress

@@ -11,44 +11,18 @@ import { CareerSection } from './CareerSection';
  * ScrollManager - The main scroll-driven experience orchestrator.
  * 
  * Flow:
- * 1. Hero (MetroHero + CameraVideo) — scroll-locked stages, zooms to reveal portfolio
+ * 1. Hero (MetroHero + CameraVideo) — one scroll gesture starts both videos in sequence
  * 2. PortfolioMenu — appears after CameraVideo zoom-to-reveal
  * 3. Portfolio sections — Projects, Gallery, About, Career
  */
 export const ScrollManager = () => {
   const scrollContainerRef = useRef(null);
-  const reverseScrollStartedAtRef = useRef(null);
-  const lastReverseScrollAtRef = useRef(null);
   const [portfolioSection, setPortfolioSection] = useState(null);
   const [cameraRevealed, setCameraRevealed] = useState(false);
 
-  // Notify Hero that the camera zoom-to-reveal has completed
-  const handleCameraReveal = useCallback((revealed) => {
-    setCameraRevealed(revealed);
-    if (!revealed) setPortfolioSection(null);
+  const handleCameraReveal = useCallback(() => {
+    setCameraRevealed(true);
   }, []);
-
-  const handleOverlayWheelCapture = useCallback((event) => {
-    event.stopPropagation();
-
-    const now = performance.now();
-    if (event.deltaY >= 0 ||
-        (lastReverseScrollAtRef.current !== null && now - lastReverseScrollAtRef.current > 180)) {
-      reverseScrollStartedAtRef.current = null;
-    }
-
-    if (event.deltaY < 0) {
-      reverseScrollStartedAtRef.current ??= now;
-      if (now - reverseScrollStartedAtRef.current >= 850) {
-        reverseScrollStartedAtRef.current = null;
-        lastReverseScrollAtRef.current = null;
-        handleCameraReveal(false);
-        return;
-      }
-    }
-
-    lastReverseScrollAtRef.current = event.deltaY < 0 ? now : null;
-  }, [handleCameraReveal]);
 
   // Handle portfolio section selection
   const handleSelectSection = (sectionId) => {
@@ -61,7 +35,7 @@ export const ScrollManager = () => {
 
   return (
     <div ref={scrollContainerRef} className="scroll-container relative">
-      {/* === HERO (MetroHero → CameraVideo → zoom-to-reveal) === */}
+      {/* === HERO (one gesture: MetroHero → CameraVideo → zoom-to-reveal) === */}
       <div className="relative h-[100vh]">
         <Hero onCameraReveal={handleCameraReveal} />
       </div>
@@ -71,9 +45,6 @@ export const ScrollManager = () => {
         {cameraRevealed && (
           <motion.div
             className="fixed inset-3 md:inset-8 z-50 overflow-hidden rounded-xl"
-            onWheelCapture={handleOverlayWheelCapture}
-            onTouchStartCapture={(event) => event.stopPropagation()}
-            onTouchMoveCapture={(event) => event.stopPropagation()}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

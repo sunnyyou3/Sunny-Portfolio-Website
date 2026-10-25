@@ -18,7 +18,7 @@ function InitializeApp() {
   }, []);
 
   return (
-    <div style={{ position: "relative", width: "100vw", height: "100vh", backgroundColor: "black" }}>
+    <div style={{ position: "relative", width: "100%", height: "100vh", backgroundColor: "black" }}>
       <AnimatePresence>
         {!loaded ? (
           <motion.div

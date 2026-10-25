@@ -15,6 +15,7 @@ const SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, 
 
 const COL_BG = "#05070d"
 const COL_TEXT = "#f2f4f8"
+const AMBIENT_LOOP_SECONDS = 1
 
 function clamp(v, min, max) {
   return Math.min(max, Math.max(min, v))
@@ -29,6 +30,8 @@ export default function MetroHero({
   scrubDistance = 3200,
   className,
   style,
+  initialProgress = 0,
+  interactive = true,
   /** When true, locks body scroll until video finishes, then releases. */
   lockUntilEnd = false,
   /** Called on each animation frame with current progress (0-1). Throttled to >0.01 changes. */
@@ -39,9 +42,10 @@ export default function MetroHero({
   const titleRef = useRef(null)
   const hintRef = useRef(null)
   const taglineRef = useRef(null)
-  const progressBarRef = useRef(null)
   const lastProgressRef = useRef(null)
   const lockReleasedRef = useRef(false)
+  const interactiveRef = useRef(interactive)
+  interactiveRef.current = interactive
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
@@ -55,53 +59,86 @@ export default function MetroHero({
       window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
     let duration = 0
+    let ambientLoopEnd = 0
+    let ambientMode = false
+    let scrubStartTime = initialProgress > 0 ? 0 : null
+    let scrubStarted = initialProgress > 0
+    let userHasStartedScrubbing = false
     let rafId = 0
-    let targetProgress = 0
-    let currentProgress = 0
+    let targetProgress = clamp(initialProgress, 0, 1)
+    let currentProgress = targetProgress
+    let lastFrameTime = null
+    lastProgressRef.current = currentProgress
     let hasStartedScrolling = false
     let isSeeking = false
     let pendingTime = null
+    let lastSeekTime = null
     let isLocked = false
     let lockedScrollY = 0
     let touchStartY = 0
 
     const onLoadedData = () => {
       duration = video.duration || 0
-      setReady(true)
+      ambientLoopEnd = Math.max(0, Math.min(AMBIENT_LOOP_SECONDS, duration - 0.05))
       if (reduceMotion) {
         video.currentTime = duration * 0.92
+        currentProgress = 0.92
+        targetProgress = 0.92
+        setReady(true)
+      } else if (initialProgress > 0 && duration > 0) {
+        const initialTime = clamp(initialProgress, 0, 1) * duration
+        lastSeekTime = initialTime
+        isSeeking = true
+        video.currentTime = initialTime
+      } else {
+        setReady(true)
+        if (initialProgress === 0 && !userHasStartedScrubbing) {
+          ambientMode = true
+          const playPromise = video.play()
+          if (playPromise && typeof playPromise.catch === "function") {
+            playPromise.catch((error) => {
+              console.warn("MetroHero ambient playback could not start.", error)
+            })
+          }
+        } else if (initialProgress === 0) {
+          scrubStartTime = video.currentTime
+          scrubStarted = true
+        }
       }
     }
     video.addEventListener("loadeddata", onLoadedData)
 
-    // iOS Safari kickstart
-    const kickstartLoad = () => {
-      const p = video.play()
-      if (p && typeof p.then === "function") {
-        p.then(() => video.pause()).catch(() => {})
-      } else {
-        video.pause()
+    const onTimeUpdate = () => {
+      if (ambientMode && ambientLoopEnd > 0 && video.currentTime >= ambientLoopEnd) {
+        video.currentTime = 0
       }
     }
-    kickstartLoad()
+    video.addEventListener("timeupdate", onTimeUpdate)
 
     const onSeeked = () => {
       isSeeking = false
+      setReady(true)
       if (pendingTime !== null) {
         const t = pendingTime
         pendingTime = null
-        isSeeking = true
-        video.currentTime = t
+        if (Math.abs(t - video.currentTime) >= 1 / 30) {
+          isSeeking = true
+          lastSeekTime = t
+          video.currentTime = t
+        }
       }
     }
     video.addEventListener("seeked", onSeeked)
 
     function seekTo(t) {
+      const previousTime = pendingTime ?? lastSeekTime ?? video.currentTime
+      if (Math.abs(t - previousTime) < 1 / 30) return
       if (isSeeking) {
         pendingTime = t
         return
       }
       isSeeking = true
+      lastSeekTime = t
       video.currentTime = t
     }
 
@@ -140,10 +177,25 @@ export default function MetroHero({
     }
 
     function addDelta(deltaY) {
+      if (!interactiveRef.current) return
+      if (deltaY !== 0) {
+        userHasStartedScrubbing = true
+      }
+      if (deltaY !== 0 && ambientMode) {
+        video.pause()
+        scrubStartTime = video.currentTime
+        lastSeekTime = scrubStartTime
+        pendingTime = null
+        isSeeking = false
+        ambientMode = false
+        scrubStarted = true
+      }
       const next = clamp(targetProgress + deltaY / scrubDistance, 0, 1)
+      if (targetProgress === 1 && currentProgress === 1 && next === 1 && deltaY > 0 && onProgress) {
+        onProgress(1)
+      }
       targetProgress = next
       if (targetProgress > 0.001) hasStartedScrolling = true
-      return true
     }
 
     const onWheel = (e) => {
@@ -171,17 +223,24 @@ export default function MetroHero({
     window.addEventListener("wheel", onWheel, { passive: false })
     window.addEventListener("touchstart", onTouchStart, { passive: true })
     window.addEventListener("touchmove", onTouchMove, { passive: false })
-    section.addEventListener("touchstart", onTouchStart, { passive: true, capture: true })
-    section.addEventListener("touchmove", onTouchMove, { passive: false, capture: true })
+    function frame(now) {
+      const elapsed = lastFrameTime === null ? 1000 / 60 : Math.min(now - lastFrameTime, 50)
+      lastFrameTime = now
+      const remainingProgress = targetProgress - currentProgress
+      const smoothing = 1 - Math.pow(1 - 0.18, elapsed / (1000 / 60))
+      currentProgress = Math.abs(remainingProgress) < 0.001
+        ? targetProgress
+        : currentProgress + remainingProgress * smoothing
 
-    function frame() {
-      currentProgress += (targetProgress - currentProgress) * 0.18
+      if (ambientMode && ambientLoopEnd > 0 && video.currentTime >= ambientLoopEnd) {
+        video.currentTime = 0
+      }
 
       // Notify parent of progress changes (throttled)
-      if (onProgress) {
+      if (interactiveRef.current && onProgress) {
         const last = lastProgressRef.current ?? -1
         const diff = Math.abs(currentProgress - last)
-        if (diff > 0.01) {
+        if (diff > 0.01 || ((currentProgress === 0 || currentProgress === 1) && last !== currentProgress)) {
           onProgress(currentProgress)
           lastProgressRef.current = currentProgress
         }
@@ -200,8 +259,27 @@ export default function MetroHero({
         }
       }
 
-      if (duration > 0) {
-        seekTo(currentProgress * duration)
+      if (duration > 0 && !ambientMode) {
+        const startTime = scrubStartTime ?? 0
+        seekTo(startTime + currentProgress * (duration - startTime))
+      }
+
+      if (
+        scrubStarted &&
+        !ambientMode &&
+        targetProgress === 0 &&
+        currentProgress === 0 &&
+        !isSeeking &&
+        pendingTime === null &&
+        Math.abs(video.currentTime - (scrubStartTime ?? 0)) < 1 / 30
+      ) {
+        ambientMode = true
+        const playPromise = video.play()
+        if (playPromise && typeof playPromise.catch === "function") {
+          playPromise.catch((error) => {
+            console.warn("MetroHero ambient playback could not resume.", error)
+          })
+        }
       }
 
       if (videoRef.current) {
@@ -223,10 +301,6 @@ export default function MetroHero({
         taglineRef.current.style.transform = `translateY(${(1 - t) * 20}px) scale(${0.97 + t * 0.03})`
         taglineRef.current.style.filter = `blur(${(1 - t) * 8}px)`
       }
-      if (progressBarRef.current) {
-        progressBarRef.current.style.transform = `scaleX(${currentProgress})`
-      }
-
       rafId = requestAnimationFrame(frame)
     }
 
@@ -236,18 +310,17 @@ export default function MetroHero({
 
     return () => {
       video.removeEventListener("loadeddata", onLoadedData)
+      video.removeEventListener("timeupdate", onTimeUpdate)
       video.removeEventListener("seeked", onSeeked)
       window.removeEventListener("wheel", onWheel)
       window.removeEventListener("touchstart", onTouchStart)
       window.removeEventListener("touchmove", onTouchMove)
-      section.removeEventListener("touchstart", onTouchStart, true)
-      section.removeEventListener("touchmove", onTouchMove, true)
       cancelAnimationFrame(rafId)
       if (lockUntilEnd) {
         releaseLock()
       }
     }
-  }, [scrubDistance, lockUntilEnd, onProgress])
+  }, [scrubDistance, lockUntilEnd, initialProgress, onProgress])
 
   return (
     <div
@@ -384,29 +457,6 @@ export default function MetroHero({
           `}</style>
           <path d="M7 1 L7 17 M2 12 L7 17 L12 12" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-      </div>
-
-      {/* Thin progress line — fills as the video advances. */}
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          bottom: 0,
-          height: 2,
-          background: "rgba(255,255,255,0.12)",
-        }}
-      >
-        <div
-          ref={progressBarRef}
-          style={{
-            height: "100%",
-            width: "100%",
-            background: "linear-gradient(90deg, rgba(255,255,255,0.5), rgba(255,255,255,0.95))",
-            transform: "scaleX(0)",
-            transformOrigin: "left center",
-          }}
-        />
       </div>
 
       {signature && (

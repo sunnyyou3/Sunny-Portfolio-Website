@@ -1,11 +1,8 @@
 import { useLayoutEffect, useRef, useState } from "react"
 
 // ─────────────────────────────────────────────────────────────
-// CAMERA VIDEO — scroll-locked video with zoom-to-reveal finish
-// Body is pinned while the video scrubs.
-// Wheel/touch input drives video.currentTime, forward and backward.
-// When the video reaches the end, the container zooms in (scale)
-// to reveal the portfolio menu underneath, then the page unlocks.
+// CAMERA VIDEO — autoplay video with zoom-to-reveal finish
+// Plays after MetroHero, then zooms in to reveal the portfolio menu.
 // No dependencies, system fonts only.
 // ─────────────────────────────────────────────────────────────
 
@@ -19,18 +16,10 @@ function clamp(v, min, max) {
 
 export default function CameraVideo({
   videoSrc = DEFAULT_VIDEO,
-  /** When true, locks body scroll until video finishes, then releases. */
-  lockUntilEnd = false,
-  /** Called on each animation frame with current progress (0-1). Throttled to >0.01 changes. */
   onProgress,
-  /** Extra scale applied during the zoom-to-reveal at the end. */
   zoomScale = 3,
-  initialProgress = 0,
-  /** Class name applied to the root container. */
   className,
-  /** Inline style applied to the root container. */
   style,
-  /** Called when the zoom-to-reveal completes. */
   onReveal,
   onReady,
 }) {
@@ -51,16 +40,9 @@ export default function CameraVideo({
 
     let duration = 0
     let rafId = 0
-    let targetProgress = clamp(initialProgress, 0, 1)
-    let currentProgress = targetProgress
-    let lastProgressFrameTime = null
-    lastProgressRef.current = currentProgress
-    let isSeeking = false
-    let pendingTime = null
-    let lastSeekTime = null
-    let isLocked = false
-    let lockedScrollY = 0
-    let touchStartY = 0
+    let targetProgress = 0
+    let currentProgress = 0
+    lastProgressRef.current = 0
     let hasRevealed = false
     let revealProgress = 0
     let lastFrameTime = null
@@ -70,125 +52,38 @@ export default function CameraVideo({
       setReady(true)
       if (onReady) onReady()
       if (reduceMotion) {
-        video.currentTime = duration * 0.95
-        currentProgress = 0.95
-        targetProgress = 0.95
+        video.currentTime = duration
+        currentProgress = 1
+        targetProgress = currentProgress
+      } else {
+        const playPromise = video.play()
+        if (playPromise && typeof playPromise.catch === "function") {
+          playPromise.catch((error) => {
+            console.error("CameraVideo playback could not start.", error)
+          })
+        }
       }
     }
     video.addEventListener("loadeddata", onLoadedData)
 
-    // iOS Safari kickstart
-    const kickstartLoad = () => {
-      const p = video.play()
-      if (p && typeof p.then === "function") {
-        p.then(() => video.pause()).catch(() => {})
-      } else {
-        video.pause()
+    const onTimeUpdate = () => {
+      if (duration > 0) {
+        targetProgress = clamp(video.currentTime / duration, 0, 1)
       }
     }
-    kickstartLoad()
-
-    const onSeeked = () => {
-      isSeeking = false
-      if (pendingTime !== null) {
-        const t = pendingTime
-        pendingTime = null
-        if (Math.abs(t - video.currentTime) >= 1 / 30) {
-          isSeeking = true
-          lastSeekTime = t
-          video.currentTime = t
-        }
-      }
+    const onEnded = () => {
+      targetProgress = 1
     }
-    video.addEventListener("seeked", onSeeked)
+    video.addEventListener("timeupdate", onTimeUpdate)
+    video.addEventListener("ended", onEnded)
 
-    function seekTo(t) {
-      const previousTime = pendingTime ?? lastSeekTime ?? video.currentTime
-      if (Math.abs(t - previousTime) < 1 / 30) return
-      if (isSeeking) {
-        pendingTime = t
-        return
-      }
-      isSeeking = true
-      lastSeekTime = t
-      video.currentTime = t
-    }
-
-    function engageLock() {
-      if (isLocked || typeof document === "undefined") return
-      isLocked = true
-      lockedScrollY = window.scrollY
-      const b = document.body.style
-      b.position = "fixed"
-      b.top = `-${lockedScrollY}px`
-      b.left = "0"
-      b.right = "0"
-      b.width = "100%"
-      b.height = "100%"
-      b.overscrollBehavior = "none"
-    }
-
-    function releaseLock() {
-      if (!isLocked || typeof document === "undefined") return
-      isLocked = false
-      const y = lockedScrollY
-      const b = document.body.style
-      b.position = ""
-      b.top = ""
-      b.left = ""
-      b.right = ""
-      b.width = ""
-      b.height = ""
-      b.overscrollBehavior = ""
-      window.scrollTo(0, y)
-    }
-
-    // Engage lock on mount if lockUntilEnd is true
-    if (lockUntilEnd) {
-      engageLock()
-    }
-
-    function addDelta(deltaY) {
-      const next = clamp(targetProgress + deltaY / 2800, 0, 1)
-      if (targetProgress === 0 && currentProgress === 0 && next === 0 && deltaY < 0 && onProgress) {
-        onProgress(0)
-      }
-      targetProgress = next
-    }
-
-    const onWheel = (e) => {
-      addDelta(e.deltaY)
-      if (isLocked && !hasRevealed) {
-        e.preventDefault()
-      }
-    }
-
-    const onTouchStart = (e) => {
-      touchStartY = e.touches[0] ? e.touches[0].clientY : 0
-    }
-    const onTouchMove = (e) => {
-      const y = e.touches[0] ? e.touches[0].clientY : touchStartY
-      const deltaY = touchStartY - y
-      touchStartY = y
-      addDelta(deltaY)
-      if (isLocked && !hasRevealed) {
-        e.preventDefault()
-      }
-    }
-
-    window.addEventListener("wheel", onWheel, { passive: false })
-    window.addEventListener("touchstart", onTouchStart, { passive: true })
-    window.addEventListener("touchmove", onTouchMove, { passive: false })
     function frame(now) {
-      const progressElapsed = lastProgressFrameTime === null
-        ? 1000 / 60
-        : Math.min(now - lastProgressFrameTime, 50)
-      lastProgressFrameTime = now
-      const remainingProgress = targetProgress - currentProgress
-      const smoothing = 1 - Math.pow(1 - 0.18, progressElapsed / (1000 / 60))
-      currentProgress = Math.abs(remainingProgress) < 0.001
-        ? targetProgress
-        : currentProgress + remainingProgress * smoothing
+      if (!reduceMotion && duration > 0) {
+        targetProgress = video.ended
+          ? 1
+          : clamp(video.currentTime / duration, 0, 1)
+      }
+      currentProgress = targetProgress
 
       // Notify parent of progress changes (throttled)
       if (onProgress) {
@@ -203,48 +98,39 @@ export default function CameraVideo({
       const elapsed = lastFrameTime === null ? 0 : now - lastFrameTime
       lastFrameTime = now
       const targetRevealProgress = clamp((currentProgress - 0.99) / 0.01, 0, 1)
-      const revealDelta = clamp(
-        targetRevealProgress - revealProgress,
-        -elapsed / 900,
-        elapsed / 900
-      )
-      revealProgress = clamp(revealProgress + revealDelta, 0, 1)
+      if (reduceMotion) {
+        revealProgress = targetRevealProgress
+      } else {
+        const revealDelta = clamp(
+          targetRevealProgress - revealProgress,
+          -elapsed / 900,
+          elapsed / 900
+        )
+        revealProgress = clamp(revealProgress + revealDelta, 0, 1)
+      }
       const easedRevealProgress = 1 - Math.pow(1 - revealProgress, 3)
       container.style.transform = `scale(${1 + (zoomScale - 1) * easedRevealProgress})`
       container.style.opacity = String(1 - revealProgress)
       container.style.transition = "none"
 
-      if (hasRevealed && currentProgress < 1) {
-        hasRevealed = false
-        if (onReveal) onReveal(false)
-      } else if (!hasRevealed && revealProgress === 1) {
+      if (!hasRevealed && revealProgress === 1) {
         hasRevealed = true
         if (onReveal) onReveal(true)
       }
 
-      if (duration > 0) {
-        seekTo(currentProgress * duration)
-      }
-
       rafId = requestAnimationFrame(frame)
     }
 
-    if (!reduceMotion) {
-      rafId = requestAnimationFrame(frame)
-    }
+    rafId = requestAnimationFrame(frame)
 
     return () => {
       video.removeEventListener("loadeddata", onLoadedData)
-      video.removeEventListener("seeked", onSeeked)
-      window.removeEventListener("wheel", onWheel)
-      window.removeEventListener("touchstart", onTouchStart)
-      window.removeEventListener("touchmove", onTouchMove)
+      video.removeEventListener("timeupdate", onTimeUpdate)
+      video.removeEventListener("ended", onEnded)
+      video.pause()
       cancelAnimationFrame(rafId)
-      if (lockUntilEnd) {
-        releaseLock()
-      }
     }
-  }, [lockUntilEnd, zoomScale, initialProgress, onProgress, onReveal, onReady])
+  }, [zoomScale, onProgress, onReveal, onReady])
 
   return (
     <div
@@ -256,7 +142,6 @@ export default function CameraVideo({
         height: "100%",
         overflow: "hidden",
         background: "#08090b",
-        touchAction: lockUntilEnd ? "none" : "auto",
         transform: "scale(1)",
         transformOrigin: "center center",
         willChange: "transform",
@@ -278,7 +163,6 @@ export default function CameraVideo({
           objectFit: "cover",
           opacity: ready ? 1 : 0,
           transition: "opacity 0.6s ease",
-          touchAction: lockUntilEnd ? "none" : "auto",
           pointerEvents: "none",
         }}
       />

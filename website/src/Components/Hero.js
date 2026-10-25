@@ -128,20 +128,16 @@ export const Hero = ({ onCameraReveal }) => {
     });
   }, []);
 
-  // Single scroll progress (0-1) that drives both MetroHero and CameraVideo
-  // MetroHero visible: 0.0 → 0.5
-  // CameraVideo visible: 0.5 → 1.0
+  // Playback progress across MetroHero and CameraVideo.
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [isCameraVideoReady, setIsCameraVideoReady] = useState(false);
   const [isMetroHeroMounted, setIsMetroHeroMounted] = useState(true);
-  const [resumeMetroAtEnd, setResumeMetroAtEnd] = useState(false);
-  const canReturnToMetroRef = useRef(false);
   const isRevealedRef = useRef(false);
 
   const t = themeTokens[theme];
 
-  // Fade the Hero UI as soon as MetroHero starts scrubbing.
+  // Fade the Hero UI as MetroHero plays.
   const heroContentOpacity = Math.max(0, 1 - scrollProgress / 0.15);
 
   // Lock body scroll at mount, unlock when revealed
@@ -177,37 +173,28 @@ export const Hero = ({ onCameraReveal }) => {
     };
   }, []);
 
-  // Handle MetroHero progress — drives the shared scrollProgress
+  // Handle MetroHero playback progress and start CameraVideo at its end.
   const handleMetroProgress = useCallback((p) => {
-    // Map MetroHero's 0-1 progress to 0-METRO_THRESHOLD (0-0.5)
     setScrollProgress(p * METRO_THRESHOLD);
     if (p === 1) {
-      canReturnToMetroRef.current = true;
-      setResumeMetroAtEnd(false);
-      setIsCameraVideoReady(false);
       setIsCameraActive(true);
     }
   }, []);
 
-  // Handle CameraVideo progress — drives the shared scrollProgress
+  const handleMetroHandoffStart = useCallback(() => {
+    setIsCameraActive(true);
+  }, []);
+
+  // Handle CameraVideo playback progress.
   const handleCameraProgress = useCallback((p) => {
-    // Map CameraVideo's 0-1 progress to METRO_THRESHOLD-1 (0.5-1.0)
     setScrollProgress(METRO_THRESHOLD + p * (1 - METRO_THRESHOLD));
-    if (p > 0) {
-      canReturnToMetroRef.current = true;
-    } else if (canReturnToMetroRef.current) {
-      canReturnToMetroRef.current = false;
-      setResumeMetroAtEnd(true);
-      setIsMetroHeroMounted(true);
-      setIsCameraActive(false);
-    }
   }, []);
 
   // Handle CameraVideo finishing — reveal PortfolioMenu
-  const handleCameraFinish = useCallback((revealed) => {
-    if (isRevealedRef.current === revealed) return;
-    isRevealedRef.current = revealed;
-    if (onCameraReveal) onCameraReveal(revealed);
+  const handleCameraFinish = useCallback(() => {
+    if (isRevealedRef.current) return;
+    isRevealedRef.current = true;
+    if (onCameraReveal) onCameraReveal();
   }, [onCameraReveal]);
 
   const handleCameraReady = useCallback(() => {
@@ -220,7 +207,7 @@ export const Hero = ({ onCameraReveal }) => {
       style={{ backgroundColor: 'transparent' }}
       aria-label="Introduction"
     >
-      {/* === MetroHero — active until its video reaches the end === */}
+      {/* === MetroHero — starts playback on the first downward scroll === */}
       {isMetroHeroMounted && (
         <div
           className="absolute inset-0 z-0 metro-hero-handoff"
@@ -231,10 +218,8 @@ export const Hero = ({ onCameraReveal }) => {
             tagline=""
             scrollHint=""
             signature={false}
-            scrubDistance={2200}
-            interactive={!isCameraActive}
-            lockUntilEnd={false}
-            initialProgress={resumeMetroAtEnd ? 1 : 0}
+            handoffLeadTime={1.5}
+            onHandoffStart={handleMetroHandoffStart}
             onProgress={handleMetroProgress}
             className="absolute inset-0 z-0"
             style={{ position: "absolute", height: "100%" }}
@@ -242,7 +227,7 @@ export const Hero = ({ onCameraReveal }) => {
         </div>
       )}
 
-      {/* === CameraVideo — active between the two video endpoints === */}
+      {/* === CameraVideo — plays automatically after MetroHero === */}
       {isCameraActive && (
         <div
           className={`absolute inset-0 z-10 camera-video-entry${isCameraVideoReady ? ' camera-video-entry-ready' : ''}`}
@@ -258,7 +243,6 @@ export const Hero = ({ onCameraReveal }) => {
           }}
         >
           <CameraVideo
-            lockUntilEnd={false}
             onProgress={handleCameraProgress}
             onReveal={handleCameraFinish}
             onReady={handleCameraReady}

@@ -1,7 +1,7 @@
 import { act, fireEvent, render } from "@testing-library/react"
 import MetroHero from "../MetroHero"
 
-describe("MetroHero ambient video", () => {
+describe("MetroHero one-gesture playback", () => {
   let animationFrames
 
   beforeEach(() => {
@@ -12,59 +12,78 @@ describe("MetroHero ambient video", () => {
     })
     jest.spyOn(window, "cancelAnimationFrame").mockImplementation(() => {})
     jest.spyOn(HTMLMediaElement.prototype, "play").mockImplementation(() => Promise.resolve())
-    jest.spyOn(HTMLMediaElement.prototype, "pause").mockImplementation(() => {})
   })
 
   afterEach(() => {
     jest.restoreAllMocks()
   })
 
-  it("loops the opening segment while idle", () => {
+  it("stays paused until a downward scroll starts playback", () => {
+    const { container } = render(<MetroHero />)
+    const video = container.querySelector("video")
+    Object.defineProperty(video, "duration", { configurable: true, value: 10 })
+
+    fireEvent.loadedData(video)
+    expect(video.play).not.toHaveBeenCalled()
+
+    fireEvent.wheel(window, { deltaY: 120 })
+    expect(video.play).toHaveBeenCalledTimes(1)
+  })
+
+  it("reports forward playback progress through the video end", () => {
     const onProgress = jest.fn()
     const { container } = render(<MetroHero onProgress={onProgress} />)
     const video = container.querySelector("video")
     Object.defineProperty(video, "duration", { configurable: true, value: 10 })
 
     fireEvent.loadedData(video)
-    expect(video.play).toHaveBeenCalledTimes(1)
+    fireEvent.wheel(window, { deltaY: 120 })
 
-    const firstFrame = animationFrames.shift()
-    act(() => firstFrame(16))
-    expect(onProgress).not.toHaveBeenCalled()
-
-    video.currentTime = 1.1
+    video.currentTime = 5
     fireEvent.timeUpdate(video)
-    expect(video.currentTime).toBe(0)
+    const progressFrame = animationFrames.shift()
+    act(() => progressFrame(16))
+    expect(onProgress).toHaveBeenCalledWith(0.5)
+
+    video.currentTime = 10
+    fireEvent.ended(video)
+    const endFrame = animationFrames.shift()
+    act(() => endFrame(32))
+    expect(onProgress).toHaveBeenLastCalledWith(1)
   })
 
-  it("freezes the ambient playback and scrubs forward from that frame", () => {
+  it("does not respond to reverse scroll after playback starts", () => {
     const { container } = render(<MetroHero />)
     const video = container.querySelector("video")
     Object.defineProperty(video, "duration", { configurable: true, value: 10 })
 
     fireEvent.loadedData(video)
-    video.currentTime = 1.25
-    fireEvent.wheel(window, { deltaY: 320 })
+    fireEvent.wheel(window, { deltaY: 120 })
+    video.currentTime = 3
+    fireEvent.timeUpdate(video)
+    fireEvent.wheel(window, { deltaY: -120 })
 
-    expect(video.pause).toHaveBeenCalledTimes(1)
-
-    const firstFrame = animationFrames.shift()
-    act(() => firstFrame(16))
-    expect(video.currentTime).toBeGreaterThan(1.25)
+    expect(video.currentTime).toBe(3)
+    expect(video.play).toHaveBeenCalledTimes(1)
   })
 
-  it("ignores scroll input when inactive during a handoff", () => {
-    const onProgress = jest.fn()
-    const { container } = render(<MetroHero interactive={false} onProgress={onProgress} />)
+  it("starts the handoff at the configured lead time before the video ends", () => {
+    const onHandoffStart = jest.fn()
+    const { container } = render(
+      <MetroHero handoffLeadTime={1.5} onHandoffStart={onHandoffStart} />
+    )
     const video = container.querySelector("video")
     Object.defineProperty(video, "duration", { configurable: true, value: 10 })
 
     fireEvent.loadedData(video)
-    fireEvent.wheel(window, { deltaY: 320 })
+    fireEvent.wheel(window, { deltaY: 120 })
 
-    const firstFrame = animationFrames.shift()
-    act(() => firstFrame(16))
-    expect(video.pause).not.toHaveBeenCalled()
-    expect(onProgress).not.toHaveBeenCalled()
+    video.currentTime = 8.4
+    act(() => animationFrames.shift()(16))
+    expect(onHandoffStart).not.toHaveBeenCalled()
+
+    video.currentTime = 8.5
+    act(() => animationFrames.shift()(32))
+    expect(onHandoffStart).toHaveBeenCalledTimes(1)
   })
 })

@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from "react"
 
 // ─────────────────────────────────────────────────────────────
-// THE CITY OPENS — locked scroll-scrub video hero
-// Body is pinned with position:fixed while video scrubs.
-// Wheel/touch input drives video.currentTime, forward and backward.
-// Once the video reaches the end, the page unlocks and continues
-// normally — user can scroll past to other components.
+// THE CITY OPENS — one-gesture video hero
+// A downward wheel or touch gesture starts native playback.
+// Progress is reported while the video plays forward to completion.
 // No dependencies, system fonts only.
 // ─────────────────────────────────────────────────────────────
 
@@ -15,7 +13,6 @@ const SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, 
 
 const COL_BG = "#05070d"
 const COL_TEXT = "#f2f4f8"
-const AMBIENT_LOOP_SECONDS = 1
 
 function clamp(v, min, max) {
   return Math.min(max, Math.max(min, v))
@@ -27,14 +24,10 @@ export default function MetroHero({
   scrollHint = "SCROLL",
   tagline = "Every door in the city is already open.",
   signature = DEFAULT_SIGNATURE,
-  scrubDistance = 3200,
+  handoffLeadTime = 0,
   className,
   style,
-  initialProgress = 0,
-  interactive = true,
-  /** When true, locks body scroll until video finishes, then releases. */
-  lockUntilEnd = false,
-  /** Called on each animation frame with current progress (0-1). Throttled to >0.01 changes. */
+  onHandoffStart,
   onProgress,
 }) {
   const sectionRef = useRef(null)
@@ -43,9 +36,6 @@ export default function MetroHero({
   const hintRef = useRef(null)
   const taglineRef = useRef(null)
   const lastProgressRef = useRef(null)
-  const lockReleasedRef = useRef(false)
-  const interactiveRef = useRef(interactive)
-  interactiveRef.current = interactive
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
@@ -59,150 +49,66 @@ export default function MetroHero({
       window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
     let duration = 0
-    let ambientLoopEnd = 0
-    let ambientMode = false
-    let scrubStartTime = initialProgress > 0 ? 0 : null
-    let scrubStarted = initialProgress > 0
-    let userHasStartedScrubbing = false
     let rafId = 0
-    let targetProgress = clamp(initialProgress, 0, 1)
-    let currentProgress = targetProgress
-    let lastFrameTime = null
-    lastProgressRef.current = currentProgress
+    let targetProgress = 0
+    let currentProgress = 0
+    lastProgressRef.current = 0
     let hasStartedScrolling = false
-    let isSeeking = false
-    let pendingTime = null
-    let lastSeekTime = null
-    let isLocked = false
-    let lockedScrollY = 0
+    let hasStartedPlayback = false
+    let hasStartedHandoff = false
     let touchStartY = 0
+    let removeStartListeners = () => {}
 
     const onLoadedData = () => {
       duration = video.duration || 0
-      ambientLoopEnd = Math.max(0, Math.min(AMBIENT_LOOP_SECONDS, duration - 0.05))
-      if (reduceMotion) {
-        video.currentTime = duration * 0.92
-        currentProgress = 0.92
-        targetProgress = 0.92
-        setReady(true)
-      } else if (initialProgress > 0 && duration > 0) {
-        const initialTime = clamp(initialProgress, 0, 1) * duration
-        lastSeekTime = initialTime
-        isSeeking = true
-        video.currentTime = initialTime
-      } else {
-        setReady(true)
-        if (initialProgress === 0 && !userHasStartedScrubbing) {
-          ambientMode = true
-          const playPromise = video.play()
-          if (playPromise && typeof playPromise.catch === "function") {
-            playPromise.catch((error) => {
-              console.warn("MetroHero ambient playback could not start.", error)
-            })
-          }
-        } else if (initialProgress === 0) {
-          scrubStartTime = video.currentTime
-          scrubStarted = true
-        }
-      }
+      setReady(true)
     }
     video.addEventListener("loadeddata", onLoadedData)
+    if (video.readyState >= 2) onLoadedData()
 
     const onTimeUpdate = () => {
-      if (ambientMode && ambientLoopEnd > 0 && video.currentTime >= ambientLoopEnd) {
-        video.currentTime = 0
-      }
+      if (duration > 0) targetProgress = clamp(video.currentTime / duration, 0, 1)
     }
     video.addEventListener("timeupdate", onTimeUpdate)
 
-    const onSeeked = () => {
-      isSeeking = false
-      setReady(true)
-      if (pendingTime !== null) {
-        const t = pendingTime
-        pendingTime = null
-        if (Math.abs(t - video.currentTime) >= 1 / 30) {
-          isSeeking = true
-          lastSeekTime = t
-          video.currentTime = t
-        }
-      }
+    const onEnded = () => {
+      targetProgress = 1
     }
-    video.addEventListener("seeked", onSeeked)
+    video.addEventListener("ended", onEnded)
 
-    function seekTo(t) {
-      const previousTime = pendingTime ?? lastSeekTime ?? video.currentTime
-      if (Math.abs(t - previousTime) < 1 / 30) return
-      if (isSeeking) {
-        pendingTime = t
+    function startPlayback() {
+      if (hasStartedPlayback) return
+      hasStartedPlayback = true
+      hasStartedScrolling = true
+
+      if (reduceMotion) {
+        removeStartListeners()
+        targetProgress = 1
+        currentProgress = 1
+        lastProgressRef.current = 1
+        if (duration > 0) video.currentTime = duration
+        if (onProgress) onProgress(1)
         return
       }
-      isSeeking = true
-      lastSeekTime = t
-      video.currentTime = t
-    }
 
-    function engageLock() {
-      if (isLocked || typeof document === "undefined") return
-      isLocked = true
-      lockedScrollY = window.scrollY
-      const b = document.body.style
-      b.position = "fixed"
-      b.top = `-${lockedScrollY}px`
-      b.left = "0"
-      b.right = "0"
-      b.width = "100%"
-      b.height = "100%"
-      b.overscrollBehavior = "none"
-    }
-
-    function releaseLock() {
-      if (!isLocked || typeof document === "undefined") return
-      isLocked = false
-      const y = lockedScrollY
-      const b = document.body.style
-      b.position = ""
-      b.top = ""
-      b.left = ""
-      b.right = ""
-      b.width = ""
-      b.height = ""
-      b.overscrollBehavior = ""
-      window.scrollTo(0, y)
-    }
-
-    // Engage lock on mount if lockUntilEnd is true
-    if (lockUntilEnd) {
-      engageLock()
-    }
-
-    function addDelta(deltaY) {
-      if (!interactiveRef.current) return
-      if (deltaY !== 0) {
-        userHasStartedScrubbing = true
+      const playPromise = video.play()
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise
+          .then(removeStartListeners)
+          .catch((error) => {
+            hasStartedPlayback = false
+            hasStartedScrolling = false
+            console.error("MetroHero playback could not start.", error)
+          })
+      } else {
+        removeStartListeners()
       }
-      if (deltaY !== 0 && ambientMode) {
-        video.pause()
-        scrubStartTime = video.currentTime
-        lastSeekTime = scrubStartTime
-        pendingTime = null
-        isSeeking = false
-        ambientMode = false
-        scrubStarted = true
-      }
-      const next = clamp(targetProgress + deltaY / scrubDistance, 0, 1)
-      if (targetProgress === 1 && currentProgress === 1 && next === 1 && deltaY > 0 && onProgress) {
-        onProgress(1)
-      }
-      targetProgress = next
-      if (targetProgress > 0.001) hasStartedScrolling = true
     }
 
     const onWheel = (e) => {
-      addDelta(e.deltaY)
-      // Only prevent default while locked
-      if (isLocked) {
+      if (e.deltaY > 0) {
         e.preventDefault()
+        startPlayback()
       }
     }
 
@@ -213,72 +119,41 @@ export default function MetroHero({
       const y = e.touches[0] ? e.touches[0].clientY : touchStartY
       const deltaY = touchStartY - y
       touchStartY = y
-      addDelta(deltaY)
-      // Only prevent default while locked
-      if (isLocked) {
+      if (deltaY > 0) {
         e.preventDefault()
+        startPlayback()
       }
     }
 
     window.addEventListener("wheel", onWheel, { passive: false })
     window.addEventListener("touchstart", onTouchStart, { passive: true })
     window.addEventListener("touchmove", onTouchMove, { passive: false })
-    function frame(now) {
-      const elapsed = lastFrameTime === null ? 1000 / 60 : Math.min(now - lastFrameTime, 50)
-      lastFrameTime = now
-      const remainingProgress = targetProgress - currentProgress
-      const smoothing = 1 - Math.pow(1 - 0.18, elapsed / (1000 / 60))
-      currentProgress = Math.abs(remainingProgress) < 0.001
-        ? targetProgress
-        : currentProgress + remainingProgress * smoothing
+    removeStartListeners = () => {
+      window.removeEventListener("wheel", onWheel)
+      window.removeEventListener("touchstart", onTouchStart)
+      window.removeEventListener("touchmove", onTouchMove)
+    }
 
-      if (ambientMode && ambientLoopEnd > 0 && video.currentTime >= ambientLoopEnd) {
-        video.currentTime = 0
+    function frame() {
+      if (hasStartedPlayback && duration > 0) {
+        targetProgress = clamp(video.currentTime / duration, 0, 1)
+        if (
+          !hasStartedHandoff &&
+          handoffLeadTime > 0 &&
+          video.currentTime >= duration - handoffLeadTime
+        ) {
+          hasStartedHandoff = true
+          if (onHandoffStart) onHandoffStart()
+        }
       }
+      currentProgress = targetProgress
 
-      // Notify parent of progress changes (throttled)
-      if (interactiveRef.current && onProgress) {
+      if (hasStartedPlayback && onProgress) {
         const last = lastProgressRef.current ?? -1
         const diff = Math.abs(currentProgress - last)
-        if (diff > 0.01 || ((currentProgress === 0 || currentProgress === 1) && last !== currentProgress)) {
+        if (diff > 0.01 || (currentProgress === 1 && last !== 1)) {
           onProgress(currentProgress)
           lastProgressRef.current = currentProgress
-        }
-      }
-
-      // Release scroll lock when video reaches the end
-      if (lockUntilEnd && !lockReleasedRef.current && currentProgress >= 0.99) {
-        lockReleasedRef.current = true
-        releaseLock()
-        // Unlock touch interactions so page can scroll past
-        if (sectionRef.current) {
-          sectionRef.current.style.touchAction = 'auto'
-        }
-        if (videoRef.current) {
-          videoRef.current.style.touchAction = 'auto'
-        }
-      }
-
-      if (duration > 0 && !ambientMode) {
-        const startTime = scrubStartTime ?? 0
-        seekTo(startTime + currentProgress * (duration - startTime))
-      }
-
-      if (
-        scrubStarted &&
-        !ambientMode &&
-        targetProgress === 0 &&
-        currentProgress === 0 &&
-        !isSeeking &&
-        pendingTime === null &&
-        Math.abs(video.currentTime - (scrubStartTime ?? 0)) < 1 / 30
-      ) {
-        ambientMode = true
-        const playPromise = video.play()
-        if (playPromise && typeof playPromise.catch === "function") {
-          playPromise.catch((error) => {
-            console.warn("MetroHero ambient playback could not resume.", error)
-          })
         }
       }
 
@@ -304,23 +179,16 @@ export default function MetroHero({
       rafId = requestAnimationFrame(frame)
     }
 
-    if (!reduceMotion) {
-      rafId = requestAnimationFrame(frame)
-    }
+    rafId = requestAnimationFrame(frame)
 
     return () => {
       video.removeEventListener("loadeddata", onLoadedData)
       video.removeEventListener("timeupdate", onTimeUpdate)
-      video.removeEventListener("seeked", onSeeked)
-      window.removeEventListener("wheel", onWheel)
-      window.removeEventListener("touchstart", onTouchStart)
-      window.removeEventListener("touchmove", onTouchMove)
+      video.removeEventListener("ended", onEnded)
+      removeStartListeners()
       cancelAnimationFrame(rafId)
-      if (lockUntilEnd) {
-        releaseLock()
-      }
     }
-  }, [scrubDistance, lockUntilEnd, initialProgress, onProgress])
+  }, [handoffLeadTime, onHandoffStart, onProgress])
 
   return (
     <div
@@ -332,7 +200,6 @@ export default function MetroHero({
         width: "100%",
         overflow: "hidden",
         background: COL_BG,
-        touchAction: lockUntilEnd ? "none" : "auto",
         ...style,
       }}
     >
@@ -352,7 +219,6 @@ export default function MetroHero({
           transformOrigin: "center center",
           willChange: "transform",
           transition: "opacity 0.6s ease",
-          touchAction: lockUntilEnd ? "none" : "auto",
           pointerEvents: "none",
         }}
       />

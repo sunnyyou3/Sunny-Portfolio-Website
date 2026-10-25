@@ -183,6 +183,42 @@
   z-index: 9999;
 }
 
+.camera-video-entry {
+  opacity: 0;
+  transform: scale(0);
+  transform-origin: center;
+}
+
+.camera-video-entry-ready {
+  animation: camera-video-enter 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.metro-hero-handoff {
+  transition: opacity 1.2s ease;
+}
+
+@keyframes camera-video-enter {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .camera-video-entry-ready {
+    animation-duration: 0.01ms;
+  }
+
+  .metro-hero-handoff {
+    transition-duration: 0.01ms;
+  }
+}
+
 /* 3D Canvas container */
 .camera-canvas-container {
   position: absolute;

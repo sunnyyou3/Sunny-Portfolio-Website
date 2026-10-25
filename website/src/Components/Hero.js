@@ -1,10 +1,11 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef, useLayoutEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { about } from '../data/about';
 import MetroHero from './ui/MetroHero';
 import CameraVideo from './ui/CameraVideo';
 
 const STORAGE_KEY = 'hero-theme-preference';
+const METRO_THRESHOLD = 0.5;
 
 const imageVariants = {
   hidden: { opacity: 0, scale: 0.92, filter: 'blur(8px)' },
@@ -131,20 +132,20 @@ export const Hero = ({ onCameraReveal }) => {
   // MetroHero visible: 0.0 → 0.5
   // CameraVideo visible: 0.5 → 1.0
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [isCameraVideoReady, setIsCameraVideoReady] = useState(false);
+  const [isMetroHeroMounted, setIsMetroHeroMounted] = useState(true);
+  const [resumeMetroAtEnd, setResumeMetroAtEnd] = useState(false);
+  const canReturnToMetroRef = useRef(false);
   const isRevealedRef = useRef(false);
 
   const t = themeTokens[theme];
 
-  // Threshold at which MetroHero ends and CameraVideo begins
-  const METRO_THRESHOLD = 0.5;
-
-  // Hero UI content fades out once MetroHero starts playing
-  const heroContentOpacity = scrollProgress > 0.1
-    ? Math.max(0, 1 - (scrollProgress - 0.1) / 0.15)
-    : 1;
+  // Fade the Hero UI as soon as MetroHero starts scrubbing.
+  const heroContentOpacity = Math.max(0, 1 - scrollProgress / 0.15);
 
   // Lock body scroll at mount, unlock when revealed
-  useEffect(() => {
+  useLayoutEffect(() => {
     const lockBody = () => {
       if (typeof document === 'undefined') return;
       const body = document.body;
@@ -180,20 +181,38 @@ export const Hero = ({ onCameraReveal }) => {
   const handleMetroProgress = useCallback((p) => {
     // Map MetroHero's 0-1 progress to 0-METRO_THRESHOLD (0-0.5)
     setScrollProgress(p * METRO_THRESHOLD);
-  }, [METRO_THRESHOLD]);
+    if (p === 1) {
+      canReturnToMetroRef.current = true;
+      setResumeMetroAtEnd(false);
+      setIsCameraVideoReady(false);
+      setIsCameraActive(true);
+    }
+  }, []);
 
   // Handle CameraVideo progress — drives the shared scrollProgress
   const handleCameraProgress = useCallback((p) => {
     // Map CameraVideo's 0-1 progress to METRO_THRESHOLD-1 (0.5-1.0)
     setScrollProgress(METRO_THRESHOLD + p * (1 - METRO_THRESHOLD));
-  }, [METRO_THRESHOLD]);
+    if (p > 0) {
+      canReturnToMetroRef.current = true;
+    } else if (canReturnToMetroRef.current) {
+      canReturnToMetroRef.current = false;
+      setResumeMetroAtEnd(true);
+      setIsMetroHeroMounted(true);
+      setIsCameraActive(false);
+    }
+  }, []);
 
   // Handle CameraVideo finishing — reveal PortfolioMenu
-  const handleCameraFinish = useCallback(() => {
-    if (isRevealedRef.current) return;
-    isRevealedRef.current = true;
-    if (onCameraReveal) onCameraReveal();
+  const handleCameraFinish = useCallback((revealed) => {
+    if (isRevealedRef.current === revealed) return;
+    isRevealedRef.current = revealed;
+    if (onCameraReveal) onCameraReveal(revealed);
   }, [onCameraReveal]);
+
+  const handleCameraReady = useCallback(() => {
+    setIsCameraVideoReady(true);
+  }, []);
 
   return (
     <section
@@ -201,15 +220,21 @@ export const Hero = ({ onCameraReveal }) => {
       style={{ backgroundColor: 'transparent' }}
       aria-label="Introduction"
     >
-      {/* === MetroHero — renders when scrollProgress < threshold === */}
-      {scrollProgress < METRO_THRESHOLD && (
-        <div className="absolute inset-0 z-0">
+      {/* === MetroHero — active until its video reaches the end === */}
+      {isMetroHeroMounted && (
+        <div
+          className="absolute inset-0 z-0 metro-hero-handoff"
+          style={{ opacity: isCameraActive && isCameraVideoReady ? 0 : 1 }}
+        >
           <MetroHero
             title=""
             tagline=""
             scrollHint=""
             signature={false}
+            scrubDistance={2200}
+            interactive={!isCameraActive}
             lockUntilEnd={false}
+            initialProgress={resumeMetroAtEnd ? 1 : 0}
             onProgress={handleMetroProgress}
             className="absolute inset-0 z-0"
             style={{ position: "absolute", height: "100%" }}
@@ -217,13 +242,26 @@ export const Hero = ({ onCameraReveal }) => {
         </div>
       )}
 
-      {/* === CameraVideo — renders when scrollProgress >= threshold === */}
-      {scrollProgress >= METRO_THRESHOLD && (
-        <div className="absolute inset-0 z-10">
+      {/* === CameraVideo — active between the two video endpoints === */}
+      {isCameraActive && (
+        <div
+          className={`absolute inset-0 z-10 camera-video-entry${isCameraVideoReady ? ' camera-video-entry-ready' : ''}`}
+          onAnimationEnd={(event) => {
+            if (
+              event.target === event.currentTarget &&
+              event.animationName === "camera-video-enter" &&
+              isCameraActive &&
+              isCameraVideoReady
+            ) {
+              setIsMetroHeroMounted(false);
+            }
+          }}
+        >
           <CameraVideo
             lockUntilEnd={false}
             onProgress={handleCameraProgress}
             onReveal={handleCameraFinish}
+            onReady={handleCameraReady}
             zoomScale={3}
             className="absolute inset-0"
             style={{ position: "absolute" }}

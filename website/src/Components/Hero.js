@@ -257,7 +257,7 @@ export const Hero = ({ onCameraReveal }) => {
       <AnimatePresence>
         {heroContentOpacity > 0 && (
           <motion.div
-            className="relative z-20 h-full flex items-center justify-center"
+            className="relative z-20 h-full w-full flex items-center justify-center"
             initial={{ opacity: 1 }}
             animate={{ opacity: heroContentOpacity }}
             exit={{ opacity: 0 }}
@@ -328,7 +328,7 @@ export const Hero = ({ onCameraReveal }) => {
 
               {/* --- Text column --- */}
               <motion.div
-                className="flex-1 w-full md:w-auto md:self-end md:pb-16 lg:pb-24"
+                className="flex-1 w-full md:w-auto md:mx-auto md:pb-16 lg:pb-24"
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"

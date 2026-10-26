@@ -28,7 +28,7 @@ function ProfileSlide() {
             <Box sx={{ minHeight: '100%', position: 'relative', overflow: 'hidden' }}>
                 <Box component="img" src={portrait} alt="Sunny You" sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', filter: 'saturate(0.8)' }} />
                 <Box sx={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(17,18,23,0.05), rgba(17,18,23,0.8))' }} />
-                <Typography sx={{ position: 'absolute', bottom: 28, left: 28, ...sectionLabel }}>01 / PROFILE</Typography>
+                <Typography sx={{ position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)', ...sectionLabel }}>01 / PROFILE</Typography>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', p: 4 }}>
                 <Typography sx={sectionLabel}>ABOUT SUNNY YOU</Typography>

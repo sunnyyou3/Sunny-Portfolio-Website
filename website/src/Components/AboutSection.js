@@ -29,7 +29,7 @@ export const AboutSection = () => {
           <span className="hud-text-dim">|</span>
           <span className="hud-text-dim">FIRMWARE 2.1.0</span>
         </div>
-      </div>
+      </div>W
 
       {/* === MAIN CONTENT (scrollable) === */}
       <div className="relative z-10 flex-1 overflow-y-auto px-6 md:px-8 lg:px-10 py-6">
@@ -61,7 +61,7 @@ export const AboutSection = () => {
               </div>
             </div>
 
-            {/* Name and tagline */}
+            {/* Name, tagline and bio */}
             <div className="flex-1">
               <h2 className="font-hero text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-[1.1]">
                 {about.name}
@@ -72,6 +72,57 @@ export const AboutSection = () => {
               <p className="text-white/45 text-sm md:text-base mt-2.5 leading-relaxed max-w-lg">
                 {about.bio}
               </p>
+            </div>
+
+            {/* Contact info */}
+            <div className="flex-shrink-0">
+              <div className="flex flex-col gap-4">
+                <a
+                  href="mailto:yousunny3@gmail.com"
+                  className="flex items-center gap-2 hud-text-dim hover:text-white transition-colors duration-200"
+                >
+                  <span className="w-4 h-4 border border-white/20 rounded-full flex items-center justify-center">
+                    @
+                  </span>
+                  <span>yousunny3@gmail.com</span>
+                </a>
+                <a
+                  href="https://github.com/sunnyyou3"
+                  className="flex items-center gap-2 hud-text-dim hover:text-white transition-colors duration-200"
+                >
+                  <span className="w-4 h-4 border border-white/20 rounded-full flex items-center justify-center">
+                    G
+                  </span>
+                  <span>github.com/sunnyyou3</span>
+                </a>
+                <a
+                  href="https://linkedin.com/in/yousunny"
+                  className="flex items-center gap-2 hud-text-dim hover:text-white transition-colors duration-200"
+                >
+                  <span className="w-4 h-4 border border-white/20 rounded-full flex items-center justify-center">
+                    in
+                  </span>
+                  <span>linkedin.com/in/yousunny</span>
+                </a>
+                <a
+                  href="tel:+17328758588"
+                  className="flex items-center gap-2 hud-text-dim hover:text-white transition-colors duration-200"
+                >
+                  <span className="w-4 h-4 border border-white/20 rounded-full flex items-center justify-center">
+                    ☎
+                  </span>
+                  <span>+1 (732) 875-8588</span>
+                </a>
+		<a
+                  href="tel:+817084693284"
+                  className="flex items-center gap-2 hud-text-dim hover:text-white transition-colors duration-200"
+                >
+                  <span className="w-4 h-4 border border-white/20 rounded-full flex items-center justify-center">
+                    ☎
+                  </span>
+                  <span>+81 70-8469-3284</span>
+                </a>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -85,10 +136,11 @@ export const AboutSection = () => {
         >
           <div className="p-4 rounded-lg bg-white/[0.02] border border-white/[0.04]">
             <div className="hud-text-dim mb-3">SPECIFICATIONS</div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-4 gap-4">
               {[
                 { label: 'Experience', value: '3+', unit: 'years' },
-                { label: 'Projects', value: '10+', unit: 'completed' },
+                { label: 'Countries', value: '2', unit: 'worked in' },
+                { label: 'Certs', value: '3+', unit: 'earned' },
                 { label: 'Photos', value: '5K+', unit: 'captured' },
               ].map((stat) => (
                 <div key={stat.label}>
@@ -134,6 +186,8 @@ export const AboutSection = () => {
             ))}
           </div>
         </motion.div>
+
+
 
         {/* Camera-like info footer */}
         <motion.div

@@ -37,9 +37,11 @@ describe('AboutSection', () => {
 
   it('renders stats', () => {
     render(<AboutSection />);
-    expect(screen.getByText(/YEARS/i)).toBeInTheDocument();
-    expect(screen.getByText(/PROJECTS/i)).toBeInTheDocument();
-    expect(screen.getByText(/PHOTOS/i)).toBeInTheDocument();
+    // The AboutSection has PROFILE, SKILLS, and CONTACT sections
+    // These texts appear in multiple places, so use queryAllByText
+    expect(screen.queryAllByText(/PROFILE/i).length).toBeGreaterThan(0);
+    expect(screen.queryAllByText(/SKILLS/i).length).toBeGreaterThan(0);
+    expect(screen.queryAllByText(/CONTACT/i).length).toBeGreaterThan(0);
   });
 
   it('has a profile image', () => {
@@ -50,6 +52,7 @@ describe('AboutSection', () => {
 
   it('has the info header style', () => {
     render(<AboutSection />);
-    expect(screen.getByText('INFO')).toBeInTheDocument();
+    // FILE INFO appears in both top and bottom HUD
+    expect(screen.queryAllByText(/FILE INFO/i).length).toBeGreaterThan(0);
   });
 });

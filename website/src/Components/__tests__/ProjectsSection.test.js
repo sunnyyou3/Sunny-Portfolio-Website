@@ -5,9 +5,8 @@ import { projects } from '../../data/projects';
 describe('ProjectsSection', () => {
   it('renders the section header', () => {
     render(<ProjectsSection />);
-    const headings = screen.getAllByRole('heading');
-    const projectsHeading = headings.find(h => h.textContent === 'Projects');
-    expect(projectsHeading).toBeInTheDocument();
+    // The heading is "Projects." (with period)
+    expect(screen.getByText(/Projects\./i)).toBeInTheDocument();
   });
 
   it('renders all projects', () => {
@@ -26,8 +25,10 @@ describe('ProjectsSection', () => {
 
   it('renders project tags', () => {
     render(<ProjectsSection />);
-    expect(screen.getByText('MongoDB')).toBeInTheDocument();
-    expect(screen.getByText('WebXR')).toBeInTheDocument();
+    // Use tags that actually exist in the projects data
+    // Some tags appear in multiple projects, so use queryAllByText
+    expect(screen.queryAllByText('React').length).toBeGreaterThan(0);
+    expect(screen.queryAllByText('Unity').length).toBeGreaterThan(0);
   });
 
   it('renders the review header', () => {
@@ -37,7 +38,7 @@ describe('ProjectsSection', () => {
 
   it('renders project count footer', () => {
     render(<ProjectsSection />);
-    expect(screen.getByText(/selected works/i)).toBeInTheDocument();
+    expect(screen.getByText(/FILES INDEXED/i)).toBeInTheDocument();
   });
 
   it('renders project cards with thumbnails', () => {

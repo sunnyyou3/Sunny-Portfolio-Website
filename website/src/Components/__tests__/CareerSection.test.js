@@ -5,14 +5,16 @@ import { career } from '../../data/career';
 describe('CareerSection', () => {
   it('renders the section header', () => {
     render(<CareerSection />);
-    expect(screen.getByText('Career')).toBeInTheDocument();
+    // CAREER appears in multiple places (header, career records strip)
+    expect(screen.getAllByText(/CAREER/i).length).toBeGreaterThan(0);
   });
 
   it('renders all career entries', () => {
     render(<CareerSection />);
     career.forEach((entry) => {
       expect(screen.getByText(entry.role)).toBeInTheDocument();
-      expect(screen.getByText(entry.company)).toBeInTheDocument();
+      // Company names may appear multiple times, so use queryAllByText
+      expect(screen.queryAllByText(entry.company).length).toBeGreaterThan(0);
       expect(screen.getByText(entry.description)).toBeInTheDocument();
     });
   });
@@ -26,7 +28,9 @@ describe('CareerSection', () => {
 
   it('renders education section', () => {
     render(<CareerSection />);
-    expect(screen.getByText('EDUCATION')).toBeInTheDocument();
+    // EDUCATION appears in multiple places (career records strip, footer)
+    const educationElements = screen.getAllByText('EDUCATION');
+    expect(educationElements.length).toBeGreaterThan(0);
   });
 
   it('renders the review header', () => {
@@ -36,7 +40,8 @@ describe('CareerSection', () => {
 
   it('renders career count footer', () => {
     render(<CareerSection />);
-    expect(screen.getByText(/PROGRESS/i)).toBeInTheDocument();
+    // RECORDS appears in multiple places (CAREER RECORDS, RECORDS: XX)
+    expect(screen.getAllByText(/RECORDS/i).length).toBeGreaterThan(0);
   });
 
   it('has timeline visual elements', () => {

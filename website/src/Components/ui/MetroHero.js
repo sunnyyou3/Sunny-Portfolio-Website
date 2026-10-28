@@ -7,19 +7,26 @@ import { useEffect, useRef, useState } from "react"
 // No dependencies, system fonts only.
 // ─────────────────────────────────────────────────────────────
 
-const DEFAULT_VIDEO = "https://cdn.21st.dev/assets/mirror/21/21a77eac28eacbb7e142016eefeaa0b4a766619e51113629a3bc6df6af066c0f.mp4"
+// ── Constants ──────────────────────────────────────────────────────────
+const DEFAULT_VIDEO_SRC = "https://cdn.21st.dev/assets/mirror/21/21a77eac28eacbb7e142016eefeaa0b4a766619e51113629a3bc6df6af066c0f.mp4"
 const DEFAULT_SIGNATURE = { name: "guglielmogiannattasio.exe", url: "https://www.guglielmogiannattasio.it" }
-const SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
-
+const FONT_SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
 const COL_BG = "#05070d"
 const COL_TEXT = "#f2f4f8"
+
+// Animation timing constants
+const SCALE_FACTOR = 0.06          // Video zoom: 1 → 1.06 over full playback
+const TITLE_FADE_AT = 0.35         // Title fully faded by 35% progress
+const TAGLINE_FADE_START = 0.82    // Tagline starts appearing at 82% progress
+const TAGLINE_FADE_DURATION = 0.18 // Tagline fully visible by 100%
+const PROGRESS_REPORT_THRESHOLD = 0.01 // Min delta to trigger onProgress callback
 
 function clamp(v, min, max) {
   return Math.min(max, Math.max(min, v))
 }
 
 export default function MetroHero({
-  videoSrc = DEFAULT_VIDEO,
+  videoSrc = DEFAULT_VIDEO_SRC,
   title = "THE CITY OPENS",
   scrollHint = "SCROLL",
   tagline = "Every door in the city is already open.",
@@ -29,14 +36,17 @@ export default function MetroHero({
   style,
   onHandoffStart,
   onProgress,
+  pausedAtEnd = false,
+  autoPlay = false,
 }) {
   const sectionRef = useRef(null)
   const videoRef = useRef(null)
   const titleRef = useRef(null)
   const hintRef = useRef(null)
   const taglineRef = useRef(null)
-  const lastProgressRef = useRef(null)
+  const lastProgressRef = useRef(-1) // -1 = no progress reported yet
   const [ready, setReady] = useState(false)
+  const [videoError, setVideoError] = useState(false)
 
   useEffect(() => {
     const video = videoRef.current
@@ -52,7 +62,6 @@ export default function MetroHero({
     let rafId = 0
     let targetProgress = 0
     let currentProgress = 0
-    lastProgressRef.current = 0
     let hasStartedScrolling = false
     let hasStartedPlayback = false
     let hasStartedHandoff = false
@@ -63,7 +72,12 @@ export default function MetroHero({
       duration = video.duration || 0
       setReady(true)
     }
+    const onError = () => {
+      setVideoError(true)
+      console.error("MetroHero video failed to load:", videoSrc)
+    }
     video.addEventListener("loadeddata", onLoadedData)
+    video.addEventListener("error", onError)
     if (video.readyState >= 2) onLoadedData()
 
     const onTimeUpdate = () => {
@@ -75,6 +89,24 @@ export default function MetroHero({
       targetProgress = 1
     }
     video.addEventListener("ended", onEnded)
+
+    // When pausedAtEnd is true, skip RAF loop and pin video at frame 0
+    // (unless autoPlay is set — then we start playback immediately)
+    if (pausedAtEnd) {
+      video.currentTime = 0
+      if (autoPlay) {
+        // Start playback immediately despite pausedAtEnd
+      } else {
+        // No animation loop — video stays at first frame
+        return () => {
+          video.removeEventListener("loadeddata", onLoadedData)
+          video.removeEventListener("error", onError)
+          video.removeEventListener("timeupdate", onTimeUpdate)
+          video.removeEventListener("ended", onEnded)
+          removeStartListeners()
+        }
+      }
+    }
 
     function startPlayback() {
       if (hasStartedPlayback) return
@@ -134,35 +166,44 @@ export default function MetroHero({
       window.removeEventListener("touchmove", onTouchMove)
     }
 
+    // Auto-play: start MetroHero playback immediately (used during takeover)
+    if (autoPlay && !hasStartedPlayback) {
+      startPlayback()
+    }
+
     function frame() {
-      if (hasStartedPlayback && duration > 0) {
-        targetProgress = clamp(video.currentTime / duration, 0, 1)
-        if (
-          !hasStartedHandoff &&
-          handoffLeadTime > 0 &&
-          video.currentTime >= duration - handoffLeadTime
-        ) {
-          hasStartedHandoff = true
-          if (onHandoffStart) onHandoffStart()
-        }
+      // Skip RAF loop when video isn't playing
+      if (!hasStartedPlayback || duration === 0) {
+        rafId = requestAnimationFrame(frame)
+        return
+      }
+
+      targetProgress = clamp(video.currentTime / duration, 0, 1)
+      if (
+        !hasStartedHandoff &&
+        handoffLeadTime > 0 &&
+        video.currentTime >= duration - handoffLeadTime
+      ) {
+        hasStartedHandoff = true
+        if (onHandoffStart) onHandoffStart()
       }
       currentProgress = targetProgress
 
       if (hasStartedPlayback && onProgress) {
-        const last = lastProgressRef.current ?? -1
+        const last = lastProgressRef.current
         const diff = Math.abs(currentProgress - last)
-        if (diff > 0.01 || (currentProgress === 1 && last !== 1)) {
+        if (diff > PROGRESS_REPORT_THRESHOLD || (currentProgress === 1 && last !== 1)) {
           onProgress(currentProgress)
           lastProgressRef.current = currentProgress
         }
       }
 
-      if (videoRef.current) {
-        const scale = 1 + currentProgress * 0.06
+      if (videoRef.current && !pausedAtEnd) {
+        const scale = 1 + currentProgress * SCALE_FACTOR
         videoRef.current.style.transform = `scale(${scale})`
       }
       if (titleRef.current) {
-        const t = 1 - clamp(currentProgress / 0.35, 0, 1)
+        const t = 1 - clamp(currentProgress / TITLE_FADE_AT, 0, 1)
         titleRef.current.style.opacity = String(t)
         titleRef.current.style.transform = `translateY(${(1 - t) * -24}px) scale(${0.96 + t * 0.04})`
         titleRef.current.style.filter = `blur(${(1 - t) * 10}px)`
@@ -171,11 +212,12 @@ export default function MetroHero({
         hintRef.current.style.opacity = hasStartedScrolling ? "0" : "1"
       }
       if (taglineRef.current) {
-        const t = clamp((currentProgress - 0.82) / 0.18, 0, 1)
+        const t = clamp((currentProgress - TAGLINE_FADE_START) / TAGLINE_FADE_DURATION, 0, 1)
         taglineRef.current.style.opacity = String(t)
         taglineRef.current.style.transform = `translateY(${(1 - t) * 20}px) scale(${0.97 + t * 0.03})`
         taglineRef.current.style.filter = `blur(${(1 - t) * 8}px)`
       }
+
       rafId = requestAnimationFrame(frame)
     }
 
@@ -183,12 +225,14 @@ export default function MetroHero({
 
     return () => {
       video.removeEventListener("loadeddata", onLoadedData)
+      video.removeEventListener("error", onError)
       video.removeEventListener("timeupdate", onTimeUpdate)
       video.removeEventListener("ended", onEnded)
       removeStartListeners()
       cancelAnimationFrame(rafId)
     }
-  }, [handoffLeadTime, onHandoffStart, onProgress])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [handoffLeadTime, onHandoffStart, onProgress, pausedAtEnd, autoPlay])
 
   return (
     <div
@@ -220,6 +264,7 @@ export default function MetroHero({
           willChange: "transform",
           transition: "opacity 0.6s ease",
           pointerEvents: "none",
+          backgroundColor: videoError ? COL_BG : "transparent",
         }}
       />
 
@@ -243,11 +288,12 @@ export default function MetroHero({
           padding: "0 6%",
           textAlign: "center",
           pointerEvents: "none",
+          opacity: pausedAtEnd ? 0 : undefined,
         }}
       >
         <span
           style={{
-            fontFamily: SANS,
+            fontFamily: FONT_SANS,
             fontWeight: 800,
             fontSize: "clamp(30px, 7vw, 96px)",
             lineHeight: 1,
@@ -279,7 +325,7 @@ export default function MetroHero({
         >
           <span
             style={{
-              fontFamily: SANS,
+              fontFamily: FONT_SANS,
               fontWeight: 700,
               fontSize: "clamp(20px, 3.4vw, 40px)",
               lineHeight: 1.2,
@@ -305,22 +351,17 @@ export default function MetroHero({
           alignItems: "center",
           gap: 8,
           color: "rgba(240,244,248,0.75)",
-          fontFamily: SANS,
+          fontFamily: FONT_SANS,
           fontSize: "clamp(10px, 1.4vw, 12px)",
           fontWeight: 600,
           letterSpacing: "0.3em",
           transition: "opacity 0.4s ease",
           pointerEvents: "none",
+          opacity: pausedAtEnd ? 0 : undefined,
         }}
       >
         <span>{scrollHint}</span>
         <svg width="14" height="18" viewBox="0 0 14 18" style={{ animation: "metro-hero-bounce 1.6s ease-in-out infinite" }}>
-          <style>{`
-            @keyframes metro-hero-bounce {
-              0%, 100% { transform: translateY(0); opacity: 0.5; }
-              50% { transform: translateY(5px); opacity: 1; }
-            }
-          `}</style>
           <path d="M7 1 L7 17 M2 12 L7 17 L12 12" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
@@ -331,7 +372,7 @@ export default function MetroHero({
             position: "absolute",
             right: "clamp(12px, 2.5vw, 24px)",
             bottom: "clamp(10px, 2vw, 18px)",
-            fontFamily: SANS,
+            fontFamily: FONT_SANS,
             fontWeight: 500,
             fontSize: "clamp(11px, 1.4vw, 13px)",
             letterSpacing: "0.01em",
@@ -349,12 +390,7 @@ export default function MetroHero({
               textDecoration: "none",
               transition: "color 0.2s ease",
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = COL_TEXT
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = "rgba(220,224,232,0.6)"
-            }}
+            className="metro-hero-signature-link"
           >
             {signature.name}
           </a>

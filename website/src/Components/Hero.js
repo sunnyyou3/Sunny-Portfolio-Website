@@ -3,9 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { about } from '../data/about';
 import MetroHero from './ui/MetroHero';
 import CameraVideo from './ui/CameraVideo';
+import defaultMetroVideo from '../assets/video/defaultmetro.mp4';
+import { useHeroPhase } from '../hooks/useHeroPhase';
 
 const STORAGE_KEY = 'hero-theme-preference';
-const METRO_THRESHOLD = 0.5;
+const METRO_THRESHOLD = 0.5; // Split point: MetroHero handles 0→0.5, CameraVideo handles 0.5→1.0
+const HERO_FADE_THRESHOLD = 0.15; // Scroll progress at which hero content starts fading
 
 const imageVariants = {
   hidden: { opacity: 0, scale: 0.92, filter: 'blur(8px)' },
@@ -58,6 +61,10 @@ const moonIcon = (
  * Theme tokens — light (cream) vs dark (portfolio-dark).
  * All colors transition smoothly via CSS transitions on the section.
  */
+// Accent orange used throughout the hero — kept separate from themeTokens
+// so it can be referenced consistently (e.g., status dots, accent dashes).
+const ACCENT_ORANGE = '#ff6b35';
+
 const themeTokens = {
   light: {
     bg: '#faf8f5',
@@ -128,6 +135,22 @@ export const Hero = ({ onCameraReveal }) => {
     });
   }, []);
 
+  // Hero flow managed by custom hook:
+  //   loop → fade-out → black → fade-in → takeover
+  const {
+    heroPhase,
+    setHeroPhase,
+    setLoopVideoError,
+    scrollListenerAttachedRef,
+    lockBody,
+    unlockBody,
+    loopVideoOpacity,
+    loopVideoBg,
+    metroHeroOpacity,
+    fadeOutDuration,
+    fadeInDuration,
+  } = useHeroPhase();
+
   // Playback progress across MetroHero and CameraVideo.
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isCameraActive, setIsCameraActive] = useState(false);
@@ -137,41 +160,72 @@ export const Hero = ({ onCameraReveal }) => {
 
   const t = themeTokens[theme];
 
+  // Whether the loop video should be visible.
+  const showLoopVideo = heroPhase !== 'takeover';
+
+  // Whether MetroHero should be paused (not playing, not responding to input).
+  const metroPaused = ['loop', 'fade-out', 'black'].includes(heroPhase);
+
+  // Whether MetroHero should auto-play (during fade-in / takeover).
+  const metroAutoPlay = ['fade-in', 'takeover'].includes(heroPhase);
+
   // Fade the Hero UI as MetroHero plays.
-  const heroContentOpacity = Math.max(0, 1 - scrollProgress / 0.15);
+  // During fade-out / black / fade-in phases the hero content must be
+  // invisible so the black screen and MetroHero reveal are clean.
+  const heroContentOpacity =
+    heroPhase === 'loop'
+      ? Math.max(0, 1 - scrollProgress / HERO_FADE_THRESHOLD)
+      : 0;
 
   // Lock body scroll at mount, unlock when revealed
   useLayoutEffect(() => {
-    const lockBody = () => {
-      if (typeof document === 'undefined') return;
-      const body = document.body;
-      body.style.position = 'fixed';
-      body.style.top = `-${window.scrollY}px`;
-      body.style.left = '0';
-      body.style.right = '0';
-      body.style.width = '100%';
-      body.style.height = '100%';
-      body.style.overflow = 'hidden';
-    };
-
-    const unlockBody = () => {
-      if (typeof document === 'undefined') return;
-      const body = document.body;
-      body.style.position = '';
-      body.style.top = '';
-      body.style.left = '';
-      body.style.right = '';
-      body.style.width = '';
-      body.style.height = '';
-      body.style.overflow = '';
-      window.scrollTo(0, window.scrollY);
-    };
-
     lockBody();
+
+    // Attach single-use wheel / touch listener to trigger loop → fade transition.
+    // We use wheel/touch instead of the "scroll" event because the body is
+    // position: fixed during the loop phase, so no native scroll events fire.
+    const handleScroll = () => {
+      setHeroPhase('fade-out');
+      // Unlock body scroll so MetroHero can handle it
+      unlockBody();
+    };
+
+    const onWheel = (e) => {
+      if (heroPhase === 'loop' && !scrollListenerAttachedRef.current) {
+        scrollListenerAttachedRef.current = true;
+        e.preventDefault();
+        handleScroll();
+      }
+    };
+
+    let touchStartY = 0;
+    const onTouchStart = (e) => {
+      touchStartY = e.touches[0]?.clientY ?? 0;
+    };
+    const onTouchMove = (e) => {
+      if (heroPhase === 'loop' && !scrollListenerAttachedRef.current) {
+        const y = e.touches[0]?.clientY ?? touchStartY;
+        const deltaY = touchStartY - y;
+        touchStartY = y;
+        if (deltaY > 0) {
+          scrollListenerAttachedRef.current = true;
+          e.preventDefault();
+          handleScroll();
+        }
+      }
+    };
+
+    window.addEventListener('wheel', onWheel, { passive: false });
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchmove', onTouchMove, { passive: false });
+
     return () => {
+      window.removeEventListener('wheel', onWheel);
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove', onTouchMove);
       if (!isRevealedRef.current) unlockBody();
     };
-  }, []);
+  }, [heroPhase, lockBody, unlockBody, setHeroPhase, scrollListenerAttachedRef]);
 
   // Handle MetroHero playback progress and start CameraVideo at its end.
   const handleMetroProgress = useCallback((p) => {
@@ -201,19 +255,58 @@ export const Hero = ({ onCameraReveal }) => {
     setIsCameraVideoReady(true);
   }, []);
 
+  // Camera animation finished — unmount MetroHero and enter takeover phase.
+  // setHeroPhase is stable (from useState), no re-run needed
+  const handleCameraAnimationEnd = useCallback((event) => {
+    if (
+      event.target === event.currentTarget &&
+      event.animationName === 'camera-video-enter'
+    ) {
+      setIsMetroHeroMounted(false);
+      setHeroPhase('takeover');
+    }
+  }, [setHeroPhase]);
+
   return (
     <section
       className="hero-section h-screen w-full flex items-center overflow-hidden relative transition-colors duration-700"
       style={{ backgroundColor: 'transparent' }}
       aria-label="Introduction"
     >
-      {/* === MetroHero — starts playback on the first downward scroll === */}
+      {/* === Loop video — plays on mount, fades out on scroll === */}
+      {showLoopVideo && (
+        <video
+          src={defaultMetroVideo}
+          muted
+          loop
+          playsInline
+          preload="auto"
+          autoPlay
+          className="absolute inset-0 z-10 loop-video"
+          style={{
+            objectFit: 'cover',
+            width: '100%',
+            height: '100%',
+            opacity: loopVideoOpacity,
+            transition: `opacity ${fadeOutDuration}ms ease`,
+            pointerEvents: 'none',
+            backgroundColor: loopVideoBg,
+          }}
+          onError={() => setLoopVideoError(true)}
+        />
+      )}
+
+      {/* === MetroHero — mounted during loop phase (paused), activates on scroll === */}
       {isMetroHeroMounted && (
         <div
           className="absolute inset-0 z-0 metro-hero-handoff"
-          style={{ opacity: isCameraActive && isCameraVideoReady ? 0 : 1 }}
+          style={{
+            opacity: isCameraActive && isCameraVideoReady ? 0 : metroHeroOpacity,
+            transition: `opacity ${fadeInDuration}ms ease`,
+          }}
         >
           <MetroHero
+            key="metro-hero"
             title=""
             tagline=""
             scrollHint=""
@@ -221,8 +314,9 @@ export const Hero = ({ onCameraReveal }) => {
             handoffLeadTime={1.5}
             onHandoffStart={handleMetroHandoffStart}
             onProgress={handleMetroProgress}
+            pausedAtEnd={metroPaused}
+            autoPlay={metroAutoPlay}
             className="absolute inset-0 z-0"
-            style={{ position: "absolute", height: "100%" }}
           />
         </div>
       )}
@@ -231,16 +325,7 @@ export const Hero = ({ onCameraReveal }) => {
       {isCameraActive && (
         <div
           className={`absolute inset-0 z-10 camera-video-entry${isCameraVideoReady ? ' camera-video-entry-ready' : ''}`}
-          onAnimationEnd={(event) => {
-            if (
-              event.target === event.currentTarget &&
-              event.animationName === "camera-video-enter" &&
-              isCameraActive &&
-              isCameraVideoReady
-            ) {
-              setIsMetroHeroMounted(false);
-            }
-          }}
+          onAnimationEnd={handleCameraAnimationEnd}
         >
           <CameraVideo
             onProgress={handleCameraProgress}
@@ -248,7 +333,6 @@ export const Hero = ({ onCameraReveal }) => {
             onReady={handleCameraReady}
             zoomScale={3}
             className="absolute inset-0"
-            style={{ position: "absolute" }}
           />
         </div>
       )}
@@ -261,7 +345,8 @@ export const Hero = ({ onCameraReveal }) => {
             initial={{ opacity: 1 }}
             animate={{ opacity: heroContentOpacity }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: fadeOutDuration / 1000 }}
+            key="hero-content"
           >
             {/* Theme toggle — top right */}
             <motion.button
@@ -338,7 +423,7 @@ export const Hero = ({ onCameraReveal }) => {
                 <motion.div custom={0} variants={textVariants} className="flex items-center gap-2 mb-6">
                   <span
                     className="inline-block w-2 h-2 rounded-full animate-pulse"
-                    style={{ backgroundColor: '#ff6b35' }}
+                    style={{ backgroundColor: ACCENT_ORANGE }}
                   />
                   <span
                     className="lcd-text text-xs tracking-[0.2em] uppercase"
@@ -358,7 +443,7 @@ export const Hero = ({ onCameraReveal }) => {
                   {about.name}
                   <span
                     className="inline-block ml-3 w-3 h-[3px] rounded-full"
-                    style={{ backgroundColor: '#ff6b35' }}
+                    style={{ backgroundColor: ACCENT_ORANGE }}
                     aria-hidden="true"
                   />
                 </motion.h1>
@@ -413,7 +498,7 @@ export const Hero = ({ onCameraReveal }) => {
                     </svg>
                     <motion.div
                       className="absolute bottom-0 left-1/2 w-1 h-1 rounded-full"
-                      style={{ backgroundColor: '#ff6b35', translateX: '-1.5px' }}
+                      style={{ backgroundColor: ACCENT_ORANGE, translateX: '-1.5px' }}
                       initial={{ y: 0 }}
                       animate={{ y: [0, 4, 0] }}
                       transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}

@@ -29,7 +29,7 @@ export const AboutSection = () => {
           <span className="hud-text-dim">|</span>
           <span className="hud-text-dim">FIRMWARE 2.1.0</span>
         </div>
-      </div>W
+      </div>
 
       {/* === MAIN CONTENT (scrollable) === */}
       <div className="relative z-10 flex-1 overflow-y-auto px-6 md:px-8 lg:px-10 py-6">

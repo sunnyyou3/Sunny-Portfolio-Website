@@ -123,9 +123,9 @@ export const CareerSection = () => {
 
             {/* Education entry */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 py-1">
-              <span className="hud-text text-white/70">Degree Name</span>
-              <span className="hud-text-accent">Year</span>
-              <span className="hud-text text-white/50">University Name</span>
+              <span className="hud-text text-white/70">B.S. Computer Science</span>
+              <span className="hud-text-accent">2024</span>
+              <span className="hud-text text-white/50">Lehigh University</span>
             </div>
           </div>
         </motion.div>

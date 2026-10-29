@@ -30,6 +30,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "build": "react-scripts build",
+    "extract-exif": "node scripts/extract-gallery-exif.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

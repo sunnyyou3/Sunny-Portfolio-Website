@@ -1,0 +1,92 @@
+{
+  "IMGP4425.jpg": {
+    "camera": "PENTAX PENTAX K-30",
+    "lens": "smc PENTAX-DA L 55-300mm F4-5.8 ED",
+    "shutterSpeed": "1/40s",
+    "aperture": "f/4.5",
+    "iso": "ISO 200",
+    "focalLength": "150mm",
+    "artist": "SUNNY_YOU",
+    "copyright": "SUNNY_YOU"
+  },
+  "IMGP4476.jpg": {
+    "camera": "PENTAX PENTAX K-30",
+    "lens": "smc PENTAX-DA 35mm F2.8 Macro Limited",
+    "shutterSpeed": "1/100s",
+    "aperture": "f/2.8",
+    "iso": "ISO 100",
+    "focalLength": "35mm",
+    "artist": "SUNNY_YOU",
+    "copyright": "SUNNY_YOU"
+  },
+  "IMGP4482.jpg": {
+    "camera": "PENTAX PENTAX K-30",
+    "lens": "smc PENTAX-DA 35mm F2.8 Macro Limited",
+    "shutterSpeed": "1/80s",
+    "aperture": "f/2.8",
+    "iso": "ISO 100",
+    "focalLength": "35mm",
+    "artist": "SUNNY_YOU",
+    "copyright": "SUNNY_YOU"
+  },
+  "IMGP4550.jpg": {
+    "camera": "PENTAX PENTAX K-30",
+    "lens": "smc PENTAX-DA 35mm F2.8 Macro Limited",
+    "shutterSpeed": "1/160s",
+    "aperture": "f/4.5",
+    "iso": "ISO 100",
+    "focalLength": "35mm",
+    "artist": "SUNNY_YOU",
+    "copyright": "SUNNY_YOU"
+  },
+  "IMGP4635.jpg": {
+    "camera": "PENTAX PENTAX K-30",
+    "lens": "smc PENTAX-DA L 55-300mm F4-5.8 ED",
+    "shutterSpeed": "1/200s",
+    "aperture": "f/5.8",
+    "iso": "ISO 500",
+    "focalLength": "300mm",
+    "artist": "SUNNY_YOU",
+    "copyright": "SUNNY_YOU"
+  },
+  "IMGP4730.jpg": {
+    "camera": "PENTAX PENTAX K-30",
+    "lens": "smc PENTAX-DA 35mm F2.8 Macro Limited",
+    "shutterSpeed": "1/320s",
+    "aperture": "f/2.8",
+    "iso": "ISO 100",
+    "focalLength": "35mm",
+    "artist": "SUNNY_YOU",
+    "copyright": "SUNNY_YOU"
+  },
+  "IMGP4802.jpg": {
+    "camera": "PENTAX PENTAX K-30",
+    "lens": "smc PENTAX-DA 18-55mm F3.5-5.6 AL",
+    "shutterSpeed": "1/1000s",
+    "aperture": "f/5.6",
+    "iso": "ISO 100",
+    "focalLength": "55mm",
+    "artist": "SUNNY_YOU",
+    "copyright": "SUNNY_YOU"
+  },
+  "IMGP4804.jpg": {
+    "camera": "PENTAX PENTAX K-30",
+    "lens": "smc PENTAX-DA 18-55mm F3.5-5.6 AL",
+    "shutterSpeed": "1/1000s",
+    "aperture": "f/5.6",
+    "iso": "ISO 100",
+    "focalLength": "55mm",
+    "artist": "SUNNY_YOU",
+    "copyright": "SUNNY_YOU"
+  },
+  "SunnyFuji.jpg": {
+    "camera": "samsung SM-F916U",
+    "lens": null,
+    "shutterSpeed": "1/909s",
+    "aperture": "f/2.4",
+    "iso": "ISO 25",
+    "focalLength": "6mm",
+    "artist": null,
+    "copyright": null
+  }
+}

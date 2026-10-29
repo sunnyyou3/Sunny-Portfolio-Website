@@ -40,8 +40,6 @@
 body {
   font-family: "PPNeueMontreal", sans-serif;
   background: #000;
-  cursor: -webkit-grab;
-  cursor: grab;
 }
 
 body.dragging {
@@ -237,10 +235,10 @@ h3 {
 
 .viewport {
   position: absolute;
-  inset: 0;
   overflow: hidden;
   z-index: 1;
   opacity: 0;
+  top: 50px;
 }
 
 .canvas-wrapper {
@@ -472,6 +470,97 @@ h3 {
   letter-spacing: 2px;
 }
 
+/* Camera metadata panel — DSLR info card in split-right */
+.camera-meta-panel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 520px;
+  width: 80vw;
+  color: #fff;
+  font-family: "TheGoodMonolith", monospace;
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 2rem 2.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+}
+
+.split-screen-container.active .camera-meta-panel {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%);
+}
+
+.meta-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 0.2em;
+  font-weight: 400;
+}
+
+.meta-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin-bottom: 0.75rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.meta-row {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.meta-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+}
+
+.meta-item .meta-label.small {
+  font-size: 0.55rem;
+  margin-bottom: 0.1em;
+}
+
+.meta-item .meta-value.small {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0;
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  .camera-meta-panel {
+    width: 88vw;
+    padding: 1.5rem 2rem;
+  }
+
+  .meta-value {
+    font-size: 1.1rem;
+  }
+
+  .meta-item .meta-value.small {
+    font-size: 0.9rem;
+  }
+}
+
 .controls-container {
   position: absolute;
   bottom: 1.25em;
@@ -648,7 +737,10 @@ h3 {
 /* Page vignette effect */
 .page-vignette-container {
   position: absolute;
-  inset: 0;
+  top: 55px;
+  left: 0;
+  right: 0;
+  bottom: 0;
   pointer-events: none;
   z-index: 9998;
 }

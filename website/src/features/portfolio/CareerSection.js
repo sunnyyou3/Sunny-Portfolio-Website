@@ -2,24 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { career } from '../../data/career';
-
-const ease = [0.25, 0.1, 0.25, 1];
-
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.08 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 14 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.45, ease },
-  },
-};
+import { sectionContainerVariants as containerVariants, sectionItemVariants as itemVariants } from '../../animations/portfolioVariants';
 
 export const CareerSection = () => {
   const totalEntries = career.length;

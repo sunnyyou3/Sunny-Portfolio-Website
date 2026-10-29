@@ -5,44 +5,11 @@ import MetroHero from './MetroHero';
 import CameraVideo from './CameraVideo';
 import defaultMetroVideo from '../../assets/video/defaultmetro.mp4';
 import { useHeroPhase } from './useHeroPhase';
+import { imageVariants, heroContainerVariants as containerVariants, textVariants } from '../../animations/heroVariants';
 
 const STORAGE_KEY = 'hero-theme-preference';
 const METRO_THRESHOLD = 0.5; // Split point: MetroHero handles 0→0.5, CameraVideo handles 0.5→1.0
 const HERO_FADE_THRESHOLD = 0.15; // Scroll progress at which hero content starts fading
-
-const imageVariants = {
-  hidden: { opacity: 0, scale: 0.92, filter: 'blur(8px)' },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    filter: 'blur(0px)',
-    transition: { duration: 1.2, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] },
-  },
-};
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.12,
-      delayChildren: 0.3,
-    },
-  },
-};
-
-const textVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.8,
-      delay: i * 0.12 + 0.3,
-      ease: [0.25, 0.1, 0.25, 1],
-    },
-  }),
-};
 
 const sunIcon = (
   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

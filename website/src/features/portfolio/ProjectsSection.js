@@ -2,30 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { projects } from '../../data/projects';
-
-const ease = [0.25, 0.1, 0.25, 1];
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 18 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.45, ease },
-  },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (index) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.45,
-      ease,
-      delay: Math.min(index * 0.08, 0.4),
-    },
-  }),
-};
+import { fadeUp, cardVariants, ease } from '../../animations/portfolioVariants';
 
 const getProjectNumber = (index) =>
   String(index + 1).padStart(3, '0');

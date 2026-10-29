@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { menuItemVariants as itemVariants } from '../../animations/portfolioVariants';
 
 const navItems = [
   {
@@ -53,18 +54,6 @@ const navItems = [
   },
 ];
 
-const itemVariants = {
-  hidden: { opacity: 0, x: -16 },
-  visible: (i) => ({
-    opacity: 1,
-    x: 0,
-    transition: {
-      duration: 0.4,
-      delay: 0.2 + i * 0.08,
-      ease: [0.25, 0.1, 0.25, 1],
-    },
-  }),
-};
 
 export const PortfolioMenu = ({ onSelect }) => {
   const [hoveredId, setHoveredId] = React.useState(null);

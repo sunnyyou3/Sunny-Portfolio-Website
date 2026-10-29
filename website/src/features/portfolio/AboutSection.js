@@ -2,24 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { skills, about } from '../../data/about';
-
-const ease = [0.25, 0.1, 0.25, 1];
-
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.09 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 14 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.45, ease },
-  },
-};
+import { sectionContainerVariants as containerVariants, sectionItemVariants as itemVariants } from '../../animations/portfolioVariants';
 
 const contacts = [
   {

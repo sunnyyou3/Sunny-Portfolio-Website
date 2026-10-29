@@ -11,12 +11,4 @@ export const letters = {
   Y: { initial: { x: 1000 }, animate: { x: 0 }, transition: { duration: 2 } },
 };
 
-export const fadeIn = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1 }
-}
-
-export const fadeOut = {
-  initial: { opacity: 1 },
-  animate: { opacity: 0 },
-}
+export { fadeIn, fadeOut } from './commonVariants';

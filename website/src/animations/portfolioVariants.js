@@ -1,9 +1,9 @@
 // Portfolio section animation variants
 // Extracted from:
-//   - src/features/portfolio/PortfolioMenu.js (itemVariants)
-//   - src/features/portfolio/ProjectsSection.js (fadeUp, cardVariants)
-//   - src/features/portfolio/AboutSection.js (containerVariants, itemVariants)
-//   - src/features/portfolio/CareerSection.js (containerVariants, itemVariants)
+//   - src/features/portfolio/sections/PortfolioMenu.js (itemVariants)
+//   - src/features/portfolio/sections/ProjectsSection.js (fadeUp, cardVariants)
+//   - src/features/portfolio/sections/AboutSection.js (containerVariants, itemVariants)
+//   - src/features/portfolio/sections/CareerSection.js (containerVariants, itemVariants)
 
 import { ease } from './easings';
 

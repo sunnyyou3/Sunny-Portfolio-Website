@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { PortfolioMenu } from '../PortfolioMenu';
+import { PortfolioMenu } from '../sections/PortfolioMenu';
 
 describe('PortfolioMenu', () => {
   const mockOnSelect = jest.fn();

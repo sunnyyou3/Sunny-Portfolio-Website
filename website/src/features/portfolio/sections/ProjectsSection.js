@@ -1,8 +1,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { projects } from '../../data/projects';
-import { fadeUp, cardVariants, ease } from '../../animations/portfolioVariants';
+import { projects } from '../../../data/projects';
+import { fadeUp, cardVariants, ease } from '../../../animations/portfolioVariants';
 
 const getProjectNumber = (index) =>
   String(index + 1).padStart(3, '0');

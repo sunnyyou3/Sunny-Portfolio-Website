@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { ProjectsSection } from '../ProjectsSection';
+import { ProjectsSection } from '../sections/ProjectsSection';
 import { projects } from '../../../data/projects';
 
 describe('ProjectsSection', () => {

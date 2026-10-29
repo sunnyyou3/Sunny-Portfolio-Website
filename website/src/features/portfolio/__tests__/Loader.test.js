@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { Loader } from '../Loader';
+import { Loader } from '../../loader/Loader';
 
 describe('Loader', () => {
   it('renders all letters of SUNNY', () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { menuItemVariants as itemVariants } from '../../animations/portfolioVariants';
+import { menuItemVariants as itemVariants } from '../../../animations/portfolioVariants';
 
 const navItems = [
   {

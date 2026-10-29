@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { career } from '../../data/career';
-import { sectionContainerVariants as containerVariants, sectionItemVariants as itemVariants } from '../../animations/portfolioVariants';
+import { career } from '../../../data/career';
+import { sectionContainerVariants as containerVariants, sectionItemVariants as itemVariants } from '../../../animations/portfolioVariants';
 
 export const CareerSection = () => {
   const totalEntries = career.length;

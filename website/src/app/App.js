@@ -1,6 +1,6 @@
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Loader } from "../features/portfolio/Loader";
+import { Loader } from "../features/loader/Loader";
 import { ScrollManager } from "../features/portfolio/ScrollManager";
 import "../styles/index.css";
 

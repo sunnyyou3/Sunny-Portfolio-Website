@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { skills, about } from '../../data/about';
-import { sectionContainerVariants as containerVariants, sectionItemVariants as itemVariants } from '../../animations/portfolioVariants';
+import { skills, about } from '../../../data/about';
+import { sectionContainerVariants as containerVariants, sectionItemVariants as itemVariants } from '../../../animations/portfolioVariants';
 
 const contacts = [
   {

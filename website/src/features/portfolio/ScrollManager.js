@@ -1,11 +1,11 @@
 import React, { useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Hero } from '../hero/Hero';
-import { PortfolioMenu } from './PortfolioMenu';
-import { ProjectsSection } from './ProjectsSection';
-import { GallerySection } from './GallerySection';
-import { AboutSection } from './AboutSection';
-import { CareerSection } from './CareerSection';
+import { PortfolioMenu } from './sections/PortfolioMenu';
+import { ProjectsSection } from './sections/ProjectsSection';
+import { GallerySection } from './sections/GallerySection';
+import { AboutSection } from './sections/AboutSection';
+import { CareerSection } from './sections/CareerSection';
 
 /**
  * ScrollManager - The main scroll-driven experience orchestrator.
@@ -56,7 +56,7 @@ export const ScrollManager = () => {
             {portfolioSection && (
               <button
                 onClick={handleBackToMenu}
-                className="absolute top-8 left-4 z-[100] lcd-text text-xs text-white/40 hover:text-accent-orange transition-colors duration-200 flex items-center gap-2"
+                className="absolute top-8 left-4 z-[100] flex items-center gap-2 px-3 py-2 rounded-md bg-black/60 backdrop-blur-sm border border-white/10 text-xs font-medium text-white hover:text-accent-orange hover:border-accent-orange/50 transition-colors duration-200"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />

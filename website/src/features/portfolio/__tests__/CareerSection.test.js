@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { CareerSection } from '../CareerSection';
+import { CareerSection } from '../sections/CareerSection';
 import { career } from '../../../data/career';
 
 describe('CareerSection', () => {

@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/Sunny-Portfolio-Website/static/css/main.e2a6fe90.css",
-    "main.js": "/Sunny-Portfolio-Website/static/js/main.9d48e472.js",
-    "static/js/453.9f2eae4e.chunk.js": "/Sunny-Portfolio-Website/static/js/453.9f2eae4e.chunk.js",
+    "main.css": "/Sunny-Portfolio-Website/static/css/main.5cdc15f7.css",
+    "main.js": "/Sunny-Portfolio-Website/static/js/main.ac95ea65.js",
+    "static/js/453.5488f00e.chunk.js": "/Sunny-Portfolio-Website/static/js/453.5488f00e.chunk.js",
     "static/media/defaultmetro.mp4": "/Sunny-Portfolio-Website/static/media/defaultmetro.9f4c294bebcd8b6b9307.mp4",
     "static/media/IMGP4425.jpg": "/Sunny-Portfolio-Website/static/media/IMGP4425.d1a74763dffa4e17a0ac.jpg",
     "static/media/IMGP4476.jpg": "/Sunny-Portfolio-Website/static/media/IMGP4476.7994e2df9f88313e99f4.jpg",
@@ -23,12 +23,12 @@
     "static/media/VR_InGame.jpg": "/Sunny-Portfolio-Website/static/media/VR_InGame.a6965c9e3c6034303a25.jpg",
     "static/media/Buzz_LoginScreen.jpg": "/Sunny-Portfolio-Website/static/media/Buzz_LoginScreen.dc924b156603f1904042.jpg",
     "index.html": "/Sunny-Portfolio-Website/index.html",
-    "main.e2a6fe90.css.map": "/Sunny-Portfolio-Website/static/css/main.e2a6fe90.css.map",
-    "main.9d48e472.js.map": "/Sunny-Portfolio-Website/static/js/main.9d48e472.js.map",
-    "453.9f2eae4e.chunk.js.map": "/Sunny-Portfolio-Website/static/js/453.9f2eae4e.chunk.js.map"
+    "main.5cdc15f7.css.map": "/Sunny-Portfolio-Website/static/css/main.5cdc15f7.css.map",
+    "main.ac95ea65.js.map": "/Sunny-Portfolio-Website/static/js/main.ac95ea65.js.map",
+    "453.5488f00e.chunk.js.map": "/Sunny-Portfolio-Website/static/js/453.5488f00e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.e2a6fe90.css",
-    "static/js/main.9d48e472.js"
+    "static/css/main.5cdc15f7.css",
+    "static/js/main.ac95ea65.js"
   ]
 }

@@ -1,6 +1,6 @@
 /* global gsap, Flip, Draggable, InertiaPlugin, CustomEase */
 
-import React, { useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useEffect, useRef, useCallback, useMemo, useState } from 'react';
 import '../styles/GallerySection.css';
 
 // EXIF camera metadata keyed by original image filename.
@@ -37,15 +37,20 @@ try {
 /*  PreloaderManager — canvas loading animation (ported to React refs) */
 /* ------------------------------------------------------------------ */
 class PreloaderManager {
-  constructor({ overlayRef, duration = 2000, onComplete }) {
+  constructor({ overlayRef, imageUrls = [], duration = 2000, onComplete }) {
     this.overlayRef = overlayRef;
+    this.imageUrls = imageUrls;
     this.duration = duration;
     this.onComplete = onComplete;
     this.overlay = null;
-    this.canvas = null;
-    this.ctx = null;
-    this.animationId = null;
+    this.spinner = null;
+    this.loadingText = null;
+    this.styleElement = null;
+    this.loadedCount = 0;
+    this.totalImages = imageUrls.length;
+    this.imagesReady = false;
     this.startTime = null;
+    this.completed = false;
     this.createLoadingScreen();
   }
 
@@ -61,134 +66,127 @@ class PreloaderManager {
       height: 100%;
       background: #000;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
+      gap: 16px;
       z-index: 100000;
+      transition: opacity 0.8s ease;
     `;
 
-    this.canvas = document.createElement('canvas');
-    this.canvas.width = 300;
-    this.canvas.height = 300;
-    this.ctx = this.canvas.getContext('2d');
-    this.overlay.appendChild(this.canvas);
+    // Spinning loader ring
+    this.spinner = document.createElement('div');
+    this.spinner.style.cssText = `
+      width: 56px;
+      height: 56px;
+      border: 4px solid #1a1a1a;
+      border-top: 4px solid #A64B23;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    `;
 
-    this.startAnimation();
+    // "Loading Gallery" text
+    this.loadingText = document.createElement('div');
+    this.loadingText.textContent = 'Loading Gallery';
+    this.loadingText.style.cssText = `
+      color: #fff;
+      font-family: 'BBH Sans Hegarty', sans-serif;
+      font-size: 1.25rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.9;
+    `;
+
+    this.overlay.appendChild(this.spinner);
+    this.overlay.appendChild(this.loadingText);
+
+    // Keyframes for the spinner
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
+    this.styleElement = style;
+
+    this.startPreloading();
   }
 
-  startAnimation() {
-    const centerX = this.canvas.width / 2;
-    const centerY = this.canvas.height / 2;
-    let time = 0;
-    let lastTime = 0;
+  startPreloading() {
+    this.startTime = Date.now();
+    this.imagesReady = false;
 
-    const dotRings = [
-      { radius: 20, count: 8 },
-      { radius: 35, count: 12 },
-      { radius: 50, count: 16 },
-      { radius: 65, count: 20 },
-      { radius: 80, count: 24 }
-    ];
+    if (this.totalImages === 0) {
+      this.imagesReady = true;
+      this.tryComplete();
+      return;
+    }
 
-    const colors = { primary: '#2C1B14', accent: '#A64B23' };
+    this.imageUrls.forEach((url) => {
+      const img = new Image();
+      img.onload = () => this.onImageLoaded();
+      img.onerror = () => this.onImageLoaded();
+      img.src = url;
+    });
 
-    const hexToRgb = (hex) => [
-      parseInt(hex.slice(1, 3), 16),
-      parseInt(hex.slice(3, 5), 16),
-      parseInt(hex.slice(5, 7), 16)
-    ];
+    // Fallback so we never hang indefinitely if an image stalls
+    setTimeout(() => {
+      if (!this.completed) this.complete();
+    }, Math.max(this.duration, 8000));
+  }
 
-    const animate = (timestamp) => {
-      if (!this.startTime) this.startTime = timestamp;
-      if (!lastTime) lastTime = timestamp;
-      const deltaTime = timestamp - lastTime;
-      lastTime = timestamp;
-      time += deltaTime * 0.001;
+  onImageLoaded() {
+    if (this.completed) return;
+    this.loadedCount++;
+    if (this.loadedCount >= this.totalImages) {
+      this.imagesReady = true;
+      this.tryComplete();
+    }
+  }
 
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-      // Draw center dot
-      this.ctx.beginPath();
-      this.ctx.arc(centerX, centerY, 3, 0, Math.PI * 2);
-      const rgb = hexToRgb(colors.primary);
-      this.ctx.fillStyle = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.9)`;
-      this.ctx.fill();
-
-      // Draw Line Pulse Wave animation
-      dotRings.forEach((ring, ringIndex) => {
-        for (let i = 0; i < ring.count; i++) {
-          const angle = (i / ring.count) * Math.PI * 2;
-          const radiusPulse = Math.sin(time * 2 - ringIndex * 0.4) * 3;
-          const x = centerX + Math.cos(angle) * (ring.radius + radiusPulse);
-          const y = centerY + Math.sin(angle) * (ring.radius + radiusPulse);
-
-          const opacityWave =
-            0.4 + Math.sin(time * 2 - ringIndex * 0.4 + i * 0.2) * 0.6;
-          const isActive = Math.sin(time * 2 - ringIndex * 0.4 + i * 0.2) > 0.6;
-
-          this.ctx.beginPath();
-          this.ctx.moveTo(centerX, centerY);
-          this.ctx.lineTo(x, y);
-          this.ctx.lineWidth = 0.8;
-
-          if (isActive) {
-            const accentRgb = hexToRgb(colors.accent);
-            this.ctx.strokeStyle = `rgba(${accentRgb[0]}, ${accentRgb[1]}, ${accentRgb[2]}, ${opacityWave * 0.7})`;
-          } else {
-            const primaryRgb = hexToRgb(colors.primary);
-            this.ctx.strokeStyle = `rgba(${primaryRgb[0]}, ${primaryRgb[1]}, ${primaryRgb[2]}, ${opacityWave * 0.5})`;
-          }
-          this.ctx.stroke();
-
-          this.ctx.beginPath();
-          this.ctx.arc(x, y, 2.5, 0, Math.PI * 2);
-          if (isActive) {
-            const accentRgb = hexToRgb(colors.accent);
-            this.ctx.fillStyle = `rgba(${accentRgb[0]}, ${accentRgb[1]}, ${accentRgb[2]}, ${opacityWave})`;
-          } else {
-            const primaryRgb = hexToRgb(colors.primary);
-            this.ctx.fillStyle = `rgba(${primaryRgb[0]}, ${primaryRgb[1]}, ${primaryRgb[2]}, ${opacityWave})`;
-          }
-          this.ctx.fill();
-        }
-      });
-
-      if (timestamp - this.startTime >= this.duration) {
-        this.complete();
-        return;
-      }
-
-      this.animationId = requestAnimationFrame(animate);
-    };
-
-    this.animationId = requestAnimationFrame(animate);
+  // Only hide the loader once images are ready AND a minimum display time has
+  // elapsed, so the spinner is actually visible instead of flashing away.
+  tryComplete() {
+    if (this.completed || !this.imagesReady) return;
+    const minDisplay = 2000; // always show the loader for at least 2 seconds
+    const elapsed = Date.now() - this.startTime;
+    if (elapsed >= minDisplay) {
+      this.complete();
+    } else {
+      setTimeout(() => this.complete(), minDisplay - elapsed);
+    }
   }
 
   complete() {
-    if (this.animationId) {
-      cancelAnimationFrame(this.animationId);
-      this.animationId = null;
-    }
+    if (this.completed) return;
+    this.completed = true;
 
     if (this.overlay) {
       this.overlay.style.opacity = '0';
       this.overlay.style.transition = 'opacity 0.8s ease';
       setTimeout(() => {
-        if (this.overlay) this.overlay.remove();
+        if (this.overlay && this.overlay.parentNode) {
+          this.overlay.parentNode.removeChild(this.overlay);
+        }
         this.overlay = null;
+        if (this.styleElement && this.styleElement.parentNode) {
+          this.styleElement.parentNode.removeChild(this.styleElement);
+        }
         if (this.onComplete) this.onComplete();
       }, 800);
     }
   }
 
   destroy() {
-    if (this.animationId) {
-      cancelAnimationFrame(this.animationId);
-      this.animationId = null;
-    }
+    this.completed = true;
     if (this.overlay && this.overlay.parentNode) {
       this.overlay.parentNode.removeChild(this.overlay);
     }
     this.overlay = null;
+    if (this.styleElement && this.styleElement.parentNode) {
+      this.styleElement.parentNode.removeChild(this.styleElement);
+    }
   }
 }
 
@@ -966,7 +964,9 @@ class FashionGallery {
         }
         splitContainer.classList.remove('active');
         document.body.classList.remove('zoom-mode');
-        this.refs.closeButton.current.classList.remove('active');
+        if (this.refs.closeButton.current) {
+          this.refs.closeButton.current.classList.remove('active');
+        }
         if (this.draggable) this.draggable.enable();
         this.zoomState.isActive = false;
         this.zoomState.selectedItem = null;
@@ -1299,7 +1299,7 @@ class FashionGallery {
     navTimeline.to(percentageIndicator, { x: 0, duration: 0.2, ease: 'power2.out' }, 0.25);
     navTimeline.to(switchElement, { y: 0, duration: 0.2, ease: 'power2.out' }, 0.3);
     navTimeline.to(soundToggle, { x: 0, duration: 0.2, ease: 'power2.out' }, 0.35);
-    controlsContainer.classList.add('visible');
+    if (controlsContainer) controlsContainer.classList.add('visible');
   }
 
   /* ---- init ------------------------------------------------------- */
@@ -1334,7 +1334,7 @@ class FashionGallery {
     }
   }
 
-  init() {
+  init(onReady) {
     this.initGridConfig();
     this.config.currentGap = this.calculateGapForZoom(this.config.currentZoom);
     this.generateGridItems();
@@ -1366,6 +1366,7 @@ class FashionGallery {
           this.initDraggable();
           this.setupViewportObserver();
         }, 1500);
+        if (onReady) onReady();
       }
     });
   }
@@ -1408,6 +1409,23 @@ class FashionGallery {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Preload all gallery images so they're cached before the grid builds */
+/* ------------------------------------------------------------------ */
+const preloadGalleryImages = (urls) => {
+  if (!urls || urls.length === 0) return Promise.resolve();
+  return Promise.all(
+    urls.map((url) => {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = resolve;
+        img.onerror = resolve;
+        img.src = url;
+      });
+    })
+  );
+};
+
+/* ------------------------------------------------------------------ */
 /*  React component                                                    */
 /* ------------------------------------------------------------------ */
 export const GallerySection = () => {
@@ -1439,7 +1457,8 @@ export const GallerySection = () => {
   const soundWaveCanvasRef = useRef(null);
 
   const galleryRef = useRef(null);
-  const preloaderRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [overlayOpacity, setOverlayOpacity] = useState(1);
 
   const refs = useMemo(
     () => ({
@@ -1472,18 +1491,24 @@ export const GallerySection = () => {
     []
   );
 
-  const startGallery = useCallback(() => {
-    // Preloader runs first, then the gallery
-    preloaderRef.current = new PreloaderManager({
-      overlayRef: preloaderOverlayRef,
-      duration: 2000,
-      onComplete: () => {
-        const gallery = new FashionGallery(refs);
-        galleryRef.current = gallery;
-        gallery.initSoundSystem();
-        gallery.init();
-      }
+  const startGallery = useCallback(async () => {
+    // Preload all gallery images so they're cached before init() builds the grid,
+    // avoiding a black screen while images load.
+    await preloadGalleryImages(localGalleryImages);
+
+    const gallery = new FashionGallery(refs);
+    galleryRef.current = gallery;
+    gallery.initSoundSystem();
+
+    // Fade out the loader once the gallery viewport has faded in (gallery is ready)
+    await new Promise((resolve) => {
+      gallery.init(() => {
+        setOverlayOpacity(0);
+        setTimeout(resolve, 800);
+      });
     });
+
+    setIsLoading(false);
   }, [refs]);
 
   // Wait for GSAP to be available (CDN scripts load asynchronously)
@@ -1506,14 +1531,18 @@ export const GallerySection = () => {
   useEffect(() => {
     return () => {
       if (galleryRef.current) galleryRef.current.destroy();
-      if (preloaderRef.current) preloaderRef.current.destroy();
     };
   }, []);
 
   return (
     <section className="gallery-section flex flex-col w-full h-full bg-black" data-testid="gallery-section">
       {/* Preloader */}
-      <div id="preloader-overlay" ref={preloaderOverlayRef} />
+      {isLoading && (
+        <div id="preloader-overlay" ref={preloaderOverlayRef} style={{ opacity: overlayOpacity }}>
+          <div className="loading-spinner" />
+          <div className="loading-text">Loading Gallery</div>
+        </div>
+      )}
 
       {/* Top HUD — DSLR rear LCD */}
       <header className="camera-hud-top z-20 flex-shrink-0 px-4 py-3 border-b border-white/[0.06]">
@@ -1647,14 +1676,14 @@ export const GallerySection = () => {
       {/* Bottom HUD — DSLR rear LCD */}
       <footer className="camera-hud-bottom z-20 flex-shrink-0 px-4 py-2 border-t border-white/[0.06]">
         <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-2">
+            <span className="hud-text-dim hidden sm:inline">ZOOM</span>
+            <span className="hud-text-accent">100%</span>
+          </div>
           <div className="flex items-center gap-3">
             <span className="hud-text-dim">FOCUS</span>
             <span className="hud-text-dim">/</span>
             <span className="hud-text-dim">REVIEW</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="hud-text-dim hidden sm:inline">ZOOM</span>
-            <span className="hud-text-accent">100%</span>
           </div>
         </div>
       </footer>

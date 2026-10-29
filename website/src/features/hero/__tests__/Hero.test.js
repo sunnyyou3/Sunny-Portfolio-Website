@@ -2,7 +2,7 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import { Hero } from '../Hero';
 
 // Mock the video import to avoid asset loading issues
-jest.mock('../assets/video/defaultmetro.mp4', () => 'mocked-video.mp4', { virtual: true });
+jest.mock('../../assets/video/defaultmetro.mp4', () => 'mocked-video.mp4', { virtual: true });
 
 // Mock requestAnimationFrame
 let rafId = 0;

@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { ProjectsSection } from '../ProjectsSection';
-import { projects } from '../../data/projects';
+import { projects } from '../../../data/projects';
 
 describe('ProjectsSection', () => {
   it('renders the section header', () => {

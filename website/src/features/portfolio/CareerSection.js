@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { career } from '../data/career';
+import { career } from '../../data/career';
 
 const ease = [0.25, 0.1, 0.25, 1];
 

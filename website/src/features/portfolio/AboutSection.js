@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { skills, about } from '../data/about';
+import { skills, about } from '../../data/about';
 
 const ease = [0.25, 0.1, 0.25, 1];
 

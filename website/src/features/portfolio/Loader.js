@@ -1,5 +1,5 @@
 import { motion } from "motion/react"
-import { loaderContainer, letters } from "../animations/variants";
+import { loaderContainer, letters } from "../../features/hero/animations/variants";
 
 const style = {
   position: 'absolute',

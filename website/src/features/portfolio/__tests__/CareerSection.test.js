@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { CareerSection } from '../CareerSection';
-import { career } from '../../data/career';
+import { career } from '../../../data/career';
 
 describe('CareerSection', () => {
   it('renders the section header', () => {

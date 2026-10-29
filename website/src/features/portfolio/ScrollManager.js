@@ -1,6 +1,6 @@
 import React, { useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Hero } from './Hero';
+import { Hero } from '../hero/Hero';
 import { PortfolioMenu } from './PortfolioMenu';
 import { ProjectsSection } from './ProjectsSection';
 import { GallerySection } from './GallerySection';

@@ -1,10 +1,10 @@
 import React, { useState, useCallback, useRef, useLayoutEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { about } from '../data/about';
-import MetroHero from './ui/MetroHero';
-import CameraVideo from './ui/CameraVideo';
-import defaultMetroVideo from '../assets/video/defaultmetro.mp4';
-import { useHeroPhase } from '../hooks/useHeroPhase';
+import { about } from '../../data/about';
+import MetroHero from './MetroHero';
+import CameraVideo from './CameraVideo';
+import defaultMetroVideo from '../../assets/video/defaultmetro.mp4';
+import { useHeroPhase } from './useHeroPhase';
 
 const STORAGE_KEY = 'hero-theme-preference';
 const METRO_THRESHOLD = 0.5; // Split point: MetroHero handles 0→0.5, CameraVideo handles 0.5→1.0

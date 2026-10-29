@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { AboutSection } from '../AboutSection';
-import { about, skills } from '../../data/about';
+import { about, skills } from '../../../data/about';
 
 describe('AboutSection', () => {
   it('renders the name', () => {

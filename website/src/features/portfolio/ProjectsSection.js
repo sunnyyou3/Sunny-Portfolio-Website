@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { projects } from '../data/projects';
+import { projects } from '../../data/projects';
 
 const ease = [0.25, 0.1, 0.25, 1];
 
